@@ -1,0 +1,74 @@
+#searchMultiChk {
+    position: relative;
+    width: 100%;
+}
+
+#searchMultiChk .divBox {
+    display: flex;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #fff;
+}
+
+#searchMultiChk .divBox span {
+    flex: 1;
+}
+
+#searchMultiChk .divBox svg {
+    transition: transform 0.3s ease;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    fill: #555;
+}
+
+#searchMultiChk .optionBox {
+    position: absolute;
+    padding: 8px;
+    padding-bottom: 0;
+    top: 110%;
+    left: 0;
+    right: 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    max-height: calc(100vh - 200px);
+    width: 300px;
+    overflow-y: auto;
+    z-index: 10;
+    color: #474747;
+    font-size: 1em;
+}
+
+#searchMultiChk .optionBox input[type=checkbox] {
+    /* appearance: none; */
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ECECEC;
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+
+#searchMultiChk .optionBox .parentChk .parentLabel {
+    margin-top: 6px;
+    border-bottom: 1px solid #ECECEC;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 6px;
+}
+
+#searchMultiChk .optionBox .parentChk .childLabel .box {
+    border-bottom: 1px solid #ECECEC;
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 6px;
+    font-weight: 600;
+    padding: 4px 0 !important;
+}
