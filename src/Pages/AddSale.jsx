@@ -1,26 +1,27 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import BasicList from "../Components/SaleListing/BasicList";
-import Details from "../Components/SaleListing/Details"
-import Description from "../Components/SaleListing/Description";
-import PhotosMedia from "../Components/SaleListing/PhotosMedia";
-import OmFlyer from "../Components/SaleListing/OmFlyer";
-import DueDiligence from "../Components/SaleListing/DueDiligence";
+import { PropertyDetails } from "../Components/SaleListing/PropertyDetails";
 import ConfidentialAgreement from "../Components/SaleListing/ConfidentialAgreement";
 import ListingTeam from "../Components/SaleListing/ListingTeam";
 import { isAuthenticated, SITE_LOGO } from "../Auth/Define";
 import { Link } from "react-router-dom";
 import { UserContext } from "../Context/UserProvider"
+import TransactionDetails from "../Components/SaleListing/TransactionDetails";
+import PropertyFeatures from "../Components/SaleListing/PropertyFeatures";
+import LocationHighlights from "../Components/SaleListing/LocationHighlights";
+import FinancialTenencyInformation from "../Components/SaleListing/FinancialTenencyInformation";
+import AttachmentsMedia from "../Components/SaleListing/AttachmentsMedia";
+import OmFlyer from "../Components/SaleListing/OmFlyer";
+import ContactInformation from "../Components/SaleListing/ContactInformation";
 
 const sideMenu = [
-  { id: 1, title: "Basics" },
-  { id: 2, title: "Details" },
-  { id: 3, title: "Description" },
-  { id: 4, title: "Photos & Videos" },
-  { id: 5, title: "OM/Flyer" },
-  { id: 6, title: "Due Diligence" },
-  { id: 7, title: "Confidentiality Agreement" },
-  { id: 8, title: "Listing Team" }
+  { id: 1, title: "Property Details" },
+  { id: 2, title: "Transaction Details" },
+  { id: 3, title: "Property Features" },
+  { id: 4, title: "Location Highlights" },
+  { id: 5, title: "Financial / Tenancy Information" },
+  { id: 6, title: "Attachments / Media" },
+  { id: 7, title: "Contact Information" },
 ];
 
 
@@ -68,7 +69,7 @@ const AddSale = () => {
 
   return (
     <React.Fragment>
- 
+
 
       <div className="layout-wrap">
 
@@ -95,23 +96,22 @@ const AddSale = () => {
         </div>
 
         <div className="main-content">
-          {
-            pageNumber === 1
-              ? <BasicList />
-              : pageNumber === 2
-                ? <Details />
-                : pageNumber === 3
-                  ? <Description />
-                  : pageNumber === 4
-                    ? <PhotosMedia />
-                    : pageNumber === 5
-                      ? <OmFlyer />
-                      : pageNumber === 6
-                        ? <DueDiligence />
-                        : pageNumber === 7
-                          ? <ConfidentialAgreement />
-                          : <ListingTeam />
-          }
+        {
+          pageNumber === 7
+          ? <ContactInformation />
+          : pageNumber === 6
+          ? <AttachmentsMedia />
+          : pageNumber === 5
+          ? <FinancialTenencyInformation />
+          : pageNumber === 4
+          ? <LocationHighlights />
+          : pageNumber === 3
+          ? <PropertyFeatures />
+          : pageNumber === 2
+          ? <TransactionDetails />
+          : <PropertyDetails />
+        }
+      
 
         </div>
 

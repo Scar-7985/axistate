@@ -1,7 +1,7 @@
 import secureLocalStorage from "react-secure-storage";
 
 // FILE PATH AND API URL
-export const SITE_URL = "https://nikhil.westonik.com/realestate";
+export const SITE_URL = "https://nikhil.westonik.com/axis";
 
 export const IMAGE_URL = `${SITE_URL}/upload/images`;
 export const POST_API = `${SITE_URL}/api/post-api`;
