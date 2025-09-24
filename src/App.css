@@ -1539,3 +1539,48 @@
 }
 
 /* xxxxxxx Filter Tab xxxxxxx */
+
+
+.btn-secondary {
+  background-color: #9D86FF;
+  color: #ffffff;
+  border-color: #9D86FF;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.btn-secondary:hover {
+  background-color: #886CFF;
+}
+
+.btn-secondary .text {
+  font-size: 14px;
+  color: #fff;
+}
+
+.btn-secondary span {
+  font-size: 24px;
+  color: #fff !important;
+}
+
+.btn-dark {
+  background-color: #393a3a;
+  color: #ffffff;
+  border-color: #393a3a;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.btn-dark:hover {
+  background-color: #252929;
+}
+
+.btn-dark .text {
+  font-size: 14px;
+  color: #fff;
+}
+
+.btn-dark span {
+  font-size: 24px;
+  color: #fff !important;
+}

@@ -21,7 +21,7 @@ const Footer = () => {
 
 
   useEffect(() => {
-    getWebSett();
+    // getWebSett();
 
     const date = new Date();
     const getYear = date.getFullYear();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { isAuthenticated, GET_API } from "../Auth/Define"
+import { isAuthenticated, GET_API, MEDIA_URL } from "../Auth/Define"
 import axios from 'axios';
 import DataTable from "datatables.net-react";
 import DT from "datatables.net-bs5";
@@ -13,11 +13,11 @@ const MyListings = () => {
     const fetchListings = () => {
         const formData = new FormData();
         formData.append("cuid", isAuthenticated);
-        axios.post(`${GET_API}/my-listings.php`, formData).then(resp => {
-            console.log(resp.data);
+        axios.post(`${GET_API}/list-details.php`, formData).then(resp => {
+            console.log(resp.data.data);
 
             if (resp.data.status === 100) {
-                setListingData(resp.data.sale_data);
+                setListingData(resp.data.data);
             }
         })
     }
@@ -26,6 +26,8 @@ const MyListings = () => {
         if (!isAuthenticated) return;
         fetchListings();
     }, [])
+
+
 
     return (
         <div class="layout-wrap">
@@ -66,23 +68,28 @@ const MyListings = () => {
 
                                             // Row Data
                                             data={listingData.map((item, index) => {
-                                                // const rawPermissions = item.role.includes("$;")
-                                                //     ? item.role.split("$;")
-                                                //     : [item.role];
+                                                const mediaStr = typeof item.media?.photos === "string" ? item.media?.photos : "";
+                                                const getFirstImage = mediaStr.includes("@@")
+                                                    ? mediaStr.split("@@")[0]
+                                                    : mediaStr;
 
 
                                                 return {
                                                     id: item.id,
                                                     // sr: index + 1,
-                                                    listing: `<div class="content">
-                                                        <h6 class="title mb-0">${item.property_name}</h6>
-                                                        <div class="text-date">Posting date: ${item.date}</div>
-                                                        <div class="text-btn text-primary">${'$' + ' ' + item.asking_price}</div> 
-                                                    </div>`,
+                                                    listing: `<div class="d-flex align-items-center">
+                                                    <div><img src="${MEDIA_URL}/${getFirstImage}" style="height: 60px; border-radius: 4px" /></div>
+                                                    <div class="content ml-3">
+                                                        <h6 class="title mb-0">${item.basic.project_name}</h6>
+                                                        <div class="text-date">Posting date: ${item.basic.date}</div>
+                                                        <div class="text-btn text-primary">${item.transaction ? ('$' + ' ' + item.transaction.asking_price) : "Unpriced"}</div> 
+                                                    </div>
+                                                    </div>
+                                                    `,
                                                     // Show badges in table
-                                                    status: `<div class="status-wrap"><a href="#" class="btn-status ${item.status === 1 ? "pending" : item.status === 2 ? "sold" : ""}">${item.status === 1
+                                                    status: `<div class="status-wrap"><a href="#" class="btn-status ${item.basic.status === 1 ? "pending" : item.basic.status === 2 ? "sold" : ""}">${item.basic.status === 1
                                                         ? "Pending"
-                                                        : item.status === 2
+                                                        : item.basic.status === 2
                                                             ? "Sold"
                                                             : "In Review"
                                                         }</a></div>`,

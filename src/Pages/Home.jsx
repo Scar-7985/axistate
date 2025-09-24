@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -6,6 +6,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Link, useNavigate } from "react-router-dom";
 import HeroBanner from "../Components/HeroBanner";
+import axios from "axios";
+import { GET_API } from "../Auth/Define";
 
 const Home = () => {
 
@@ -35,6 +37,17 @@ const Home = () => {
     },
   ];
 
+  const getHome = () => {
+    const formData = new FormData();
+    formData.append("pid", "PID16155");
+    axios.post(`${GET_API}/property-details.php`, formData).then(resp => {
+      console.log(resp.data);
+    })
+  }
+
+  useEffect(() => {
+    getHome();
+  }, []);
 
 
 

@@ -1,17 +1,18 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { swalMsg } from "../SweetAlert2";
-import { POST_API } from "../../Auth/Define";
+import { GET_API, POST_API } from "../../Auth/Define";
 import ChipBox from "../Inputs/ChipBox";
 import { useNavigate } from "react-router-dom";
 
-const TransactionDetails = () => {
+const TransactionDetails = ({chkStatus}) => {
 
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedTenant, setSelectedTenant] = useState([]);
 
+  const [updateId, setUpdateID] = useState(null);
   const [formData, setFormData] = useState({
     sale_condition: "",
     asking_price: "",
@@ -22,48 +23,143 @@ const TransactionDetails = () => {
     available_units_spaces: "",
     ownership_type: "",
   });
-
+  const [inlineError, setInlineError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   }
 
+
+  // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+
+  const [updatePid, setUpdatePid] = useState(null);
+
+  const getPropertyDetails = (currentPid) => {
+    const formData = new FormData();
+    formData.append("pid", currentPid);
+    axios.post(`${GET_API}/transation_details.php`, formData)
+      .then(resp => {
+        console.log(resp.data);
+
+        if (resp.data.status === 100) {
+          const Value = resp.data.value;
+          // console.log("API Response:", resp.data.value);
+          setUpdateID(Value.id);
+
+          setFormData({
+            sale_condition: Value.sale_condition,
+            asking_price: Value.asking_price,
+            price_per_sqft: Value.price_pr_sq_ft,
+            cap_rate: Value.cap_rate,
+            lease_rate: Value.lease_rate,
+            lease_type: Value.lease_type,
+            available_units_spaces: Value.spaces,
+            ownership_type: Value.ownership_type,
+          })
+        } else {
+          console.log("API Error:", resp.data);
+        }
+      })
+
+  }
+
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const pid = params.get("pid");
+
+    if (pid) {
+      getPropertyDetails(pid);
+      setUpdatePid(pid);
+    }
+
+  }, []);
+
+
+  // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+
   const handleSubmit = () => {
     if (isLoading) return;
+    setIsLoading(true);
+    setInlineError(null);
     const registerData = new FormData();
-    const getPid = window.localStorage.getItem("gtpid") || null;
-    registerData.append("pid", getPid);
+
+    if (!updateId) {
+      registerData.append("pid", updatePid);
+    } else {
+      registerData.append("id", updateId);
+    }
+
     registerData.append("sale_condition", formData.sale_condition);
     registerData.append("asking_price", formData.asking_price);
-    registerData.append("price_per_sqft", formData.price_per_sqft);
+    registerData.append("price_pr_sq_ft", formData.price_per_sqft);
     registerData.append("cap_rate", formData.cap_rate);
     registerData.append("lease_rate", formData.lease_rate);
     registerData.append("lease_type", formData.lease_type);
-    registerData.append("available_units_spaces", formData.available_units_spaces);
+    registerData.append("spaces", formData.available_units_spaces);
     registerData.append("ownership_type", formData.ownership_type);
 
-    axios.post(`${POST_API}/basic-details.php`, registerData).then(resp => {
+    axios.post(`${POST_API}/transation_details.php`, registerData).then(resp => {
       const jsonData = resp.data;
       console.log(resp.data);
 
       if (jsonData.status === 100) {
         swalMsg("success", resp.data.msg, 2000);
-        window.localStorage.setItem("gtpnum", 3);
         setTimeout(() => {
-          navigate("/add-sale");
+
+          if (!updateId) {
+            navigate(`/add-sale?pageNum=3&pid=${jsonData.pid}`);
+          } else {
+
+            navigate(`/add-sale?pageNum=3&pid=${updatePid}`);
+          }
         }, 1000);
       } else {
+        setInlineError({
+          statusType: Number(jsonData.status),
+          msg: jsonData.msg
+        });
         swalMsg("error", resp.data.msg, 2000);
       }
+      setIsLoading(false);
     })
-    setIsLoading(false);
   }
 
   return (
     <div className="main-content-inner">
       <div className="widget-box-2 mb-20 shadow">
-        <h5 className="title" >Transaction Details</h5>
+        <h5 className="title d-flex justify-content-between align-items-center">
+          <div>
+            Transaction Details
+          </div>
+          <div className='d-flex align-items-center gap-2'>
+            <div>
+            
+              <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-sale?pageNum=1&pid=${updatePid}`)}>
+                <span class="material-symbols-outlined">
+                  arrow_back
+                </span>
+                <div className='text'>Previous</div>
+
+              </a>
+             
+            </div>
+            <div>
+             {
+            Number(chkStatus) === 1 &&
+              <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
+                <div className='text'>Next</div>
+                <span class="material-symbols-outlined">
+                  arrow_forward
+                </span>
+              </a>
+             }
+            </div>
+          </div>
+        </h5>
         <hr />
         <fieldset className="box-fieldset">
           <label>
@@ -190,7 +286,7 @@ const TransactionDetails = () => {
         </fieldset>
 
         <div className="box-btn" style={{ marginTop: "60px" }}>
-          <a className="tf-btn primary" onClick={handleSubmit}>Submit</a>
+          <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
         </div>
       </div>
 

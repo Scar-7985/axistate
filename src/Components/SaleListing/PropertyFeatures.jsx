@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { swalMsg } from '../SweetAlert2';
 import axios from 'axios';
-import { POST_API } from '../../Auth/Define';
+import { GET_API, POST_API } from '../../Auth/Define';
 import { useNavigate } from 'react-router-dom';
+
 
 
 const PropertyFeatures = () => {
@@ -18,8 +19,8 @@ const PropertyFeatures = () => {
         loading_docks_drive: "",
         hvac_sprinkler: "",
         utility: "",
-        elevator: "",
-        accessibility_ada: "",
+        elevator: "Choose",
+        accessibility_ada: "Choose",
     })
 
     const handleChange = (e) => {
@@ -27,38 +28,125 @@ const PropertyFeatures = () => {
         setFormData({ ...formData, [name]: value });
     }
 
+    // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+    const [updateId, setUpdateID] = useState(null);
+    const [updatePid, setUpdatePid] = useState(null);
+
+    const getPropertyFeatures = (currentPid) => {
+        const formData = new FormData();
+        formData.append("pid", currentPid);
+        axios.post(`${GET_API}/property-features.php`, formData)
+            .then(resp => {
+                console.log(resp.data);
+
+                if (resp.data.status === 100) {
+                    const Value = resp.data.value;
+                    // console.log("API Response:", resp.data.value);
+                    setUpdateID(Value.id);
+
+                    setFormData({
+                        building_class: Value.building_class,
+                        ceiling_height: Value.ceiling_height,
+                        loading_docks_drive: Value.loading_docks,
+                        hvac_sprinkler: Value.hvac,
+                        utility: Value.utilities,
+                        elevator: Value.elevator,
+                        accessibility_ada: Value.accessibility,
+                    })
+                } else {
+                    console.log("No Existing Data:", resp.data);
+                }
+            })
+
+    }
+
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const pid = params.get("pid");
+
+        if (pid) {
+            getPropertyFeatures(pid);
+            setUpdatePid(pid);
+        }
+
+    }, []);
+
+
+    // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+
     const handleSubmit = () => {
         if (isLoading) return;
+        setIsLoading(true);
         const descData = new FormData();
-        const getPid = window.localStorage.getItem("gtpid") || null;
-        descData.append("pid", getPid);
+
+        if (!updateId) {
+            descData.append("pid", updatePid);
+        } else {
+            descData.append("id", updateId);
+        }
+
         descData.append("building_class", formData.building_class);
         descData.append("ceiling_height", formData.ceiling_height);
-        descData.append("loading_docks_drive", formData.loading_docks_drive);
-        descData.append("hvac_sprinkler", formData.hvac_sprinkler);
-        descData.append("utility", formData.utility);
+        descData.append("loading_docks", formData.loading_docks_drive);
+        descData.append("hvac", formData.hvac_sprinkler);
+        descData.append("utilities", formData.utility);
         descData.append("elevator", formData.elevator);
-        descData.append("accessibility_ada", formData.accessibility_ada);
-        axios.post(`${POST_API}/property-description.php`, descData).then(resp => {
+        descData.append("accessibility", formData.accessibility_ada);
+        axios.post(`${POST_API}/property-features.php`, descData).then(resp => {
             const jsonData = resp.data;
             if (jsonData.status === 100) {
                 swalMsg("success", resp.data.msg, 2000);
                 window.localStorage.setItem("gtpnum", 4);
                 setTimeout(() => {
-                    navigate("/add-sale");
+
+                    if (!updateId) {
+                        navigate(`/add-sale?pageNum=4&pid=${jsonData.pid}`);
+                    } else {
+
+                        navigate(`/add-sale?pageNum=4&pid=${updatePid}`);
+                    }
+
                 }, 1000);
             } else {
                 swalMsg("error", resp.data.msg, 2000);
             }
+            setIsLoading(false);
         })
-        setIsLoading(true);
     }
 
     return (
-
         <div className="main-content-inner">
             <div className="widget-box-2 mb-20 shadow">
-                <h5 className="title">Description</h5>
+                <h5 className="title d-flex justify-content-between align-items-center">
+                <div>
+                Description
+                </div>
+                 <div className='d-flex align-items-center gap-2'>
+                        <div>
+                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-sale?pageNum=2&pid=${updatePid}`)}>
+                                <span class="material-symbols-outlined">
+                                    arrow_back
+                                </span>
+                                <div className='text'>Previous</div>
+
+                            </a>
+                        </div>
+                        <div>
+                               {
+            Number(chkStatus) === 1 &&
+                            <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
+                                <div className='text'>Next</div>
+                                <span class="material-symbols-outlined">
+                                    arrow_forward
+                                </span>
+                            </a>
+                               }
+                        </div>
+                    </div>
+                </h5>
                 <hr />
 
                 <div className="box grid-3 gap-30 mt-30">
@@ -129,12 +217,12 @@ const PropertyFeatures = () => {
                     <fieldset className="box-fieldset">
                         <label>Elevator</label>
                         <div className="nice-select" tabindex="0">
-                            <span className="current">Choose</span>
+                            <span className="current">{formData.elevator}</span>
                             <ul className="list">
-                                <li data-value="Yes" className="option" onClick={() => setFormData({ ...formData, elevator: item.title })}>
+                                <li data-value="Yes" className="option" onClick={() => setFormData({ ...formData, elevator: "Yes" })}>
                                     Yes
                                 </li>
-                                <li data-value="No" className="option" onClick={() => setFormData({ ...formData, elevator: item.title })}>
+                                <li data-value="No" className="option" onClick={() => setFormData({ ...formData, elevator: "No" })}>
                                     No
                                 </li>
 
@@ -148,12 +236,12 @@ const PropertyFeatures = () => {
                     <fieldset className="box box-fieldset">
                         <label>Accessibility /ADA Compliant</label>
                         <div className="nice-select" tabindex="0">
-                            <span className="current">Choose</span>
+                            <span className="current">{formData.accessibility_ada}</span>
                             <ul className="list">
-                                <li data-value="Yes" className="option" onClick={() => setFormData({ ...formData, accessibility_ada: item.title })}>
+                                <li data-value="Yes" className="option" onClick={() => setFormData({ ...formData, accessibility_ada: "Yes" })}>
                                     Yes
                                 </li>
-                                <li data-value="No" className="option" onClick={() => setFormData({ ...formData, accessibility_ada: item.title })}>
+                                <li data-value="No" className="option" onClick={() => setFormData({ ...formData, accessibility_ada: "No" })}>
                                     No
                                 </li>
 
@@ -162,13 +250,11 @@ const PropertyFeatures = () => {
                     </fieldset>
                 </div>
 
-
-
-
-
-            <div className="box-btn" style={{marginTop: "60px"}}>
-                <a className="tf-btn primary" onClick={handleSubmit}>Submit</a>
-            </div>
+  <div className="box-btn" style={{ marginTop: "60px" }}>
+                  
+                    <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
+                   
+                </div>
 
             </div>
         </div>

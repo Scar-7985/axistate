@@ -4,17 +4,18 @@ import secureLocalStorage from "react-secure-storage";
 export const SITE_URL = "https://nikhil.westonik.com/axis";
 
 export const IMAGE_URL = `${SITE_URL}/upload/images`;
+export const MEDIA_URL = `${SITE_URL}/upload/media`;
 export const POST_API = `${SITE_URL}/api/post-api`;
 export const GET_API = `${SITE_URL}/api/get-api`;
 export const FILE_URL = `${SITE_URL}/upload`;
 
 // SetIsAuthenticated
 export const SetIsAuthenticated = (title, val) => {
-    secureLocalStorage.setItem(title, val);
+    window.localStorage.setItem(title, val);
 };
 
 // GetIsAuthenticated
-const stored = secureLocalStorage.getItem("AXID");
+const stored = window.localStorage.getItem("AXID");
 export const isAuthenticated = stored || null;
 
 

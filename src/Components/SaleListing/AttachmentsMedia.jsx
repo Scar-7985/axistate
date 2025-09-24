@@ -1,19 +1,28 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { swalMsg } from '../SweetAlert2';
 import axios from 'axios';
-import { POST_API } from '../../Auth/Define';
+import { GET_API, MEDIA_URL, POST_API } from '../../Auth/Define';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-const AttachmentsMedia = () => {
+const AttachmentsMedia = ({chkStatus}) => {
 
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+
     const [photos, setFiles] = useState([]);
+    const [prevPhotos, setPrevPhotos] = useState([]);
+
     const [floor, setFloor] = useState([]);
+    const [prevFloor, setPrevFloor] = useState([]);
+
     const [brochure, setBrochure] = useState(null);
+    const [prevBrochure, setPrevBrochure] = useState(null);
+    console.log(photos);
 
     const photoRef = useRef();
     const floorRef = useRef();
+    const brochureRef = useRef();
 
 
     const handleFiles = (newFiles) => {
@@ -65,7 +74,7 @@ const AttachmentsMedia = () => {
 
     // xxxxxxxxxxxxxx PDF xxxxxxxxxxxxxx //
 
-    const handlePdfChange = (e, type) => {
+    const handlePdfChange = (e) => {
         const file = e.target.files[0];
         if (file && file.type === "application/pdf") {
             setBrochure(file);
@@ -74,40 +83,107 @@ const AttachmentsMedia = () => {
         }
     };
 
-    const removePdf = (type) => {
-        setBrochure(null);
+    const removePdf = () => {
+        setBrochure();
     };
 
     // xxxxxxxxxxxxxx PDF xxxxxxxxxxxxxx //
 
 
+    // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+    const getArray = (getData) => {
+        const newData = getData.split("@@").filter(Boolean);
+        return newData;
+    }
+
+
+    const [updateId, setUpdateID] = useState(null);
+    const [updatePid, setUpdatePid] = useState(null);
+
+    const getMedia = (currentPid) => {
+        const formData = new FormData();
+        formData.append("pid", currentPid);
+        axios.post(`${GET_API}/media.php`, formData)
+            .then(resp => {
+                console.log("Return Date ===> ", resp.data.value);
+
+
+                if (resp.data.status === 100) {
+                    const Value = resp.data.value;
+                    // console.log("API Response:", resp.data.value);
+                    setUpdateID(Value.id);
+                    const prevPics = getArray(resp.data.value.photos);
+                    setPrevPhotos(prevPics);
+                    const prevFloor = getArray(resp.data.value.site_plan);
+                    setPrevFloor(prevFloor);
+                    setPrevBrochure(resp.data.value.brochure);
+                } else {
+                    console.log("No Existing Data:", resp.data);
+                }
+            })
+
+    }
+
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const pid = params.get("pid");
+
+        if (pid) {
+            getMedia(pid);
+            setUpdatePid(pid);
+        }
+
+    }, []);
+
+
+    // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+
     const handleSubmit = () => {
         if (isLoading) {
-            return;
-        } else if (photos.length === 0) {
-            swalMsg("error", "Atleast one photo is required", 2000);
             return;
         }
 
         setIsLoading(true);
         const mediaData = new FormData();
-        const getPid = window.localStorage.getItem("gtpid") || null;
-        mediaData.append("pid", getPid);
-        photos.forEach((file, index) => {
-            mediaData.append("images[]", file); // use [] if your backend expects an array
+        if (!updateId) {
+            mediaData.append("pid", updatePid);
+        } else {
+            mediaData.append("id", updateId);
+        }
+
+        const prevPic = prevPhotos.join("@@");
+
+        mediaData.append("photos", JSON.stringify(prevPhotos)); // send old ones as JSON
+        photos.forEach(file => {
+            mediaData.append("photo[]", file); // send new uploads
         });
 
 
+        mediaData.append("site_plan_old", JSON.stringify(prevFloor)); // send old ones
+        floor.forEach(file => {
+            mediaData.append("site_plan[]", file); // send new ones
+        });
 
-        axios.post(`${POST_API}/file-upload.php`, mediaData).then(resp => {
+        mediaData.append("brochure", brochure);
+
+
+
+
+        axios.post(`${POST_API}/media.php`, mediaData).then(resp => {
+            console.log("resp.data => ", resp.data);
+
             const jsonData = resp.data;
-            // console.log(resp.data);
-
             if (jsonData.status === 100) {
                 swalMsg("success", resp.data.msg, 2000);
-                window.localStorage.setItem("gtpnum", 5);
                 setTimeout(() => {
-                    navigate("/add-sale");
+                    if (!updateId) {
+                        navigate(`/add-sale?pageNum=7&pid=${jsonData.pid}`);
+                    } else {
+                        navigate(`/add-sale?pageNum=7&pid=${updatePid}`);
+                    }
                 }, 1000);
             } else {
                 swalMsg("error", resp.data.msg, 2000);
@@ -117,11 +193,74 @@ const AttachmentsMedia = () => {
         setIsLoading(false);
     }
 
+
+    const deletePhoto = (name) => {
+        Swal.fire({
+            title: "Delete Photo?",
+            text: "Are you sure!",
+            imageUrl: "/assets/images/logo/logout.png",
+            imageWidth: 60,
+            imageHeight: 60,
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                const deleteData = new FormData();
+                deleteData.append("pid", updatePid);
+                deleteData.append("file_name", `${name}`);
+                deleteData.append("column", "photos");
+                axios.post(`${GET_API}/delete-media.php`, deleteData).then(resp => {
+                    console.log(resp.data);
+                    if (resp.data.status === 100) {
+                        swalMsg("success", "Deleted successfully.", 2000);
+                    }
+                })
+
+
+                // setTimeout(() => {
+                //     navigate("/");
+                //     window.location.reload();
+                // }, 2000);
+
+            }
+        });
+    }
+
+
     return (
         <div className='main-content-inner'>
             {/* Photos */}
             <div className="widget-box-2 mb-20 shadow">
-                <h5 className="title">Upload Photos</h5>
+                <h5 className="title d-flex justify-content-between">
+                    <div>
+                        Upload Photos
+                    </div>
+                    <div className='d-flex align-items-center gap-2'>
+                        <div>
+                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-sale?pageNum=5&pid=${updatePid}`)}>
+                                <span class="material-symbols-outlined">
+                                    arrow_back
+                                </span>
+                                <div className='text'>Previous</div>
+
+                            </a>
+                        </div>
+                        <div>
+                               {
+            Number(chkStatus) === 1 &&
+                            <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
+                                <div className='text'>Next</div>
+                                <span class="material-symbols-outlined">
+                                    arrow_forward
+                                </span>
+                            </a>
+                               }
+                        </div>
+                    </div>
+                </h5>
                 <div
                     className="box-uploadfile text-center"
                 // onDrop={handleDrop}
@@ -155,6 +294,21 @@ const AttachmentsMedia = () => {
                 </div>
 
                 <div className="box-img-upload">
+                    {prevPhotos.map((file, index) => (
+                        <div className="item-upload file-delete" key={index + 1}>
+                            <img
+                                src={`${MEDIA_URL}/${file}`}
+                                alt={`preview-${index}`}
+                                style={{ objectFit: 'cover' }}
+                            />
+                            <span
+                                className="icon icon-trash remove-file"
+                                onClick={() => deletePhoto(file)}
+                                style={{ cursor: 'pointer' }}
+                            ></span>
+                        </div>
+                    ))}
+
                     {photos.map((file, index) => (
                         <div className="item-upload file-delete" key={index}>
                             <img
@@ -206,6 +360,20 @@ const AttachmentsMedia = () => {
                 </div>
 
                 <div className="box-img-upload">
+                    {prevFloor.map((file, index) => (
+                        <div className="item-upload file-delete" key={index}>
+                            <img
+                                src={`${MEDIA_URL}/${file}`}
+                                alt={`preview-${index}`}
+                                style={{ objectFit: 'cover' }}
+                            />
+                            <span
+                                className="icon icon-trash remove-file"
+                                onClick={() => removeFloor(index)}
+                                style={{ cursor: 'pointer' }}
+                            ></span>
+                        </div>
+                    ))}
                     {floor.map((file, index) => (
                         <div className="item-upload file-delete" key={index}>
                             <img
@@ -230,7 +398,7 @@ const AttachmentsMedia = () => {
                 // onDrop={handleDrop}
                 // onDragOver={handleDragOver}
                 >
-                    <div className="uploadfile cursor-pointer" style={{ padding: "30px 30px" }}>
+                    <div className="uploadfile cursor-pointer" style={{ padding: "30px 30px" }} >
                         <div className="box-floor-img d-flex flex-column align-items-start mt-20">
                             <div className="btn-upload tf-btn primary mx-auto">
                                 <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -267,10 +435,8 @@ const AttachmentsMedia = () => {
                 </div>
 
 
-
-
-                <div className="box-btn " style={{ marginTop: "60px" }}>
-                    <a className="tf-btn primary" onClick={handleSubmit}>Submit</a>
+                <div className="box-btn" style={{ marginTop: "60px" }}>
+                    <a className="tf-btn dark" onClick={handleSubmit}>Save</a>
                 </div>
 
 

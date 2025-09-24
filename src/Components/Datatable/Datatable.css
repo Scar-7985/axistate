@@ -1,0 +1,212 @@
+/*! Bootstrap 5 integration for DataTables
+ *
+ * ©2020 SpryMedia Ltd, all rights reserved.
+ * License: MIT datatables.net/license/mit
+ */
+
+.dt-container .dt-layout-row:first-child {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+    .dt-container .dt-layout-row:first-child {
+        flex-direction: column;
+    }
+}
+
+.dt-container .dt-layout-row:first-child .dt-length label select {
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dt-container .dt-layout-row:first-child .dt-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dt-container .dt-layout-row:first-child .dt-search label {
+    margin: 0;
+}
+
+.dt-container .dt-layout-row:first-child .dt-search input[type="search"] {
+    padding: 0.55rem 1rem;
+    height: auto;
+    color: #53535f;
+    border: 1px solid rgb(114 132 154 / 26%);
+    background: #f0f2f55e;
+    font-size: .875rem;
+    line-height: 1.5;
+    outline-offset: -2px;
+    -webkit-appearance: none;
+    border-radius: 0.2rem;
+}
+
+.dt-container .dt-layout-row:first-child .dt-search input[type="search"]:hover,
+.dt-container .dt-layout-row:first-child .dt-search input[type="search"]:active,
+.dt-container .dt-layout-row:first-child .dt-search input[type="search"]:focus {
+    border-color: #3F87F5;
+}
+
+.dt-container table.dataTable>thead tr th {
+    position: relative;
+}
+
+.dt-container table.dataTable>thead .dt-orderable-asc:before,
+.dt-container table.dataTable>thead .dt-orderable-asc:after,
+.dt-container table.dataTable>thead .dt-ordering-asc:before,
+.dt-container table.dataTable>thead .dt-ordering-asc:after,
+.dt-container table.dataTable>thead .dt-ordering-desc:before,
+.dt-container table.dataTable>thead .dt-ordering-desc:after,
+.dt-container table.dataTable>thead .dt-ordering-asc_disabled:before,
+.dt-container table.dataTable>thead .dt-ordering-asc_disabled:after,
+.dt-container table.dataTable>thead .dt-ordering-desc_disabled:before,
+.dt-container table.dataTable>thead .dt-ordering-desc_disabled:after {
+    position: absolute;
+    bottom: .9em;
+    display: block;
+    opacity: .3
+}
+
+.dt-container table.dataTable>thead .dt-orderable-asc:before,
+.dt-container table.dataTable>thead .dt-ordering-asc:before,
+.dt-container table.dataTable>thead .dt-ordering-desc:before,
+.dt-container table.dataTable>thead .dt-ordering-asc_disabled:before,
+.dt-container table.dataTable>thead .dt-ordering-desc_disabled:before {
+    right: 1em;
+    content: "↑"
+}
+
+.dt-container table.dataTable>thead .dt-orderable-asc:after,
+.dt-container table.dataTable>thead .dt-ordering-asc:after,
+.dt-container table.dataTable>thead .dt-ordering-desc:after,
+.dt-container table.dataTable>thead .dt-ordering-asc_disabled:after,
+.dt-container table.dataTable>thead .dt-ordering-desc_disabled:after {
+    right: .5em;
+    content: "↓"
+}
+
+.dt-container table.dataTable>thead .dt-orderable-asc,
+.dt-container table.dataTable>thead .dt-ordering-asc,
+.dt-container table.dataTable>thead .dt-ordering-desc,
+.dt-container table.dataTable>thead .dt-ordering-asc_disabled,
+.dt-container table.dataTable>thead .dt-ordering-desc_disabled {
+    cursor: pointer;
+    position: relative;
+    padding-right: 30px;
+}
+
+.dt-container table.dataTable>thead .dt-ordering-asc:before,
+.dt-container table.dataTable>thead .dt-ordering-desc:after {
+    opacity: 1
+}
+
+.dt-container table.dataTable>thead .dt-ordering-asc_disabled:before,
+.dt-container table.dataTable>thead .dt-ordering-desc_disabled:after {
+    opacity: 0;
+}
+
+.dt-container .dt-ordering-asc:before {
+    color: #3f87f5;
+}
+
+.dt-container .dt-ordering-asc:after {
+    color: #3f87f5;
+}
+
+.dt-container .dt-ordering-desc:after {
+    color: #3f87f5;
+}
+
+.dt-container .dt-ordering-desc:before {
+    color: #3f87f5;
+}
+
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: .85em
+}
+
+.dt-container .dt-layout-row:nth-child(3) {
+    display: flex;
+    justify-content: space-between;
+    padding-top: .85em;
+}
+
+/* wfsewfewfewfewfewfsfdsdfsddsdsgergew */
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right
+}
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav {
+    display: flex;
+    margin: 2px 0;
+    white-space: nowrap;
+    justify-content: flex-end;
+}
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav button {
+    /* border: none;
+    background: transparent; */
+}
+
+
+/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav button {
+    border: 1px solid transparent;
+    border-radius: 50%;
+    padding: 0;
+    min-width: 2rem;
+    line-height: 2rem;
+    height: 2rem;
+    margin: 0px 5px;
+    color: #53535f;
+    background-color: transparent;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    outline: none;
+}
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav button:hover {
+    color: #3f87f5;
+    text-decoration: none;
+    border-color: transparent
+}
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav button:focus {
+    box-shadow: none
+}
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav .disabled,
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav .disabled:hover
+ {
+    color: #9292a0;
+    border-color: transparent
+}
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav .current {
+    background: #3f87f5;
+    border-color: transparent;
+}
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav .current,
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav .current:hover
+ {
+    color: #fff
+}
+
+.dt-container .dt-layout-row:nth-child(3) .dt-layout-end .dt-paging nav button:hover {}
+
+.pagination .page-item .page-link:hover {
+    color: #3f87f5
+}

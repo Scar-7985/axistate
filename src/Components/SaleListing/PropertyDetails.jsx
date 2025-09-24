@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import ChipBox from "../Inputs/ChipBox"
 import axios from 'axios';
-import { isAuthenticated, POST_API } from '../../Auth/Define';
+import { GET_API, isAuthenticated, POST_API } from '../../Auth/Define';
 import { Countries, USAStates } from '../Reigons';
 import { swalMsg } from '../SweetAlert2';
 import { useNavigate } from 'react-router-dom';
 
-export const PropertyDetails = () => {
+export const PropertyDetails = ({chkStatus}) => {
 
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +33,7 @@ export const PropertyDetails = () => {
 
   }, [selectedProperty]);
 
+  const [updateId, setUpdateID] = useState(null);
 
   const [formData, setFormData] = useState({
     property_name: "",
@@ -49,6 +50,8 @@ export const PropertyDetails = () => {
     parking_spaces: "",
   });
 
+  const [inlineError, setInlineError] = useState(null);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,54 +59,141 @@ export const PropertyDetails = () => {
   }
 
 
+  // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+  const getArray = (getData) => {
+    const newData = getData.split(", ");
+    return newData;
+  }
+  // console.log(selectedProperty);
+
+  const [updatePid, setUpdatePid] = useState(null);
+
+  const getPropertyDetails = (currentPid) => {
+    const formData = new FormData();
+    formData.append("pid", currentPid);
+    axios.post(`${GET_API}/property-details.php`, formData)
+      .then(resp => {
+        if (resp.data.status === 100) {
+          const Value = resp.data.value;
+          // console.log("API Response:", resp.data.value);
+          setUpdateID(Value.id);
+          const pType = getArray(Value.p_type);
+          const psubType = getArray(Value.psub_type);
+
+          const prevSelectedProperty = propertyOptions.filter((item) =>
+            pType.includes(item.label)
+          );
+
+          const prevSubSelectedProperty = subPropertyOptions.filter((item) =>
+            psubType.includes(item.label)
+          );
+
+          setSelectedProperty(prevSelectedProperty);
+          setSelectedSubProperty(prevSubSelectedProperty);
+
+          setFormData({
+            property_name: Value.project_name,
+            street_address: Value.address,
+            country: "United States",
+            city: Value.city,
+            state: Value.state,
+            zip: Value.zip,
+            zoning: Value.zoning,
+            year_built: Value.built_year,
+            lot_size: Value.lot_size,
+            building_size: Value.building_size,
+            num_floors: Value.number_floore,
+            parking_spaces: Value.parking_space,
+          })
+        } else {
+          console.log("API Error:", resp.data);
+        }
+      })
+
+  }
+
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const pid = params.get("pid");
+
+    if (pid) {
+      getPropertyDetails(pid);
+      setUpdatePid(pid);
+    }
+
+  }, []);
+
+
+  // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+
+  // xxxxxxxxxxxxxxxx Submit Property xxxxxxxxxxxxxxxx //
+
   const handleSubmit = () => {
     if (isLoading) return;
     setIsLoading(true);
+    setInlineError(null);
     const PropertyData = new FormData();
 
     PropertyData.append("cuid", isAuthenticated);
+    if (updateId) {
+      PropertyData.append("id", updateId);
+    }
 
     if (selectedProperty.length > 0) {
       const propertyType = selectedProperty.map((item) => item.label).join(", ");
-      PropertyData.append("property_type", propertyType);
+      PropertyData.append("p_type", propertyType);
     }
     if (selectedSubProperty.length > 0) {
       const propertySubType = selectedSubProperty.map((item) => item.label).join(", ");
-      PropertyData.append("property_subtype", propertySubType);
+      PropertyData.append("psub_type", propertySubType);
     }
 
-    PropertyData.append("property_name", formData.property_name);
-    PropertyData.append("street_address", formData.street_address);
+    PropertyData.append("project_name", formData.property_name);
+    PropertyData.append("address", formData.street_address);
     PropertyData.append("country", formData.country);
     PropertyData.append("city", formData.city);
     PropertyData.append("state", formData.state);
     PropertyData.append("zip", formData.zip);
     PropertyData.append("zoning", formData.zoning);
-    PropertyData.append("year_built", formData.year_built);
+    PropertyData.append("built_year", formData.year_built);
     PropertyData.append("lot_size", formData.lot_size);
     PropertyData.append("building_size", formData.building_size);
-    PropertyData.append("num_floors", formData.num_floors);
-    PropertyData.append("parking_spaces", formData.parking_spaces);
+    PropertyData.append("number_floore", formData.num_floors);
+    PropertyData.append("parking_space", formData.parking_spaces);
 
     axios.post(`${POST_API}/property-details.php`, PropertyData).then(resp => {
       const jsonData = resp.data;
       console.log(jsonData);
-      
-      // if (jsonData.status === 100) {
-      //   swalMsg("success", resp.data.msg, 2000);
-      //   window.localStorage.setItem("gtpnum", 2);
-      //   window.localStorage.setItem("gtchngpg", true);
-      //   window.localStorage.setItem("gtpid", resp.data.pid);
-      //   setTimeout(() => {
-      //     navigate("/add-sale");
-      //   }, 1000);
-      // } else {
-      //   swalMsg("error", resp.data.msg, 2000);
-      // }
+
+      if (jsonData.status === 100) {
+        swalMsg("success", resp.data.msg, 2000);
+
+        setTimeout(() => {
+          if (!updateId) {
+            navigate(`/add-sale?pageNum=2&pid=${jsonData.pid}`);
+          } else {
+
+            navigate(`/add-sale?pageNum=2&pid=${updatePid}`);
+          }
+        }, 1000);
+
+      } else {
+        setInlineError({
+          statusType: Number(jsonData.status),
+          msg: jsonData.msg
+        });
+
+        swalMsg("error", resp.data.msg, 2000);
+      }
 
     })
     setIsLoading(false);
   }
+
+  // xxxxxxxxxxxxxxxx Submit Property xxxxxxxxxxxxxxxx //
 
 
 
@@ -111,7 +201,24 @@ export const PropertyDetails = () => {
     <div className="main-content-inner">
 
       <div className="widget-box-2 mb-20 shadow">
-        <h5 className="title">Property Details</h5>
+        <h5 className="title d-flex justify-content-between align-items-center">
+          <div>
+            Property Details
+          </div>
+
+
+          <div>
+          {
+            Number(chkStatus) === 1 &&
+            <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
+              <div className='text'>Next</div>
+              <span class="material-symbols-outlined">
+                arrow_forward
+              </span>
+            </a>
+          }
+          </div>
+        </h5>
         <hr />
         <div className="box-info-property">
           <fieldset className="box box-fieldset">
@@ -126,6 +233,10 @@ export const PropertyDetails = () => {
               limit={3}
               limitMsg="Cannot add more"
             />
+            {
+              inlineError && (inlineError.statusType === 1) &&
+              <span className='text-danger'>{inlineError.msg}</span>
+            }
           </fieldset>
 
           <fieldset className="box box-fieldset">
@@ -138,10 +249,18 @@ export const PropertyDetails = () => {
               limit={4}
               limitMsg="Cannot add more"
             />
+            {
+              inlineError && (inlineError.statusType === 2) &&
+              <span className='text-danger'>{inlineError.msg}</span>
+            }
           </fieldset>
           <fieldset className="box box-fieldset">
             <label>Building / Project Name:</label>
-            <input type="text" name='propertyName' placeholder='' value={formData.propertyName} onChange={handleChange} />
+            <input type="text" name='property_name' placeholder='' value={formData.property_name} onChange={handleChange} />
+            {
+              inlineError && (inlineError.statusType === 3) &&
+              <span className='text-danger'>{inlineError.msg}</span>
+            }
           </fieldset>
           <div>
             {/* <h5 className='title'>Address</h5>
@@ -156,10 +275,14 @@ export const PropertyDetails = () => {
               type="text"
               className="form-control"
               placeholder="Enter street address"
-              name='streetAddress'
-              value={formData.streetAddress}
+              name='street_address'
+              value={formData.street_address}
               onChange={handleChange}
             />
+            {
+              inlineError && (inlineError.statusType === 4) &&
+              <span className='text-danger'>{inlineError.msg}</span>
+            }
           </fieldset>
 
 
@@ -178,6 +301,7 @@ export const PropertyDetails = () => {
                 }
               </ul>
             </div>
+
           </fieldset>
 
           <div className="box grid-3 gap-30 mt-30">
@@ -193,6 +317,10 @@ export const PropertyDetails = () => {
                 value={formData.city}
                 onChange={handleChange}
               />
+              {
+                inlineError && (inlineError.statusType === 5) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
             <fieldset className="box-fieldset">
               <label>
@@ -209,6 +337,10 @@ export const PropertyDetails = () => {
                   }
                 </ul>
               </div>
+              {
+                inlineError && (inlineError.statusType === 6) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
 
 
@@ -220,10 +352,14 @@ export const PropertyDetails = () => {
                 type="text"
                 className="form-control"
                 placeholder="Zip code here"
-                name='zipCode'
-                value={formData.zipCode}
+                name='zip'
+                value={formData.zip}
                 onChange={handleChange}
               />
+              {
+                inlineError && (inlineError.statusType === 7) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
 
           </div>
@@ -244,8 +380,12 @@ export const PropertyDetails = () => {
                 value={formData.zoning}
                 onChange={handleChange}
               />
+              {
+                inlineError && (inlineError.statusType === 8) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
-             <fieldset className="box-fieldset">
+            <fieldset className="box-fieldset">
               <label>
                 Year Built/ Renovated:
               </label>
@@ -257,11 +397,15 @@ export const PropertyDetails = () => {
                 value={formData.year_built}
                 onChange={handleChange}
               />
+              {
+                inlineError && (inlineError.statusType === 9) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
           </div>
 
           <div className="box grid-2 gap-30 mt-30">
-           
+
             <fieldset className="box-fieldset">
               <label>
                 Lot Size (Acres / Sq Ft.):
@@ -274,8 +418,12 @@ export const PropertyDetails = () => {
                 value={formData.lot_size}
                 onChange={handleChange}
               />
+              {
+                inlineError && (inlineError.statusType === 10) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
-              <fieldset className="box-fieldset">
+            <fieldset className="box-fieldset">
               <label>
                 Building Size (Sq Ft.):
               </label>
@@ -287,11 +435,15 @@ export const PropertyDetails = () => {
                 value={formData.building_size}
                 onChange={handleChange}
               />
+              {
+                inlineError && (inlineError.statusType === 11) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
           </div>
 
           <div className="box grid-2 gap-30 mt-30">
-          
+
             <fieldset className="box-fieldset">
               <label>
                 Number of Floors:
@@ -304,6 +456,10 @@ export const PropertyDetails = () => {
                 value={formData.num_floors}
                 onChange={handleChange}
               />
+              {
+                inlineError && (inlineError.statusType === 12) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
             <fieldset className="box-fieldset">
               <label>
@@ -317,17 +473,21 @@ export const PropertyDetails = () => {
                 value={formData.parking_spaces}
                 onChange={handleChange}
               />
+              {
+                inlineError && (inlineError.statusType === 13) &&
+                <span className='text-danger'>{inlineError.msg}</span>
+              }
             </fieldset>
           </div>
 
           <div className="box grid-2 gap-30 mt-30">
-            
+
 
           </div>
 
-          <div className="box-btn" style={{ marginTop: "60px" }}>
-            <a className="tf-btn primary" onClick={handleSubmit}>Submit</a>
-          </div>
+             <div className="box-btn" style={{ marginTop: "60px" }}>
+          <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
+        </div>
 
         </div>
       </div>
@@ -392,7 +552,7 @@ export const subPropertyOptions = [
   { id: 35, cat_id: 4, value: 'Motel Area', label: 'Motel' },
   { id: 36, cat_id: 4, value: 'Resort Area', label: 'Resort' },
   { id: 37, cat_id: 4, value: 'Extended Stay Area', label: 'Extended Stay' },
-  
+
   // Multifamily
   { id: 38, cat_id: 5, value: 'Apartment Complex (Low-, Mid-, High-rise) Area', label: 'Apartment Complex (Low-, Mid-, High-rise)' },
   { id: 39, cat_id: 5, value: 'Student Housing Area', label: 'Student Housing' },

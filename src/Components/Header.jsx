@@ -83,6 +83,8 @@ const Header = () => {
         registerData.append("lnumber", formData.licenceNumber);
         axios.post(`${POST_API}/signup.php`, registerData).then(resp => {
             const jsonData = resp.data;
+            console.log(jsonData);
+            
             if (jsonData.status === 100) {
                 swalMsg("success", resp.data.msg, 2000);
 

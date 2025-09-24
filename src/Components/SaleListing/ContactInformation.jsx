@@ -1,7 +1,7 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { swalMsg } from "../SweetAlert2";
-import { POST_API } from "../../Auth/Define";
+import { GET_API, POST_API } from "../../Auth/Define";
 import ChipBox from "../Inputs/ChipBox";
 import { useNavigate } from "react-router-dom";
 
@@ -26,26 +26,79 @@ const ContactInformation = () => {
         setFormData({ ...formData, [name]: value });
     }
 
+
+    // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
+    const [updateId, setUpdateID] = useState(null);
+    const [updatePid, setUpdatePid] = useState(null);
+
+    const getMedia = (currentPid) => {
+        const formData = new FormData();
+        formData.append("pid", currentPid);
+        axios.post(`${GET_API}/contact-info.php`, formData)
+            .then(resp => {
+                console.log("Return Date ===> ", resp.data);
+
+                if (resp.data.status === 100) {
+                    const Value = resp.data.value;
+                    // console.log("API Response:", resp.data.value);
+                    setUpdateID(Value.id);
+
+                    setFormData({
+                        lister_name: Value.agent_name,
+                        company: Value.company,
+                        phone: Value.phone,
+                        email: Value.email,
+                        website: Value.website,
+                    })
+                } else {
+                    console.log("No Existing Data:", resp.data);
+                }
+            })
+
+    }
+
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const pid = params.get("pid");
+
+        if (pid) {
+            getMedia(pid);
+            setUpdatePid(pid);
+        }
+
+    }, []);
+
+
+    // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
+
     const handleSubmit = () => {
         if (isLoading) return;
         const registerData = new FormData();
-        const getPid = window.localStorage.getItem("gtpid") || null;
-        registerData.append("pid", getPid);
-        registerData.append("lister_name", formData.lister_name);
+        if (!updateId) {
+            registerData.append("pid", updatePid);
+        } else {
+            registerData.append("id", updateId);
+        }
+        registerData.append("agent_name", formData.lister_name);
         registerData.append("company", formData.company);
         registerData.append("phone", formData.phone);
         registerData.append("email", formData.email);
         registerData.append("website", formData.website);
 
-        axios.post(`${POST_API}/basic-details.php`, registerData).then(resp => {
+        axios.post(`${POST_API}/contact-info.php`, registerData).then(resp => {
             const jsonData = resp.data;
             console.log(resp.data);
 
             if (jsonData.status === 100) {
                 swalMsg("success", resp.data.msg, 2000);
-                window.localStorage.setItem("gtpnum", 3);
                 setTimeout(() => {
-                    navigate("/add-sale");
+                    if (!updateId) {
+                        navigate(`/my-listings?pid=${jsonData.pid}`);
+                    } else {
+                        navigate(`/my-listings?pid=${updatePid}`);
+                    }
                 }, 1000);
             } else {
                 swalMsg("error", resp.data.msg, 2000);
@@ -57,7 +110,22 @@ const ContactInformation = () => {
     return (
         <div className="main-content-inner">
             <div className="widget-box-2 mb-20 shadow">
-                <h5 className="title" >Contact Information</h5>
+                <h5 className="title d-flex justify-content-between align-items-center">
+                <div>
+                Contact Information
+                </div>
+                 <div className='d-flex align-items-center gap-2'>
+                        <div>
+                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-sale?pageNum=6&pid=${updatePid}`)}>
+                                <span class="material-symbols-outlined">
+                                    arrow_back
+                                </span>
+                                <div className='text'>Previous</div>
+
+                            </a>
+                        </div>
+                    </div>
+                </h5>
                 <hr />
                 <fieldset className="box-fieldset">
                     <label>
@@ -119,8 +187,10 @@ const ContactInformation = () => {
                     />
                 </fieldset>
 
-                <div className="box-btn" style={{ marginTop: "60px" }}>
-                    <a className="tf-btn primary" onClick={handleSubmit}>Submit</a>
+              <div className="box-btn" style={{ marginTop: "60px" }}>
+                  
+                    <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
+                   
                 </div>
             </div>
 

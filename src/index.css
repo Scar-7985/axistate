@@ -139,6 +139,7 @@ section {
 -------------------------------------------------------------- */
 html {
     margin-right: 0 !important;
+    overflow-x: hidden;
 }
 
 * {
@@ -3225,8 +3226,38 @@ label {
     border-color: #1563df;
 }
 
+.tf-btn.success {
+    background-color: #00E3BC;
+    color: #ffffff;
+    border-color: #00E3BC;
+}
+
+.tf-btn.secondary {
+    background-color: #9D86FF;
+    color: #ffffff;
+    border-color: #9D86FF;
+}
+
+.tf-btn.dark {
+    background-color: #393a3a;
+    color: #ffffff;
+    border-color: #393a3a;
+}
+
 .tf-btn.primary:hover {
     background-color: #0e49a6;
+}
+
+.tf-btn.success:hover {
+    background-color: #00C9A7;
+}
+
+.tf-btn.dark:hover {
+    background-color: #252929;
+}
+
+.tf-btn.secondary:hover {
+    background-color: #886CFF;
 }
 
 .tf-btn.primary .icon {
@@ -11366,7 +11397,7 @@ tr {
     }
 
     .layout-wrap .sidebar-menu-dashboard {
-        transform: translateX(-100%);
+        /* transform: translateX(-100%); */
     }
 
     .layout-wrap .main-content {
