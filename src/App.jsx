@@ -7,28 +7,27 @@ import ProtectedRoutes from "./Auth/ProtectedRoutes";
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import ScrollToTop from './Components/ScrollToTop';
-import SearchLease from './Pages/SearchLease';
 
 const Home = lazy(() => import("./Pages/Home"));
+const AddListing = lazy(() => import("./Pages/AddListing"));
 const PropertyDetails = lazy(() => import("./Pages/PropertyDetails"));
 const AccountDetails = lazy(() => import("./Pages/AccountDetails"));
-const AddSale = lazy(() => import("./Pages/AddSale"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
-const AddListingOption = lazy(() => import("./Pages/AddListingOption"));
 const AddLease = lazy(() => import("./Pages/AddLease"));
 const MyListings = lazy(() => import("./Pages/MyListings"));
-const SearchProperties = lazy(() => import("./Pages/SearchProperties"));
-const LeaseProperties = lazy(() => import("./Pages/SearchLease"));
+const Search = lazy(() => import("./Pages/Search"));
 const Terms = lazy(() => import("./Pages/Terms"));
+const Dashboard = lazy(() => import("./Pages/Dashboard"));
 
 const App = () => {
 
   const location = useLocation();
 
-  const showHeader = location.pathname !== "/add-lease";
+  const showHeader = location.pathname !== "/add-lease" && location.pathname !== "/dashboard";
   const showFooter = location.pathname !== "/add-property" &&
     location.pathname !== "/properties" &&
     location.pathname !== "/add-sale" &&
+    location.pathname !== "/add-lease";
     location.pathname !== "/add-lease";
 
   return (
@@ -38,7 +37,7 @@ const App = () => {
           showHeader &&
           <Header />
         }
-        {/* <ScrollToTop /> */}
+        <ScrollToTop />
         <Routes>
 
           {/* <Route element={<NonProtectedRoutes />}> */}
@@ -46,18 +45,17 @@ const App = () => {
           {/* </Route> */}
 
           <Route path='/' element={<Home />} />
-          <Route path='/properties' element={<SearchProperties />} />
-          <Route path='/lease' element={<SearchLease />} />
+          <Route path='/properties' element={<Search />} />
           <Route path='/property-details' element={<PropertyDetails />} />
           <Route path='/contact-us' element={<ContactUs />} />
           <Route path='/terms' element={<Terms />} />
 
           <Route element={<ProtectedRoutes />}>
             <Route path='/account-details' element={<AccountDetails />} />
-            <Route path='/add-listing' element={<AddListingOption />} />
-            <Route path='/add-sale' element={<AddSale />} />
+            <Route path='/add-listing' element={<AddListing />} />
             <Route path='/add-lease' element={<AddLease />} />
             <Route path='/my-listings' element={<MyListings />} />
+            <Route path='/dashboard' element={<Dashboard />} />
           </Route>
 
           <Route path='*' element={<Home />} />

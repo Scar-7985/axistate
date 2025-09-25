@@ -12,6 +12,8 @@ const Footer = () => {
 
   const getWebSett = () => {
     axios.post(`${GET_API}/get-web-sett.php`).then(resp => {
+      console.log(resp.data);
+      
       if (resp.data) {
         setContactData(resp.data.contact_data);
         setSocialData(resp.data.social_data);

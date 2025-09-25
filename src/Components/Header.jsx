@@ -193,10 +193,6 @@ const Header = () => {
     }
 
 
-    const handleMobileMenus = () => {
-
-    }
-
     return (
         <header id="header" className="main-header header-fixed fixed-header">
             <div className="header-lower">
@@ -304,6 +300,7 @@ const Header = () => {
                                                                 </span>
                                                             </a>
                                                             <ul>
+                                                                <li><Link to="/dashboard">Dashboard</Link></li>
                                                                 <li><Link to="/my-listings">My Listings</Link></li>
                                                                 <li><a href='#' className='text-danger' onClick={LogOut}>Log Out</a></li>
                                                             </ul>

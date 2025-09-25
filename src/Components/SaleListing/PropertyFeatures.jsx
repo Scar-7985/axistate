@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const PropertyFeatures = () => {
+const PropertyFeatures = ({chkStatus}) => {
 
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
@@ -103,10 +103,10 @@ const PropertyFeatures = () => {
                 setTimeout(() => {
 
                     if (!updateId) {
-                        navigate(`/add-sale?pageNum=4&pid=${jsonData.pid}`);
+                        navigate(`/add-listing?pageNum=4&pid=${jsonData.pid}`);
                     } else {
 
-                        navigate(`/add-sale?pageNum=4&pid=${updatePid}`);
+                        navigate(`/add-listing?pageNum=4&pid=${updatePid}`);
                     }
 
                 }, 1000);
@@ -126,7 +126,7 @@ const PropertyFeatures = () => {
                 </div>
                  <div className='d-flex align-items-center gap-2'>
                         <div>
-                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-sale?pageNum=2&pid=${updatePid}`)}>
+                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-listing?pageNum=2&pid=${updatePid}`)}>
                                 <span class="material-symbols-outlined">
                                     arrow_back
                                 </span>

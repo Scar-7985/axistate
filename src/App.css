@@ -379,6 +379,8 @@
     display: block !important
   }
 
+
+
   .d-md-grid {
     display: grid !important
   }
@@ -950,6 +952,12 @@
   }
 
 
+}
+
+@media (min-width: 1300px) {
+  .d-lg-block {
+    display: block !important
+  }
 }
 
 #propcat {

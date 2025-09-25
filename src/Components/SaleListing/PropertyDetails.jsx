@@ -173,10 +173,10 @@ export const PropertyDetails = ({chkStatus}) => {
 
         setTimeout(() => {
           if (!updateId) {
-            navigate(`/add-sale?pageNum=2&pid=${jsonData.pid}`);
+            navigate(`/add-listing?pageNum=2&pid=${jsonData.pid}`);
           } else {
 
-            navigate(`/add-sale?pageNum=2&pid=${updatePid}`);
+            navigate(`/add-listing?pageNum=2&pid=${updatePid}`);
           }
         }, 1000);
 

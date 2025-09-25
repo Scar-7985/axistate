@@ -30,54 +30,51 @@ const MyListings = () => {
 
 
     return (
-        <div class="layout-wrap">
 
-            <div class="main-content pl-0" >
-                <div class="main-content-inner pt-3">
 
-                    <div class="wrapper-content row">
-                        <div class="col-12">
-                            <div class="widget-box-2 wd-listing shadow">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div className="">
-                                        <h5 class="title">New Listing</h5>
-                                        <div class="d-flex gap-4"><span class="text-primary fw-7">{listingData.length}</span><span class="fw-6">Results found</span></div>
-                                    </div>
-                                    <div class="">
-                                        <div class="wd-chart">
-                                            <div class="wd-filter-date">
-                                                <div class="left">
-                                                    <div class="dates active">Sale</div>
-                                                    <div class="dates">Lease</div>
-                                                </div>
-                                            </div>
-                                        </div>
+        <div class="wrapper-content row">
+            <div class="col-12">
+                <div class="widget-box-2 wd-listing shadow">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div className="">
+                            <h5 class="title">My Listing</h5>
+                            <div class="d-flex gap-4"><span class="text-primary fw-7">{listingData.length}</span><span class="fw-6">Results found</span></div>
+                        </div>
+                        <div class="">
+                            <div class="wd-chart">
+                                <div class="wd-filter-date">
+                                    <div class="left">
+                                        {/* <div class="dates active">Sale</div>
+                                        <div class="dates">Lease</div> */}
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <div class="wrap-table">
-                                    <div className="table-responsive" style={{ overflowX: "hidden" }}>
-                                        <DataTable
-                                            // Columns
-                                            columns={[
-                                                // { title: "Sr.", data: "sr", className: "text-left" },
-                                                { title: "Listing", data: "listing", className: "text-left" },
-                                                { title: "Status", data: "status", className: "text-left" },
-                                                { title: "Action", data: "action", className: "text-center" }
-                                            ]}
+                    <div class="wrap-table">
+                        <div className="table-responsive" style={{ overflowX: "hidden" }}>
+                            <DataTable
+                                // Columns
+                                columns={[
+                                    // { title: "Sr.", data: "sr", className: "text-left" },
+                                    { title: "Listing", data: "listing", className: "text-left" },
+                                    { title: "Status", data: "status", className: "text-left" },
+                                    { title: "Action", data: "action", className: "text-center" }
+                                ]}
 
-                                            // Row Data
-                                            data={listingData.map((item, index) => {
-                                                const mediaStr = typeof item.media?.photos === "string" ? item.media?.photos : "";
-                                                const getFirstImage = mediaStr.includes("@@")
-                                                    ? mediaStr.split("@@")[0]
-                                                    : mediaStr;
+                                // Row Data
+                                data={listingData.map((item, index) => {
+                                    const mediaStr = typeof item.media?.photos === "string" ? item.media?.photos : "";
+                                    const getFirstImage = mediaStr.includes("@@")
+                                        ? mediaStr.split("@@")[0]
+                                        : mediaStr;
 
 
-                                                return {
-                                                    id: item.id,
-                                                    // sr: index + 1,
-                                                    listing: `<div class="d-flex align-items-center">
+                                    return {
+                                        id: item.id,
+                                        // sr: index + 1,
+                                        listing: `<div class="d-flex align-items-center">
                                                     <div><img src="${MEDIA_URL}/${getFirstImage}" style="height: 60px; border-radius: 4px" /></div>
                                                     <div class="content ml-3">
                                                         <h6 class="title mb-0">${item.basic.project_name}</h6>
@@ -86,15 +83,15 @@ const MyListings = () => {
                                                     </div>
                                                     </div>
                                                     `,
-                                                    // Show badges in table
-                                                    status: `<div class="status-wrap"><a href="#" class="btn-status ${item.basic.status === 1 ? "pending" : item.basic.status === 2 ? "sold" : ""}">${item.basic.status === 1
-                                                        ? "Pending"
-                                                        : item.basic.status === 2
-                                                            ? "Sold"
-                                                            : "In Review"
-                                                        }</a></div>`,
+                                        // Show badges in table
+                                        status: `<div class="status-wrap"><a href="#" class="btn-status ${item.basic.status === 1 ? "pending" : item.basic.status === 2 ? "sold" : ""}">${item.basic.status === 1
+                                            ? "Pending"
+                                            : item.basic.status === 2
+                                                ? "Sold"
+                                                : "In Review"
+                                            }</a></div>`,
 
-                                                    action: `
+                                        action: `
                                                <ul class="list-action">
                                                     <li><a class="item">
                                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -117,54 +114,49 @@ const MyListings = () => {
                                                     </li>
                                                 </ul>
         `
-                                                }
-                                            })}
+                                    }
+                                })}
 
 
-                                            // Settings And onClick Funtions
+                                // Settings And onClick Funtions
 
-                                            options={{
-                                                pageLength: 10,
-                                                lengthMenu: [10, 25, 50, 100],
-                                                pagingType: "simple_numbers",
-                                                language: {
-                                                    lengthMenu: `<span>Show</span> _MENU_ <span>listings</span>`,
-                                                    paginate: {
-                                                        previous: `<span class="page-num"><i class="icon icon-arr-l"></i></span>`,
-                                                        next: `<span class="page-num"><i class="icon icon-arr-r"></i></span>`
-                                                    },
-                                                    emptyTable: `<div class="text-center text-danger">
+                                options={{
+                                    pageLength: 10,
+                                    lengthMenu: [10, 25, 50, 100],
+                                    pagingType: "simple_numbers",
+                                    language: {
+                                        lengthMenu: `<span>Show</span> _MENU_ <span>listings</span>`,
+                                        paginate: {
+                                            previous: `<span class="page-num"><i class="icon icon-arr-l"></i></span>`,
+                                            next: `<span class="page-num"><i class="icon icon-arr-r"></i></span>`
+                                        },
+                                        emptyTable: `<div class="text-center text-danger">
                           <div class="mt-3">There is no data to show you at the moment.</div>
                          </div>`
-                                                },
-                                                createdRow: (row, data, dataIndex) => {
-                                                    // Bind click for delete button
-                                                    $(row).find(".status-role").on("click", () => {
-                                                        status_n_deleteRole(data.id, "status");
-                                                    });
-                                                    $(row).find(".edit-role").on("click", () => {
-                                                        editModal(data.role_name, data.rawPermissions);
-                                                    });
-                                                    $(row).find(".delete-role").on("click", () => {
-                                                        status_n_deleteRole(data.id, "delete");
-                                                    });
-                                                },
-                                            }}
+                                    },
+                                    createdRow: (row, data, dataIndex) => {
+                                        // Bind click for delete button
+                                        $(row).find(".status-role").on("click", () => {
+                                            status_n_deleteRole(data.id, "status");
+                                        });
+                                        $(row).find(".edit-role").on("click", () => {
+                                            editModal(data.role_name, data.rawPermissions);
+                                        });
+                                        $(row).find(".delete-role").on("click", () => {
+                                            status_n_deleteRole(data.id, "delete");
+                                        });
+                                    },
+                                }}
 
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
+                            />
                         </div>
-
                     </div>
                 </div>
+
             </div>
 
-            <div class="overlay-dashboard"></div>
-
         </div>
+
     )
 
 

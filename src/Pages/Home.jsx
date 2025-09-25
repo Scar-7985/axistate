@@ -37,17 +37,6 @@ const Home = () => {
     },
   ];
 
-  const getHome = () => {
-    const formData = new FormData();
-    formData.append("pid", "PID16155");
-    axios.post(`${GET_API}/property-details.php`, formData).then(resp => {
-      console.log(resp.data);
-    })
-  }
-
-  useEffect(() => {
-    getHome();
-  }, []);
 
 
 

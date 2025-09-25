@@ -111,10 +111,10 @@ const TransactionDetails = ({chkStatus}) => {
         setTimeout(() => {
 
           if (!updateId) {
-            navigate(`/add-sale?pageNum=3&pid=${jsonData.pid}`);
+            navigate(`/add-listing?pageNum=3&pid=${jsonData.pid}`);
           } else {
 
-            navigate(`/add-sale?pageNum=3&pid=${updatePid}`);
+            navigate(`/add-listing?pageNum=3&pid=${updatePid}`);
           }
         }, 1000);
       } else {
@@ -138,7 +138,7 @@ const TransactionDetails = ({chkStatus}) => {
           <div className='d-flex align-items-center gap-2'>
             <div>
             
-              <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-sale?pageNum=1&pid=${updatePid}`)}>
+              <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-listing?pageNum=1&pid=${updatePid}`)}>
                 <span class="material-symbols-outlined">
                   arrow_back
                 </span>

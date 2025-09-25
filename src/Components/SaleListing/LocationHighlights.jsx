@@ -89,9 +89,9 @@ const LocationHighlights = ({chkStatus}) => {
                 swalMsg("success", resp.data.msg, 2000);
                 setTimeout(() => {
                     if (!updateId) {
-                        navigate(`/add-sale?pageNum=5&pid=${jsonData.pid}`);
+                        navigate(`/add-listing?pageNum=5&pid=${jsonData.pid}`);
                     } else {
-                        navigate(`/add-sale?pageNum=5&pid=${updatePid}`);
+                        navigate(`/add-listing?pageNum=5&pid=${updatePid}`);
                     }
                 }, 1000);
             } else {
@@ -111,7 +111,7 @@ const LocationHighlights = ({chkStatus}) => {
                     </div>
                     <div className='d-flex align-items-center gap-2'>
                         <div>
-                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-sale?pageNum=3&pid=${updatePid}`)}>
+                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-listing?pageNum=3&pid=${updatePid}`)}>
                                 <span class="material-symbols-outlined">
                                     arrow_back
                                 </span>

@@ -6,7 +6,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Pagination from "../Components/Pagination";
 import GoogleMap from '../Components/GoogleMap/GoogleMap';
 
-const SearchProperties = () => {
+const Search = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -48,10 +48,10 @@ const SearchProperties = () => {
         if (isLoading) return;
         setIsLoading(true);
 
-        const REQ_API = searchQuery ? `${GET_API}/test-get.php${searchQuery}` : `${GET_API}/test-get.php`
+        const REQ_API = searchQuery ? `${GET_API}/search-property.php${searchQuery}` : `${GET_API}/test-get.php`
 
         axios.post(REQ_API).then(resp => {
-            // console.log(resp.data);
+            console.log("REQUESTED API ===>", resp.data);
             if (resp.data.status === 100) {
 
                 // if (!searchVal) {
@@ -96,7 +96,7 @@ const SearchProperties = () => {
 
     const handlePropertyTypes = (propSubTypes, propType) => {
         const params = new URLSearchParams(location.search);
-        
+
 
         params.delete("types[]");
         params.delete("subtypes[]");
@@ -125,7 +125,7 @@ const SearchProperties = () => {
         const queryString = params.toString().replace(/\+/g, "%20");
 
         console.log(queryString);
-        
+
         // navigate(`${location.pathname}?${queryString}`);
     };
 
@@ -210,11 +210,12 @@ const SearchProperties = () => {
 
     return (
         <React.Fragment>
+     
             {
                 !isLoading ?
                     (
                         <>
-                           
+
 
 
                             <div id='MobSearchBar' className='mobileSearch'>
@@ -242,14 +243,9 @@ const SearchProperties = () => {
                                 </div>
                             </div>
 
-                            <div className='filter-tab'>
+                            <div className='filter-tab' >
                                 <div className='d-flex align-items-center filter-tab-options'>
-                                    <select id='propcat' value="For Sale"
-                                        onChange={(e) => (e.target.value === "For Lease" ? navigate("/lease") : null)}>
-                                        <option value="For Sale">For Sale</option>
-                                        <option value="For Lease">For Lease</option>
-                                        <option value="Comps & Records">Comps & Records</option>
-                                    </select>
+
 
                                     <div className='propertyList'>
                                         <SelectOption
@@ -278,27 +274,27 @@ const SearchProperties = () => {
 
                                 </div>
                                 <div id='lap-searchbar'>
-                                   <div className='searchBar'>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Search Keyword"
-                                        style={{ height: "40px" }}
-                                        value={searchValue}
-                                        onChange={(e) => {
-                                            setSearchValue(e.target.value);
-                                            (e.target.value.trim() === "" && setSaleProperties(tempSaleProperties));
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
-                                                RunSearch();
-                                            }
-                                        }}
-                                    />
-                                    <div className='icon' onClick={RunSearch}>
-                                        <i className="icon icon-search"></i>
+                                    <div className='searchBar'>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Search Keyword"
+                                            style={{ height: "40px" }}
+                                            value={searchValue}
+                                            onChange={(e) => {
+                                                setSearchValue(e.target.value);
+                                                (e.target.value.trim() === "" && setSaleProperties(tempSaleProperties));
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    RunSearch();
+                                                }
+                                            }}
+                                        />
+                                        <div className='icon' onClick={RunSearch}>
+                                            <i className="icon icon-search"></i>
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                                 <div className='d-none d-md-flex'>
 
@@ -1067,7 +1063,70 @@ const SearchProperties = () => {
     )
 }
 
-export default SearchProperties;
+export default Search;
+
+
+
+
+export const subPropertyOptions = [
+  // Retail
+  { id: 1, cat_id: 1, value: 'Gas Station Area', label: 'Gas Station' },
+  { id: 2, cat_id: 1, value: 'Bank Area', label: 'Bank' },
+  { id: 3, cat_id: 1, value: 'Convenience Store Area', label: 'Convenience Store' },
+  { id: 4, cat_id: 1, value: 'Day Care / Nursery Area', label: 'Day Care / Nursery' },
+  { id: 5, cat_id: 1, value: 'QSR / Fast Food Area', label: 'QSR / Fast Food' },
+  { id: 6, cat_id: 1, value: 'Grocery Store Area', label: 'Grocery Store' },
+  { id: 7, cat_id: 1, value: 'Pharmacy / Drug Area', label: 'Pharmacy / Drug Store' },
+  { id: 8, cat_id: 1, value: 'Restaurant / Café Area', label: 'Restaurant / Café' },
+  { id: 9, cat_id: 1, value: 'Shopping Center Area', label: 'Shopping Center' },
+  { id: 10, cat_id: 1, value: 'Big Box / Anchor Store Area', label: 'Big Box / Anchor Store' },
+  { id: 11, cat_id: 1, value: 'Factory Outlet Area', label: 'Factory Outlet' },
+  { id: 12, cat_id: 1, value: 'Theme Center Area', label: 'Theme Center' },
+  { id: 13, cat_id: 1, value: 'Strip Center / Neighborhood Center Area', label: 'Strip Center / Neighborhood Center' },
+  { id: 14, cat_id: 1, value: 'Lifestyle Center Area', label: 'Lifestyle Center' },
+  { id: 15, cat_id: 1, value: 'Mixed-Use Retail Area', label: 'Mixed-Use Retail' },
+  { id: 16, cat_id: 1, value: 'Standalone Store / Pad Site Area', label: 'Standalone Store / Pad Site' },
+  { id: 17, cat_id: 1, value: 'Fitness / Gym Area', label: 'Fitness / Gym' },
+  { id: 18, cat_id: 1, value: 'Specialty Retail Area', label: 'Specialty Retail' },
+
+  // Office
+  { id: 19, cat_id: 2, value: 'High-Rise Office Area', label: 'High-Rise Office' },
+  { id: 20, cat_id: 2, value: 'Mid-Rise Office Area', label: 'Mid-Rise Office' },
+  { id: 21, cat_id: 2, value: 'Low-Rise / Garden Office Area', label: 'Low-Rise / Garden Office' },
+  { id: 22, cat_id: 2, value: 'Suburban Office Park Area', label: 'Suburban Office Park' },
+  { id: 23, cat_id: 2, value: 'Medical Office Area', label: 'Medical Office' },
+  { id: 24, cat_id: 2, value: 'Co-Working / Shared Office Area', label: 'Co-Working / Shared Office' },
+  { id: 25, cat_id: 2, value: 'Flex Office Area', label: 'Flex Office' },
+
+  // Industrial
+  { id: 26, cat_id: 3, value: 'Warehouse / Distribution Area', label: 'Warehouse / Distribution' },
+  { id: 27, cat_id: 3, value: 'Manufacturing Facility Area', label: 'Manufacturing Facility' },
+  { id: 28, cat_id: 3, value: 'Flex Industrial Area', label: 'Flex Industrial' },
+  { id: 29, cat_id: 3, value: 'Cold Storage Area', label: 'Cold Storage' },
+  { id: 30, cat_id: 3, value: 'Data Center Area', label: 'Data Center' },
+  { id: 31, cat_id: 3, value: 'R&D Facility / Laboratory Area', label: 'R&D Facility / Laboratory' },
+  { id: 32, cat_id: 3, value: 'Bulk / Logistics Hub Area', label: 'Bulk / Logistics Hub' },
+
+  // Hospitality / Hotels
+  { id: 33, cat_id: 4, value: 'Hotel (Full Service) Area', label: 'Hotel (Full Service)' },
+  { id: 34, cat_id: 4, value: 'Limited Service Hotel Area', label: 'Limited Service Hotel' },
+  { id: 35, cat_id: 4, value: 'Motel Area', label: 'Motel' },
+  { id: 36, cat_id: 4, value: 'Resort Area', label: 'Resort' },
+  { id: 37, cat_id: 4, value: 'Extended Stay Area', label: 'Extended Stay' },
+
+  // Multifamily
+  { id: 38, cat_id: 5, value: 'Apartment Complex (Low-, Mid-, High-rise) Area', label: 'Apartment Complex (Low-, Mid-, High-rise)' },
+  { id: 39, cat_id: 5, value: 'Student Housing Area', label: 'Student Housing' },
+  { id: 40, cat_id: 5, value: 'Senior / Assisted Living Housing Area', label: 'Senior / Assisted Living Housing' },
+  { id: 41, cat_id: 5, value: 'Duplex / Triplex / Fourplex Area', label: 'Duplex / Triplex / Fourplex' },
+  { id: 42, cat_id: 5, value: 'Condominiums / Co-ops Area', label: 'Condominiums / Co-ops' },
+
+  // Land
+  { id: 43, cat_id: 6, value: 'Raw / Vacant Land Area', label: 'Raw / Vacant Land' },
+  { id: 44, cat_id: 6, value: 'Development Land (zoned / permitted) Area', label: 'Development Land (zoned / permitted)' },
+  { id: 45, cat_id: 6, value: 'Outlot / Pad Site Area', label: 'Outlot / Pad Site' },
+  { id: 46, cat_id: 6, value: 'Land with Partial Improvements Area', label: 'Land with Partial Improvements' },
+];
 
 
 const groupedOptions = [
@@ -1089,6 +1148,15 @@ const groupedOptions = [
         ],
     },
     {
+        label: 'Office',
+        options: [
+            { value: 'Student Housing', label: 'Student Housing' },
+            { value: 'Single Family Rental Portfolio', label: 'Single Family Rental Portfolio' },
+            { value: 'RV Park', label: 'RV Park' },
+            { value: 'Apartment Building', label: 'Apartment Building' },
+        ],
+    },
+    {
         label: 'Multifamily',
         options: [
             { value: 'Student Housing', label: 'Student Housing' },
@@ -1098,7 +1166,43 @@ const groupedOptions = [
         ],
     },
     {
+        label: 'Industrial',
+        options: [
+            { value: 'Student Housing', label: 'Student Housing' },
+            { value: 'Single Family Rental Portfolio', label: 'Single Family Rental Portfolio' },
+            { value: 'RV Park', label: 'RV Park' },
+            { value: 'Apartment Building', label: 'Apartment Building' },
+        ],
+    },
+    {
         label: 'Office',
+        options: [
+            { value: 'Traditional Office', label: 'Traditional Office' },
+            { value: 'Executive Office', label: 'Executive Office' },
+            { value: 'Medical Office', label: 'Medical Office' },
+            { value: 'Creative Office', label: 'Creative Office' },
+        ],
+    },
+    {
+        label: 'Hospitality / Hotels',
+        options: [
+            { value: 'Traditional Office', label: 'Traditional Office' },
+            { value: 'Executive Office', label: 'Executive Office' },
+            { value: 'Medical Office', label: 'Medical Office' },
+            { value: 'Creative Office', label: 'Creative Office' },
+        ],
+    },
+    {
+        label: 'Multifamily',
+        options: [
+            { value: 'Traditional Office', label: 'Traditional Office' },
+            { value: 'Executive Office', label: 'Executive Office' },
+            { value: 'Medical Office', label: 'Medical Office' },
+            { value: 'Creative Office', label: 'Creative Office' },
+        ],
+    },
+    {
+        label: 'Land',
         options: [
             { value: 'Traditional Office', label: 'Traditional Office' },
             { value: 'Executive Office', label: 'Executive Office' },
