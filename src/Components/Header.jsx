@@ -7,7 +7,6 @@ import { swalMsg } from './SweetAlert2';
 import { isAuthenticated, SITE_LOGO } from '../Auth/Define';
 import Swal from 'sweetalert2';
 import { UserContext } from '../Context/UserProvider';
-import secureLocalStorage from 'react-secure-storage';
 
 const Header = () => {
 
@@ -17,6 +16,8 @@ const Header = () => {
 
 
     const location = useLocation();
+
+
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -49,7 +50,8 @@ const Header = () => {
         };
     }, []);
 
-
+    const [showLotp, setShowLotp] = useState(false);
+    const [showSotp, setShowSotp] = useState(false);
     const [formData, setFormData] = useState({
         fName: "",
         lName: "",
@@ -59,8 +61,7 @@ const Header = () => {
         phone: "",
         officeZip: "",
         website: "",
-        licenceState: "",
-        licenceNumber: "",
+        otp: ""
     });
 
     const handleChange = (e) => {
@@ -68,6 +69,7 @@ const Header = () => {
         setFormData({ ...formData, [name]: value });
     }
 
+    // Sign Up
     const handleSubmit = () => {
         setLoading(true);
         const registerData = new FormData();
@@ -79,20 +81,25 @@ const Header = () => {
         registerData.append("user_type", formData.indusRole);
         registerData.append("zipcode", formData.officeZip);
         registerData.append("website", formData.website);
-        registerData.append("lstate", formData.licenceState);
-        registerData.append("lnumber", formData.licenceNumber);
-        axios.post(`${POST_API}/signup.php`, registerData).then(resp => {
+        if (showSotp) {
+            registerData.append("otp", formData.otp);
+        }
+        axios.post(`${POST_API}/${showSotp ? "email-verify.php" : "signup.php"}`, registerData).then(resp => {
             const jsonData = resp.data;
             console.log(jsonData);
-            
+
             if (jsonData.status === 100) {
                 swalMsg("success", resp.data.msg, 2000);
+                if (!showSotp) {
+                    setShowSotp(true);
+                } else {
+                    const UID = jsonData.cuid;
+                    SetIsAuthenticated("AXID", UID);
 
-                const UID = jsonData.cuid;
-                SetIsAuthenticated("AXID", UID);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
             } else {
                 swalMsg("error", resp.data.msg, 2000);
             }
@@ -100,6 +107,7 @@ const Header = () => {
         })
 
     };
+    // Sign Up
 
     const [loginData, setLoginData] = useState({ email: "", pass: "", otp: "", newPass: "", confirmPass: "" });
     const handlelogChange = (e) => {
@@ -111,18 +119,25 @@ const Header = () => {
         setLoading(true);
         const registerData = new FormData();
         registerData.append("email", loginData.email);
-        registerData.append("password", loginData.pass);
-        axios.post(`${POST_API}/login.php`, registerData).then(resp => {
+        if (showLotp) {
+            registerData.append("otp", loginData.otp);
+            registerData.append("login_status", 1);
+        }
+        axios.post(`${POST_API}/${showLotp ? "email-verify.php" : "login.php"}`, registerData).then(resp => {
             const jsonData = resp.data;
             console.log(jsonData);
 
             if (jsonData.status === 100) {
                 swalMsg("success", resp.data.msg, 2000);
-                const UID = jsonData.cuid;
-                SetIsAuthenticated("AXID", UID);
+                if(!showLotp){
+                    setShowLotp(true);
+                }else{
+                    const UID = jsonData.cuid;
+                    SetIsAuthenticated("AXID", UID);
                 setTimeout(() => {
                     window.location.reload();
                 }, 2000);
+                }
 
             } else {
                 swalMsg("error", resp.data.msg, 2000);
@@ -182,7 +197,7 @@ const Header = () => {
             confirmButtonText: "Yes, logout!",
         }).then((result) => {
             if (result.isConfirmed) {
-                secureLocalStorage.clear();
+                window.localStorage.clear();
                 swalMsg("success", "Logged out successfully.", 2000);
                 setTimeout(() => {
                     navigate("/");
@@ -265,7 +280,7 @@ const Header = () => {
                                     <div className="flat-bt-top">
                                         {
                                             isAuthenticated ? (
-                                                <Link to={"/add-listing"} className="tf-btn primary">
+                                                <Link to={location.pathname === "/add-listing" ? (window.location.href) : "/add-listing"} className="tf-btn primary">
                                                     <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M13.625 14.375V17.1875C13.625 17.705 13.205 18.125 12.6875 18.125H4.5625C4.31386 18.125 4.0754 18.0262 3.89959 17.8504C3.72377 17.6746 3.625 17.4361 3.625 17.1875V6.5625C3.625 6.045 4.045 5.625 4.5625 5.625H6.125C6.54381 5.62472 6.96192 5.65928 7.375 5.72834M13.625 14.375H16.4375C16.955 14.375 17.375 13.955 17.375 13.4375V9.375C17.375 5.65834 14.6725 2.57417 11.125 1.97834C10.7119 1.90928 10.2938 1.87472 9.875 1.875H8.3125C7.795 1.875 7.375 2.295 7.375 2.8125V5.72834M13.625 14.375H8.3125C8.06386 14.375 7.8254 14.2762 7.64959 14.1004C7.47377 13.9246 7.375 13.6861 7.375 13.4375V5.72834M17.375 11.25V9.6875C17.375 8.94158 17.0787 8.22621 16.5512 7.69876C16.0238 7.17132 15.3084 6.875 14.5625 6.875H13.3125C13.0639 6.875 12.8254 6.77623 12.6496 6.60041C12.4738 6.4246 12.375 6.18614 12.375 5.9375V4.6875C12.375 4.31816 12.3023 3.95243 12.1609 3.6112C12.0196 3.26998 11.8124 2.95993 11.5512 2.69876C11.2901 2.4376 10.98 2.23043 10.6388 2.08909C10.2976 1.94775 9.93184 1.875 9.5625 1.875H8.625" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                                     </svg>
@@ -300,7 +315,7 @@ const Header = () => {
                                                                 </span>
                                                             </a>
                                                             <ul>
-                                                                <li><Link to="/dashboard">Dashboard</Link></li>
+                                                                <li><Link to="/settings">Dashboard</Link></li>
                                                                 <li><Link to="/my-listings">My Listings</Link></li>
                                                                 <li><a href='#' className='text-danger' onClick={LogOut}>Log Out</a></li>
                                                             </ul>
@@ -425,64 +440,67 @@ const Header = () => {
                                         <form className="form-account">
                                             {/* ========= Login Form ========= */}
                                             <div className="title-box">
-                                                <h4>Login</h4>
+                                                <h4>{ showLotp 
+                                                ? <>
+                                                    Verify OTP sent to <h6 className='text-danger'>{loginData.email}</h6>
+                                                </> : "Login"}</h4>
                                                 <span className="close-modal icon-close2" data-bs-dismiss="modal"></span>
                                             </div>
-                                            <div className="box">
-                                                <fieldset className="box-fieldset">
-                                                    <label>Email</label>
-                                                    <div className="ip-field">
-                                                        <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
-                                                        </svg>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            placeholder="Your email"
-                                                            name='email'
-                                                            value={loginData.email}
-                                                            onChange={handlelogChange}
-                                                        />
-                                                    </div>
-                                                </fieldset>
-                                                <fieldset className="box-fieldset">
-                                                    <label>Password</label>
-                                                    <div className="ip-field">
-                                                        <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M12.375 7.875V5.0625C12.375 4.16739 12.0194 3.30895 11.3865 2.67601C10.7535 2.04308 9.89511 1.6875 9 1.6875C8.10489 1.6875 7.24645 2.04308 6.61351 2.67601C5.98058 3.30895 5.625 4.16739 5.625 5.0625V7.875M5.0625 16.3125H12.9375C13.3851 16.3125 13.8143 16.1347 14.1307 15.8182C14.4472 15.5018 14.625 15.0726 14.625 14.625V9.5625C14.625 9.11495 14.4472 8.68573 14.1307 8.36926C13.8143 8.05279 13.3851 7.875 12.9375 7.875H5.0625C4.61495 7.875 4.18573 8.05279 3.86926 8.36926C3.55279 8.68573 3.375 9.11495 3.375 9.5625V14.625C3.375 15.0726 3.55279 15.5018 3.86926 15.8182C4.18573 16.1347 4.61495 16.3125 5.0625 16.3125Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
-                                                        </svg>
-                                                        <input
-                                                            type="password"
-                                                            className="form-control"
-                                                            placeholder="Your password"
-                                                            name='pass'
-                                                            value={loginData.pass}
-                                                            onChange={handlelogChange}
-                                                        />
-                                                    </div>
-                                                    <div className="text-forgot text-end text-primary" >
-                                                        <a onClick={() => setShowForgotPass(1)}>Forgot password ?</a>
-                                                    </div>
+                                            {
+                                                showLotp ? (
+                                                     <div className="box">
+                                                        <fieldset className="box-fieldset">
+                                                            <label>OTP</label>
+                                                            <div className="ip-field">
+                                                                <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
+                                                                </svg>
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control"
+                                                                    placeholder="Your otp"
+                                                                    name='otp'
+                                                                    value={loginData.otp}
+                                                                    onChange={handlelogChange}
+                                                                />
+                                                            </div>
+                                                        </fieldset>
 
-                                                </fieldset>
+                                                    </div>
+                                                ) : (
+                                                    <div className="box">
+                                                        <fieldset className="box-fieldset">
+                                                            <label>Email</label>
+                                                            <div className="ip-field">
+                                                                <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
+                                                                </svg>
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control"
+                                                                    placeholder="Your email"
+                                                                    name='email'
+                                                                    value={loginData.email}
+                                                                    onChange={handlelogChange}
+                                                                />
+                                                            </div>
+                                                            {/* <div className="text-forgot text-end text-primary" >
+                                                                <a onClick={() => setShowForgotPass(1)}>Forgot password ?</a>
+                                                            </div> */}
+                                                        </fieldset>
 
-                                            </div>
+                                                    </div>
+                                                )
+                                            }
+
                                             <div className="box box-btn">
                                                 <div className="tf-btn primary w-100 cursor-pointer" onClick={handleLogin}>Login</div>
+                                                {
+                                                    !showLotp &&
                                                 <div className="text text-center">Don’t you have an account? <a href="#modalRegister" data-bs-toggle="modal" className="text-primary">Register</a></div>
+                                                }
                                             </div>
-                                            {/* <p className="box text-center caption-2">or login with</p>
-                                            <div className="group-btn">
-                                                <a href="#" className="btn-social w-100">
-                                                    <img src="/assets/images/logo/google.jpg" alt="img" />
-                                                    Google
-                                                </a>
-                                                <a href="#" className="btn-social">
-                                                    <img src="/assets/images/logo/fb.jpg" alt="img" />
-                                                    Facebook
-                                                </a>
 
-                                            </div> */}
                                         </form>
                                     )
                                     : showForgotPass === 1
@@ -621,203 +639,181 @@ const Header = () => {
                             <div className="banner-account">
                                 <img src="/assets/images/banner/banner-account2.jpg" alt="banner" />
                             </div>
-                            <form className="form-account">
+                            <div className="form-account">
                                 <div className="title-box">
-                                    <h4>Register</h4>
+
+                                    <h4>
+                                        {showSotp ? (
+                                            <>
+                                                Verify OTP sent to <h6 className="text-danger">{formData.email}</h6>
+                                            </>
+                                        ) : (
+                                            "Register"
+                                        )}
+                                    </h4>
+
                                     <span className="close-modal icon-close2" data-bs-dismiss="modal"></span>
                                 </div>
-                                <div className="box">
-                                    <div className="row">
 
-                                        <fieldset className="box-fieldset col-6">
-                                            <label>First name <span className='text-danger'>*</span></label>
-                                            <div className="ip-field">
-                                                <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="First name"
-                                                    name='fName'
-                                                    value={formData.fName}
-                                                    onChange={handleChange}
-                                                />
+                                {
+                                    !showSotp ? (
+
+                                        <div className="box">
+                                            <div className="row">
+
+                                                <fieldset className="box-fieldset col-6">
+                                                    <label>First name <span className='text-danger'>*</span></label>
+                                                    <div className="ip-field">
+                                                        <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
+                                                        </svg>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            placeholder="First name"
+                                                            name='fName'
+                                                            value={formData.fName}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                </fieldset>
+                                                <fieldset className="box-fieldset col-6">
+                                                    <label>Last name <span className='text-danger'>*</span></label>
+                                                    <div className="ip-field">
+                                                        <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
+                                                        </svg>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            placeholder="Last name"
+                                                            name='lName'
+                                                            value={formData.lName}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                </fieldset>
                                             </div>
-                                        </fieldset>
-                                        <fieldset className="box-fieldset col-6">
-                                            <label>Last name <span className='text-danger'>*</span></label>
-                                            <div className="ip-field">
-                                                <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Last name"
-                                                    name='lName'
-                                                    value={formData.lName}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                        </fieldset>
-                                    </div>
-                                    <fieldset className="box-fieldset">
-                                        <label>Email <span className='text-danger'>*</span></label>
-                                        <div className="ip-field">
-                                            <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="Email address"
-                                                name='email'
-                                                value={formData.email}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </fieldset>
-                                    <fieldset className="box-fieldset">
-                                        <label>Password <span className='text-danger'>*</span></label>
-                                        <div className="ip-field">
-                                            <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.375 7.875V5.0625C12.375 4.16739 12.0194 3.30895 11.3865 2.67601C10.7535 2.04308 9.89511 1.6875 9 1.6875C8.10489 1.6875 7.24645 2.04308 6.61351 2.67601C5.98058 3.30895 5.625 4.16739 5.625 5.0625V7.875M5.0625 16.3125H12.9375C13.3851 16.3125 13.8143 16.1347 14.1307 15.8182C14.4472 15.5018 14.625 15.0726 14.625 14.625V9.5625C14.625 9.11495 14.4472 8.68573 14.1307 8.36926C13.8143 8.05279 13.3851 7.875 12.9375 7.875H5.0625C4.61495 7.875 4.18573 8.05279 3.86926 8.36926C3.55279 8.68573 3.375 9.11495 3.375 9.5625V14.625C3.375 15.0726 3.55279 15.5018 3.86926 15.8182C4.18573 16.1347 4.61495 16.3125 5.0625 16.3125Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="Password"
-                                                name='pass'
-                                                value={formData.pass}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-
-                                    </fieldset>
-                                    <fieldset className="box-fieldset">
-                                        <label>Industry Role <span className='text-danger'>*</span></label>
-                                        <div className="ip-field">
-                                            <select name='indusRole'
-                                                value={formData.indusRole}
-                                                onChange={handleChange}
-                                                style={{
-                                                    width: "100%", padding: "16px 20px",
-                                                    borderRadius: "30px", borderColor: "#e4e4e4",
-                                                    outline: "none",
-                                                }}>
-                                                <option value="1">Select a role</option>
-                                                <option value="2">Buyer</option>
-                                                <option value="3">Seller</option>
-                                            </select>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset className="box-fieldset">
-                                        <label>Phone <span className='text-danger'>*</span></label>
-                                        <div className="ip-field">
-                                            <svg className="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M22 16.92V21a1 1 0 0 1-1.09 1A19.91 19.91 0 0 1 3 4.09 1 1 0 0 1 4 3h4.09a1 1 0 0 1 1 .75l1.2 5a1 1 0 0 1-.27.95l-2.2 2.2a16 16 0 0 0 6.61 6.61l2.2-2.2a1 1 0 0 1 .95-.27l5 1.2a1 1 0 0 1 .75 1z" stroke="#A3ABB0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-
-                                            <input
-                                                type="phone"
-                                                className="form-control"
-                                                placeholder="555-555-5555"
-                                                name='phone'
-                                                value={formData.phone}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </fieldset>
-                                    <fieldset className="box-fieldset">
-                                        <label>Office Zip <span className='text-danger'>*</span></label>
-                                        <div className="ip-field">
-                                            <svg className="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12 21C12 21 5 13.93 5 9.5C5 6.46 7.46 4 10.5 4C13.54 4 16 6.46 16 9.5C16 13.93 9 21 9 21H12Z" stroke="#A3ABB0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                                <circle cx="10.5" cy="9.5" r="1.5" fill="#A3ABB0" />
-                                            </svg>
-
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="1234 or 12345-6789"
-                                                name='officeZip'
-                                                value={formData.officeZip}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </fieldset>
-                                    <fieldset className="box-fieldset">
-                                        <label>Website</label>
-                                        <div className="ip-field">
-                                            <svg className="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm0 18c-4.41 0-8-3.59-8-8 0-.34.02-.67.06-1h3.9a15.35 15.35 0 0 0 0 2h3.9v2H9.05a7.98 7.98 0 0 0 2.95 5.74V20Zm0-16v1.26A7.97 7.97 0 0 0 9.05 10H6.06a8.005 8.005 0 0 1 5.94-6ZM12 12h3.95a15.35 15.35 0 0 1 0 2H12v-2Zm0-2V8h3.95a7.97 7.97 0 0 1 0 2H12Zm0-6c4.41 0 8 3.59 8 8 0 .34-.02.67-.06 1h-3.9a15.35 15.35 0 0 0 0-2h-3.9V4Zm0 16v-1.26A7.97 7.97 0 0 0 14.95 14h2.99A8.005 8.005 0 0 1 12 20Z" fill="#A3ABB0" />
-                                            </svg>
-
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="https://www.example.com"
-                                                name='website'
-                                                value={formData.website}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </fieldset>
-
-                                    {
-                                        formData.indusRole === "3" &&
-                                        <React.Fragment>
-
                                             <fieldset className="box-fieldset">
-                                                <label>License State <span className='text-danger'>*</span></label>
+                                                <label>Email <span className='text-danger'>*</span></label>
                                                 <div className="ip-field">
-                                                    <select name='licenceState'
-                                                        value={formData.licenceState}
+                                                    <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="Email address"
+                                                        name='email'
+                                                        value={formData.email}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </fieldset>
+                                            <fieldset className="box-fieldset">
+                                                <label>Industry Role <span className='text-danger'>*</span></label>
+                                                <div className="ip-field">
+                                                    <select name='indusRole'
+                                                        value={formData.indusRole}
                                                         onChange={handleChange}
                                                         style={{
                                                             width: "100%", padding: "16px 20px",
                                                             borderRadius: "30px", borderColor: "#e4e4e4",
                                                             outline: "none",
                                                         }}>
-                                                        <option value="">Select a role</option>
-                                                        {
-                                                            USAStates.map((item, index) => {
-                                                                return (
-                                                                    <option value={item.title}>{item.title}</option>
-
-                                                                )
-                                                            })
-                                                        }
+                                                        <option value="1">Select a role</option>
+                                                        <option value="2">Buyer</option>
+                                                        <option value="3">Seller</option>
                                                     </select>
                                                 </div>
                                             </fieldset>
                                             <fieldset className="box-fieldset">
-                                                <label>License Number</label>
+                                                <label>Phone <span className='text-danger'>*</span></label>
                                                 <div className="ip-field">
                                                     <svg className="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="#A3ABB0" strokeWidth="2" />
-                                                        <circle cx="8" cy="10" r="2" stroke="#A3ABB0" strokeWidth="2" />
-                                                        <path d="M14 10h4M14 14h4M8 14h0" stroke="#A3ABB0" strokeWidth="2" strokeLinecap="round" />
+                                                        <path d="M22 16.92V21a1 1 0 0 1-1.09 1A19.91 19.91 0 0 1 3 4.09 1 1 0 0 1 4 3h4.09a1 1 0 0 1 1 .75l1.2 5a1 1 0 0 1-.27.95l-2.2 2.2a16 16 0 0 0 6.61 6.61l2.2-2.2a1 1 0 0 1 .95-.27l5 1.2a1 1 0 0 1 .75 1z" stroke="#A3ABB0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+
+                                                    <input
+                                                        type="phone"
+                                                        className="form-control"
+                                                        placeholder="555-555-5555"
+                                                        name='phone'
+                                                        value={formData.phone}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </fieldset>
+                                            <fieldset className="box-fieldset">
+                                                <label>Office Zip <span className='text-danger'>*</span></label>
+                                                <div className="ip-field">
+                                                    <svg className="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M12 21C12 21 5 13.93 5 9.5C5 6.46 7.46 4 10.5 4C13.54 4 16 6.46 16 9.5C16 13.93 9 21 9 21H12Z" stroke="#A3ABB0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <circle cx="10.5" cy="9.5" r="1.5" fill="#A3ABB0" />
                                                     </svg>
 
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        placeholder="Ex: 0461953"
-                                                        name='licenceNumber'
-                                                        value={formData.licenceNumber}
+                                                        placeholder="1234 or 12345-6789"
+                                                        name='officeZip'
+                                                        value={formData.officeZip}
                                                         onChange={handleChange}
                                                     />
                                                 </div>
                                             </fieldset>
-                                        </React.Fragment>
-                                    }
-                                </div>
+                                            <fieldset className="box-fieldset">
+                                                <label>Website</label>
+                                                <div className="ip-field">
+                                                    <svg className="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm0 18c-4.41 0-8-3.59-8-8 0-.34.02-.67.06-1h3.9a15.35 15.35 0 0 0 0 2h3.9v2H9.05a7.98 7.98 0 0 0 2.95 5.74V20Zm0-16v1.26A7.97 7.97 0 0 0 9.05 10H6.06a8.005 8.005 0 0 1 5.94-6ZM12 12h3.95a15.35 15.35 0 0 1 0 2H12v-2Zm0-2V8h3.95a7.97 7.97 0 0 1 0 2H12Zm0-6c4.41 0 8 3.59 8 8 0 .34-.02.67-.06 1h-3.9a15.35 15.35 0 0 0 0-2h-3.9V4Zm0 16v-1.26A7.97 7.97 0 0 0 14.95 14h2.99A8.005 8.005 0 0 1 12 20Z" fill="#A3ABB0" />
+                                                    </svg>
+
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="https://www.example.com"
+                                                        name='website'
+                                                        value={formData.website}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </fieldset>
+
+
+                                        </div>
+                                    ) : (
+                                        <div className="box">
+
+                                            <fieldset className="box-fieldset">
+                                                <label>OTP <span className='text-danger'>*</span></label>
+                                                <div className="ip-field">
+                                                    <svg className="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <rect x="3" y="11" width="18" height="11" rx="2" stroke="#A3ABB0" strokeWidth="2" />
+                                                        <path d="M7 11V7C7 4.79086 8.79086 3 11 3H13C15.2091 3 17 4.79086 17 7V11" stroke="#A3ABB0" strokeWidth="2" />
+                                                        <circle cx="12" cy="16" r="1" fill="#A3ABB0" />
+                                                    </svg>
+
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        placeholder="Your otp"
+                                                        name='otp'
+                                                        value={formData.otp}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    )}
                                 <div className="box box-btn">
-                                    <div className="tf-btn primary w-100" disabled={loading} style={{ cursor: "pointer" }} onClick={handleSubmit}>Sign Up</div>
-                                    <div className="text text-center">Do you have an account? <a href="#modalLogin" data-bs-toggle="modal" className="text-primary">Login</a></div>
+                                    <div className="tf-btn primary w-100" disabled={loading} style={{ cursor: "pointer" }} onClick={handleSubmit}>{showSotp ? "Verify OTP" : "Sign Up"}</div>
+                                    {
+                                        !showSotp &&
+                                        <div className="text text-center">Do you have an account?
+                                            <a href="#modalLogin" data-bs-toggle="modal" className="text-primary">Login</a>
+                                        </div>
+                                    }
                                 </div>
                                 {/* <p className="box text-center caption-2">or login with</p>
                                 <div className="group-btn">
@@ -831,7 +827,7 @@ const Header = () => {
                                     </a>
 
                                 </div> */}
-                            </form>
+                            </div>
 
 
                         </div>

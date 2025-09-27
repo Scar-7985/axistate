@@ -48,7 +48,7 @@ const HeroBanner = () => {
                 </p>
               </div>
               <div className="flat-tab flat-tab-form">
-                <ul
+                {/* <ul
                   className="nav-tab-form style-1 justify-content-center"
                   role="tablist"
                 >
@@ -70,16 +70,7 @@ const HeroBanner = () => {
                       For Lease
                     </a>
                   </li>
-                  {/* <li className="nav-tab-item" role="presentation">
-                      <a
-                        href="#forAuction"
-                        className="nav-link-item"
-                        data-bs-toggle="tab"
-                      >
-                        For Auction
-                      </a>
-                    </li> */}
-                </ul>
+                </ul> */}
                 <div className="tab-content">
                   <div className="tab-pane fade active show" role="tabpanel">
                     <div className="form-sl">

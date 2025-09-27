@@ -2,12 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { swalMsg } from '../SweetAlert2';
 import axios from 'axios';
 import { GET_API, MEDIA_URL, POST_API } from '../../Auth/Define';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-const AttachmentsMedia = ({chkStatus}) => {
+const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
 
     const [photos, setFiles] = useState([]);
@@ -135,7 +136,13 @@ const AttachmentsMedia = ({chkStatus}) => {
             setUpdatePid(pid);
         }
 
-    }, []);
+    }, [location.search]);
+
+    useEffect(() => {
+        if (prevStatus === 101) {
+            window.history.back();
+        }
+    }, [prevStatus]);
 
 
     // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
@@ -249,15 +256,15 @@ const AttachmentsMedia = ({chkStatus}) => {
                             </a>
                         </div>
                         <div>
-                               {
-            Number(chkStatus) === 1 &&
-                            <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
-                                <div className='text'>Next</div>
-                                <span class="material-symbols-outlined">
-                                    arrow_forward
-                                </span>
-                            </a>
-                               }
+                            {
+                                Number(chkStatus) === 1 &&
+                                <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
+                                    <div className='text'>Next</div>
+                                    <span class="material-symbols-outlined">
+                                        arrow_forward
+                                    </span>
+                                </a>
+                            }
                         </div>
                     </div>
                 </h5>
@@ -442,7 +449,15 @@ const AttachmentsMedia = ({chkStatus}) => {
 
             </div>
 
-
+{
+  isLoading &&
+      <div className="loading">
+        <div className="loader-wrapper">
+          <div className="circle"></div>
+          <i class="icon-pass icon-home icon-center"></i>
+        </div>
+      </div>
+}
 
         </div>
     );

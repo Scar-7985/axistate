@@ -10,25 +10,23 @@ import ScrollToTop from './Components/ScrollToTop';
 
 const Home = lazy(() => import("./Pages/Home"));
 const AddListing = lazy(() => import("./Pages/AddListing"));
-const PropertyDetails = lazy(() => import("./Pages/PropertyDetails"));
+const ViewProperty = lazy(() => import("./Pages/ViewProperty"));
 const AccountDetails = lazy(() => import("./Pages/AccountDetails"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
 const AddLease = lazy(() => import("./Pages/AddLease"));
 const MyListings = lazy(() => import("./Pages/MyListings"));
 const Search = lazy(() => import("./Pages/Search"));
 const Terms = lazy(() => import("./Pages/Terms"));
-const Dashboard = lazy(() => import("./Pages/Dashboard"));
+const Settings = lazy(() => import("./Pages/Settings"));
 
 const App = () => {
 
   const location = useLocation();
 
-  const showHeader = location.pathname !== "/add-lease" && location.pathname !== "/dashboard";
+  const showHeader = location.pathname !== "/add-lease" && location.pathname !== "/settings";
   const showFooter = location.pathname !== "/add-property" &&
     location.pathname !== "/properties" &&
-    location.pathname !== "/add-sale" &&
-    location.pathname !== "/add-lease";
-    location.pathname !== "/add-lease";
+    location.pathname !== "/add-listing"
 
   return (
     <div id="wrapper">
@@ -46,7 +44,7 @@ const App = () => {
 
           <Route path='/' element={<Home />} />
           <Route path='/properties' element={<Search />} />
-          <Route path='/property-details' element={<PropertyDetails />} />
+          <Route path='/view-property' element={<ViewProperty />} />
           <Route path='/contact-us' element={<ContactUs />} />
           <Route path='/terms' element={<Terms />} />
 
@@ -55,7 +53,7 @@ const App = () => {
             <Route path='/add-listing' element={<AddListing />} />
             <Route path='/add-lease' element={<AddLease />} />
             <Route path='/my-listings' element={<MyListings />} />
-            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/settings' element={<Settings />} />
           </Route>
 
           <Route path='*' element={<Home />} />

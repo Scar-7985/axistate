@@ -29,7 +29,7 @@ const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ userData }}>
+    <UserContext.Provider value={{ userData, getProfile }}>
       {children}
     </UserContext.Provider>
   )

@@ -3,11 +3,12 @@ import React, { useState, useEffect } from "react";
 import { swalMsg } from "../SweetAlert2";
 import { GET_API, POST_API } from "../../Auth/Define";
 import ChipBox from "../Inputs/ChipBox";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const ContactInformation = () => {
+const ContactInformation = ({ prevStatus }) => {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
 
     const [selectedTenant, setSelectedTenant] = useState([]);
@@ -59,6 +60,7 @@ const ContactInformation = () => {
     }
 
 
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const pid = params.get("pid");
@@ -67,8 +69,13 @@ const ContactInformation = () => {
             getMedia(pid);
             setUpdatePid(pid);
         }
+    }, [location.search]);
 
-    }, []);
+    useEffect(() => {
+        if (prevStatus === 101) {
+            window.history.back();
+        }
+    }, [prevStatus]);
 
 
     // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
@@ -111,12 +118,12 @@ const ContactInformation = () => {
         <div className="main-content-inner">
             <div className="widget-box-2 mb-20 shadow">
                 <h5 className="title d-flex justify-content-between align-items-center">
-                <div>
-                Contact Information
-                </div>
-                 <div className='d-flex align-items-center gap-2'>
+                    <div>
+                        Contact Information
+                    </div>
+                    <div className='d-flex align-items-center gap-2'>
                         <div>
-                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-sale?pageNum=6&pid=${updatePid}`)}>
+                            <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-listing?pageNum=6&pid=${updatePid}`)}>
                                 <span class="material-symbols-outlined">
                                     arrow_back
                                 </span>
@@ -187,12 +194,22 @@ const ContactInformation = () => {
                     />
                 </fieldset>
 
-              <div className="box-btn" style={{ marginTop: "60px" }}>
-                  
+                <div className="box-btn" style={{ marginTop: "60px" }}>
+
                     <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
-                   
+
                 </div>
             </div>
+
+            {
+                isLoading &&
+                <div className="loading">
+                    <div className="loader-wrapper">
+                        <div className="circle"></div>
+                        <i class="icon-pass icon-home icon-center"></i>
+                    </div>
+                </div>
+            }
 
         </div>
 

@@ -1,4 +1,4 @@
-import secureLocalStorage from "react-secure-storage";
+
 
 // FILE PATH AND API URL
 export const SITE_URL = "https://nikhil.westonik.com/axis";

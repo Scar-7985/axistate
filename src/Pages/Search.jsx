@@ -91,7 +91,7 @@ const Search = () => {
     };
 
     const ViewProperty = (PID) => {
-        navigate("/property-details", { state: { pid: PID } })
+        navigate(`/view-property?pid=${PID}`);
     }
 
     const handlePropertyTypes = (propSubTypes, propType) => {
@@ -210,7 +210,7 @@ const Search = () => {
 
     return (
         <React.Fragment>
-     
+
             {
                 !isLoading ?
                     (
@@ -590,18 +590,18 @@ const Search = () => {
                                                                                         <div className="images-style">
                                                                                             <img className="lazyload" data-src="/assets/images/home/house-7.jpg" src="/assets/images/home/house-7.jpg" alt="img" />
                                                                                         </div>
-                                                                                        <div className="top">
+                                                                                        {/* <div className="top">
                                                                                             <ul className="d-flex gap-6">
                                                                                                 <li className="flag-tag primary">Featured</li>
                                                                                                 <li className="flag-tag style-1">For Sale</li>
                                                                                             </ul>
-                                                                                        </div>
+                                                                                        </div> */}
                                                                                         <div className="bottom">
                                                                                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                                                 <path d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                                                                                 <path d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                                                                             </svg>
-                                                                                            {item.street_address + ' ' + item.country}
+                                                                                            {item.city + ', ' + item.state}
                                                                                         </div>
                                                                                     </span>
 
@@ -610,7 +610,7 @@ const Search = () => {
                                                                                     <div className="content-top">
                                                                                         <h6 className="text-capitalize">
                                                                                             <a className="link">
-                                                                                                {item.property_name}
+                                                                                                {item.project_name}
                                                                                             </a>
                                                                                         </h6>
                                                                                         <ul className="meta-list">
@@ -638,7 +638,7 @@ const Search = () => {
                                                                                             <div className="avatar avt-40 round">
                                                                                                 <img src="/assets/images/avatar/avt-png1.png" alt="avt" />
                                                                                             </div>
-                                                                                            <span>Arlene McCoy</span>
+                                                                                            <span>Testing User</span>
                                                                                         </div>
                                                                                         <h6 className="price">{`${'$' + ' ' + item.asking_price}`}</h6>
                                                                                     </div>
@@ -682,357 +682,7 @@ const Search = () => {
                                                 </div>
 
                                             </div>
-                                            <div className="tab-pane" id="listLayout" role="tabpanel">
-                                                <div className="row">
-                                                    <div className="col-md-12">
-                                                        <div className="axs-box list-style-1 list-style-2 line">
-                                                            <div className="archive-top">
-                                                                <a className="images-group">
-                                                                    <div className="images-style">
-                                                                        <img className="lazyload" data-src="/assets/images/home/house-sm-11.jpg" src="/assets/images/home/house-sm-11.jpg" alt="img-property" />
-                                                                    </div>
-                                                                    <div className="top">
-                                                                        <ul className="d-flex gap-6 flex-wrap">
-                                                                            <li className="flag-tag primary">Featured</li>
-                                                                            <li className="flag-tag style-1">For Sale</li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </a>
-                                                            </div>
-                                                            <div className="archive-bottom">
-                                                                <div className="content-top">
-                                                                    <h6 className="text-capitalize"><a className="link text-line-clamp-1"> Ritma Perdana (Townhouse), LBS Alam Perdana</a></h6>
-                                                                    <ul className="meta-list">
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bed"></i>
-                                                                            <span className="text-variant-1">Beds:</span>
-                                                                            <span className="fw-6">3</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bath"></i>
-                                                                            <span className="text-variant-1">Baths:</span>
-                                                                            <span className="fw-6">2</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-sqft"></i>
-                                                                            <span className="text-variant-1">Sqft:</span>
-                                                                            <span className="fw-6">1150</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                    <div className="location">
-                                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                            <path d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                        </svg>
-                                                                        <span className="text-line-clamp-1"> 145 Brooklyn Ave, Califonia, New York </span>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div className="content-bottom">
-                                                                    <div className="d-flex gap-8 align-items-center">
-                                                                        <div className="avatar avt-40 round">
-                                                                            <img src="/assets/images/avatar/avt-png3.png" alt="avt" />
-                                                                        </div>
-                                                                        <span>Arlene McCoy</span>
-                                                                    </div>
-                                                                    <h6 className="price">$7250,00</h6>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-12">
-                                                        <div className="axs-box list-style-1 list-style-2 line">
-                                                            <div className="archive-top">
-                                                                <a className="images-group">
-                                                                    <div className="images-style">
-                                                                        <img className="lazyload" data-src="/assets/images/home/house-sm-12.jpg" src="/assets/images/home/house-sm-12.jpg" alt="img-property" />
-                                                                    </div>
-                                                                    <div className="top">
-                                                                        <ul className="d-flex gap-6 flex-wrap">
-                                                                            <li className="flag-tag primary">Featured</li>
-                                                                            <li className="flag-tag style-1">For Sale</li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </a>
-                                                            </div>
-                                                            <div className="archive-bottom">
-                                                                <div className="content-top">
-                                                                    <h6 className="text-capitalize"><a className="link text-line-clamp-1"> Casa Lomas de Machalí Machas</a></h6>
-                                                                    <ul className="meta-list">
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bed"></i>
-                                                                            <span className="text-variant-1">Beds:</span>
-                                                                            <span className="fw-6">3</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bath"></i>
-                                                                            <span className="text-variant-1">Baths:</span>
-                                                                            <span className="fw-6">2</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-sqft"></i>
-                                                                            <span className="text-variant-1">Sqft:</span>
-                                                                            <span className="fw-6">1150</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                    <div className="location">
-                                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                            <path d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                        </svg>
-                                                                        <span className="text-line-clamp-1"> 145 Brooklyn Ave, Califonia, New York </span>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <div className="content-bottom">
-                                                                    <div className="d-flex gap-8 align-items-center">
-                                                                        <div className="avatar avt-40 round">
-                                                                            <img src="/assets/images/avatar/avt-png3.png" alt="avt" />
-                                                                        </div>
-                                                                        <span>Arlene McCoy</span>
-                                                                    </div>
-                                                                    <h6 className="price">$7250,00</h6>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-12">
-                                                        <div className="axs-box list-style-1 list-style-2 line">
-                                                            <div className="archive-top">
-                                                                <a className="images-group">
-                                                                    <div className="images-style">
-                                                                        <img className="lazyload" data-src="/assets/images/home/house-sm-13.jpg" src="/assets/images/home/house-sm-13.jpg" alt="img-property" />
-                                                                    </div>
-                                                                    <div className="top">
-                                                                        <ul className="d-flex gap-6 flex-wrap">
-                                                                            <li className="flag-tag primary">Featured</li>
-                                                                            <li className="flag-tag style-1">For Sale</li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </a>
-                                                            </div>
-                                                            <div className="archive-bottom">
-                                                                <div className="content-top">
-                                                                    <h6 className="text-capitalize"><a className="link text-line-clamp-1"> Casa Lomas de Machalí Machas</a></h6>
-                                                                    <ul className="meta-list">
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bed"></i>
-                                                                            <span className="text-variant-1">Beds:</span>
-                                                                            <span className="fw-6">3</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bath"></i>
-                                                                            <span className="text-variant-1">Baths:</span>
-                                                                            <span className="fw-6">2</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-sqft"></i>
-                                                                            <span className="text-variant-1">Sqft:</span>
-                                                                            <span className="fw-6">1150</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                    <div className="location">
-                                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                            <path d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                        </svg>
-                                                                        <span className="text-line-clamp-1"> 145 Brooklyn Ave, Califonia, New York </span>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <div className="content-bottom">
-                                                                    <div className="d-flex gap-8 align-items-center">
-                                                                        <div className="avatar avt-40 round">
-                                                                            <img src="/assets/images/avatar/avt-png3.png" alt="avt" />
-                                                                        </div>
-                                                                        <span>Arlene McCoy</span>
-                                                                    </div>
-                                                                    <h6 className="price">$7250,00</h6>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-12">
-                                                        <div className="axs-box list-style-1 list-style-2 line">
-                                                            <div className="archive-top">
-                                                                <a className="images-group">
-                                                                    <div className="images-style">
-                                                                        <img className="lazyload" data-src="/assets/images/home/house-sm-14.jpg" src="/assets/images/home/house-sm-14.jpg" alt="img-property" />
-                                                                    </div>
-                                                                    <div className="top">
-                                                                        <ul className="d-flex gap-6 flex-wrap">
-                                                                            <li className="flag-tag primary">Featured</li>
-                                                                            <li className="flag-tag style-1">For Sale</li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </a>
-                                                            </div>
-                                                            <div className="archive-bottom">
-                                                                <div className="content-top">
-                                                                    <h6 className="text-capitalize"><a className="link text-line-clamp-1"> Casa Lomas de Machalí Machas</a></h6>
-                                                                    <ul className="meta-list">
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bed"></i>
-                                                                            <span className="text-variant-1">Beds:</span>
-                                                                            <span className="fw-6">3</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bath"></i>
-                                                                            <span className="text-variant-1">Baths:</span>
-                                                                            <span className="fw-6">2</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-sqft"></i>
-                                                                            <span className="text-variant-1">Sqft:</span>
-                                                                            <span className="fw-6">1150</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                    <div className="location">
-                                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                            <path d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                        </svg>
-                                                                        <span className="text-line-clamp-1"> 145 Brooklyn Ave, Califonia, New York </span>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <div className="content-bottom">
-                                                                    <div className="d-flex gap-8 align-items-center">
-                                                                        <div className="avatar avt-40 round">
-                                                                            <img src="/assets/images/avatar/avt-png3.png" alt="avt" />
-                                                                        </div>
-                                                                        <span>Arlene McCoy</span>
-                                                                    </div>
-                                                                    <h6 className="price">$7250,00</h6>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-12">
-                                                        <div className="axs-box list-style-1 list-style-2 line">
-                                                            <div className="archive-top">
-                                                                <a className="images-group">
-                                                                    <div className="images-style">
-                                                                        <img className="lazyload" data-src="/assets/images/home/house-sm-15.jpg" src="/assets/images/home/house-sm-15.jpg" alt="img-property" />
-                                                                    </div>
-                                                                    <div className="top">
-                                                                        <ul className="d-flex gap-6 flex-wrap">
-                                                                            <li className="flag-tag primary">Featured</li>
-                                                                            <li className="flag-tag style-1">For Sale</li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </a>
-                                                            </div>
-                                                            <div className="archive-bottom">
-                                                                <div className="content-top">
-                                                                    <h6 className="text-capitalize"><a className="link text-line-clamp-1"> Casa Lomas de Machalí Machas</a></h6>
-                                                                    <ul className="meta-list">
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bed"></i>
-                                                                            <span className="text-variant-1">Beds:</span>
-                                                                            <span className="fw-6">3</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bath"></i>
-                                                                            <span className="text-variant-1">Baths:</span>
-                                                                            <span className="fw-6">2</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-sqft"></i>
-                                                                            <span className="text-variant-1">Sqft:</span>
-                                                                            <span className="fw-6">1150</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                    <div className="location">
-                                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                            <path d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                        </svg>
-                                                                        <span className="text-line-clamp-1"> 145 Brooklyn Ave, Califonia, New York </span>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <div className="content-bottom">
-                                                                    <div className="d-flex gap-8 align-items-center">
-                                                                        <div className="avatar avt-40 round">
-                                                                            <img src="/assets/images/avatar/avt-png3.png" alt="avt" />
-                                                                        </div>
-                                                                        <span>Arlene McCoy</span>
-                                                                    </div>
-                                                                    <h6 className="price">$7250,00</h6>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-12">
-                                                        <div className="axs-box list-style-1 list-style-2 line">
-                                                            <div className="archive-top">
-                                                                <a className="images-group">
-                                                                    <div className="images-style">
-                                                                        <img className="lazyload" data-src="/assets/images/home/house-sm-16.jpg" src="/assets/images/home/house-sm-16.jpg" alt="img-property" />
-                                                                    </div>
-                                                                    <div className="top">
-                                                                        <ul className="d-flex gap-6 flex-wrap">
-                                                                            <li className="flag-tag primary">Featured</li>
-                                                                            <li className="flag-tag style-1">For Sale</li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </a>
-                                                            </div>
-                                                            <div className="archive-bottom">
-                                                                <div className="content-top">
-                                                                    <h6 className="text-capitalize"><a className="link text-line-clamp-1"> Casa Lomas de Machalí Machas</a></h6>
-                                                                    <ul className="meta-list">
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bed"></i>
-                                                                            <span className="text-variant-1">Beds:</span>
-                                                                            <span className="fw-6">3</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-bath"></i>
-                                                                            <span className="text-variant-1">Baths:</span>
-                                                                            <span className="fw-6">2</span>
-                                                                        </li>
-                                                                        <li className="item">
-                                                                            <i className="icon icon-sqft"></i>
-                                                                            <span className="text-variant-1">Sqft:</span>
-                                                                            <span className="fw-6">1150</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                    <div className="location">
-                                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                            <path d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z" stroke="#A3ABB0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                                        </svg>
-                                                                        <span className="text-line-clamp-1"> 145 Brooklyn Ave, Califonia, New York </span>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <div className="content-bottom">
-                                                                    <div className="d-flex gap-8 align-items-center">
-                                                                        <div className="avatar avt-40 round">
-                                                                            <img src="/assets/images/avatar/avt-png3.png" alt="avt" />
-                                                                        </div>
-                                                                        <span>Arlene McCoy</span>
-                                                                    </div>
-                                                                    <h6 className="price">$7250,00</h6>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -1067,111 +717,62 @@ export default Search;
 
 
 
-
-export const subPropertyOptions = [
-  // Retail
-  { id: 1, cat_id: 1, value: 'Gas Station Area', label: 'Gas Station' },
-  { id: 2, cat_id: 1, value: 'Bank Area', label: 'Bank' },
-  { id: 3, cat_id: 1, value: 'Convenience Store Area', label: 'Convenience Store' },
-  { id: 4, cat_id: 1, value: 'Day Care / Nursery Area', label: 'Day Care / Nursery' },
-  { id: 5, cat_id: 1, value: 'QSR / Fast Food Area', label: 'QSR / Fast Food' },
-  { id: 6, cat_id: 1, value: 'Grocery Store Area', label: 'Grocery Store' },
-  { id: 7, cat_id: 1, value: 'Pharmacy / Drug Area', label: 'Pharmacy / Drug Store' },
-  { id: 8, cat_id: 1, value: 'Restaurant / Café Area', label: 'Restaurant / Café' },
-  { id: 9, cat_id: 1, value: 'Shopping Center Area', label: 'Shopping Center' },
-  { id: 10, cat_id: 1, value: 'Big Box / Anchor Store Area', label: 'Big Box / Anchor Store' },
-  { id: 11, cat_id: 1, value: 'Factory Outlet Area', label: 'Factory Outlet' },
-  { id: 12, cat_id: 1, value: 'Theme Center Area', label: 'Theme Center' },
-  { id: 13, cat_id: 1, value: 'Strip Center / Neighborhood Center Area', label: 'Strip Center / Neighborhood Center' },
-  { id: 14, cat_id: 1, value: 'Lifestyle Center Area', label: 'Lifestyle Center' },
-  { id: 15, cat_id: 1, value: 'Mixed-Use Retail Area', label: 'Mixed-Use Retail' },
-  { id: 16, cat_id: 1, value: 'Standalone Store / Pad Site Area', label: 'Standalone Store / Pad Site' },
-  { id: 17, cat_id: 1, value: 'Fitness / Gym Area', label: 'Fitness / Gym' },
-  { id: 18, cat_id: 1, value: 'Specialty Retail Area', label: 'Specialty Retail' },
-
-  // Office
-  { id: 19, cat_id: 2, value: 'High-Rise Office Area', label: 'High-Rise Office' },
-  { id: 20, cat_id: 2, value: 'Mid-Rise Office Area', label: 'Mid-Rise Office' },
-  { id: 21, cat_id: 2, value: 'Low-Rise / Garden Office Area', label: 'Low-Rise / Garden Office' },
-  { id: 22, cat_id: 2, value: 'Suburban Office Park Area', label: 'Suburban Office Park' },
-  { id: 23, cat_id: 2, value: 'Medical Office Area', label: 'Medical Office' },
-  { id: 24, cat_id: 2, value: 'Co-Working / Shared Office Area', label: 'Co-Working / Shared Office' },
-  { id: 25, cat_id: 2, value: 'Flex Office Area', label: 'Flex Office' },
-
-  // Industrial
-  { id: 26, cat_id: 3, value: 'Warehouse / Distribution Area', label: 'Warehouse / Distribution' },
-  { id: 27, cat_id: 3, value: 'Manufacturing Facility Area', label: 'Manufacturing Facility' },
-  { id: 28, cat_id: 3, value: 'Flex Industrial Area', label: 'Flex Industrial' },
-  { id: 29, cat_id: 3, value: 'Cold Storage Area', label: 'Cold Storage' },
-  { id: 30, cat_id: 3, value: 'Data Center Area', label: 'Data Center' },
-  { id: 31, cat_id: 3, value: 'R&D Facility / Laboratory Area', label: 'R&D Facility / Laboratory' },
-  { id: 32, cat_id: 3, value: 'Bulk / Logistics Hub Area', label: 'Bulk / Logistics Hub' },
-
-  // Hospitality / Hotels
-  { id: 33, cat_id: 4, value: 'Hotel (Full Service) Area', label: 'Hotel (Full Service)' },
-  { id: 34, cat_id: 4, value: 'Limited Service Hotel Area', label: 'Limited Service Hotel' },
-  { id: 35, cat_id: 4, value: 'Motel Area', label: 'Motel' },
-  { id: 36, cat_id: 4, value: 'Resort Area', label: 'Resort' },
-  { id: 37, cat_id: 4, value: 'Extended Stay Area', label: 'Extended Stay' },
-
-  // Multifamily
-  { id: 38, cat_id: 5, value: 'Apartment Complex (Low-, Mid-, High-rise) Area', label: 'Apartment Complex (Low-, Mid-, High-rise)' },
-  { id: 39, cat_id: 5, value: 'Student Housing Area', label: 'Student Housing' },
-  { id: 40, cat_id: 5, value: 'Senior / Assisted Living Housing Area', label: 'Senior / Assisted Living Housing' },
-  { id: 41, cat_id: 5, value: 'Duplex / Triplex / Fourplex Area', label: 'Duplex / Triplex / Fourplex' },
-  { id: 42, cat_id: 5, value: 'Condominiums / Co-ops Area', label: 'Condominiums / Co-ops' },
-
-  // Land
-  { id: 43, cat_id: 6, value: 'Raw / Vacant Land Area', label: 'Raw / Vacant Land' },
-  { id: 44, cat_id: 6, value: 'Development Land (zoned / permitted) Area', label: 'Development Land (zoned / permitted)' },
-  { id: 45, cat_id: 6, value: 'Outlot / Pad Site Area', label: 'Outlot / Pad Site' },
-  { id: 46, cat_id: 6, value: 'Land with Partial Improvements Area', label: 'Land with Partial Improvements' },
-];
-
-
 const groupedOptions = [
     {
         label: 'Retail',
         options: [
-            { value: 'Bank', label: 'Bank' },
-            { value: 'Convenience Store', label: 'Convenience Store' },
-            { value: 'Day Care/Nursery', label: 'Day Care/Nursery' },
-            { value: 'QSR/Fast Food', label: 'QSR/Fast Food' },
-            { value: 'Gas Station', label: 'Gas Station' },
-            { value: 'Grocery Store', label: 'Grocery Store' },
-            { value: 'Pharmacy/Drug', label: 'Pharmacy/Drug' },
-            { value: 'Restaurant', label: 'Restaurant' },
-            { value: 'Bar', label: 'Bar' },
-            { value: 'Storefront', label: 'Storefront' },
-            { value: 'Shopping Center', label: 'Shopping Center' },
-            { value: 'Auto Shop', label: 'Auto Shop' },
+            { value: 'Gas Station Area', label: 'Gas Station' },
+            { value: 'Bank Area', label: 'Bank' },
+            { value: 'Convenience Store Area', label: 'Convenience Store' },
+            { value: 'Day Care / Nursery Area', label: 'Day Care / Nursery' },
+            { value: 'QSR / Fast Food Area', label: 'QSR / Fast Food' },
+            { value: 'Grocery Store Area', label: 'Grocery Store' },
+            { value: 'Pharmacy / Drug Area', label: 'Pharmacy / Drug Store' },
+            { value: 'Restaurant / Café Area', label: 'Restaurant / Café' },
+            { value: 'Shopping Center Area', label: 'Shopping Center' },
+            { value: 'Big Box / Anchor Store Area', label: 'Big Box / Anchor Store' },
+            { value: 'Factory Outlet Area', label: 'Factory Outlet' },
+            { value: 'Theme Center Area', label: 'Theme Center' },
+            { value: 'Strip Center / Neighborhood Center Area', label: 'Strip Center / Neighborhood Center' },
+            { value: 'Lifestyle Center Area', label: 'Lifestyle Center' },
+            { value: 'Mixed-Use Retail Area', label: 'Mixed-Use Retail' },
+            { value: 'Standalone Store / Pad Site Area', label: 'Standalone Store / Pad Site' },
+            { value: 'Fitness / Gym Area', label: 'Fitness / Gym' },
+            { value: 'Specialty Retail Area', label: 'Specialty Retail' },
         ],
     },
     {
         label: 'Office',
         options: [
-            { value: 'Student Housing', label: 'Student Housing' },
-            { value: 'Single Family Rental Portfolio', label: 'Single Family Rental Portfolio' },
-            { value: 'RV Park', label: 'RV Park' },
-            { value: 'Apartment Building', label: 'Apartment Building' },
+            { value: 'High-Rise Office Area', label: 'High-Rise Office' },
+            { value: 'Mid-Rise Office Area', label: 'Mid-Rise Office' },
+            { value: 'Low-Rise / Garden Office Area', label: 'Low-Rise / Garden Office' },
+            { value: 'Suburban Office Park Area', label: 'Suburban Office Park' },
+            { value: 'Medical Office Area', label: 'Medical Office' },
+            { value: 'Co-Working / Shared Office Area', label: 'Co-Working / Shared Office' },
+            { value: 'Flex Office Area', label: 'Flex Office' },
         ],
     },
     {
         label: 'Multifamily',
         options: [
-            { value: 'Student Housing', label: 'Student Housing' },
-            { value: 'Single Family Rental Portfolio', label: 'Single Family Rental Portfolio' },
-            { value: 'RV Park', label: 'RV Park' },
-            { value: 'Apartment Building', label: 'Apartment Building' },
+            { value: 'Apartment Complex (Low-, Mid-, High-rise) Area', label: 'Apartment Complex (Low-, Mid-, High-rise)' },
+            { value: 'Student Housing Area', label: 'Student Housing' },
+            { value: 'Senior / Assisted Living Housing Area', label: 'Senior / Assisted Living Housing' },
+            { value: 'Duplex / Triplex / Fourplex Area', label: 'Duplex / Triplex / Fourplex' },
+            { value: 'Condominiums / Co-ops Area', label: 'Condominiums / Co-ops' },
         ],
     },
     {
         label: 'Industrial',
         options: [
-            { value: 'Student Housing', label: 'Student Housing' },
-            { value: 'Single Family Rental Portfolio', label: 'Single Family Rental Portfolio' },
-            { value: 'RV Park', label: 'RV Park' },
-            { value: 'Apartment Building', label: 'Apartment Building' },
+            { value: 'Warehouse / Distribution Area', label: 'Warehouse / Distribution' },
+            { value: 'Manufacturing Facility Area', label: 'Manufacturing Facility' },
+            { value: 'Flex Industrial Area', label: 'Flex Industrial' },
+            { value: 'Cold Storage Area', label: 'Cold Storage' },
+            { value: 'Data Center Area', label: 'Data Center' },
+            { value: 'R&D Facility / Laboratory Area', label: 'R&D Facility / Laboratory' },
+            { value: 'Bulk / Logistics Hub Area', label: 'Bulk / Logistics Hub' },
         ],
     },
     {
@@ -1186,10 +787,11 @@ const groupedOptions = [
     {
         label: 'Hospitality / Hotels',
         options: [
-            { value: 'Traditional Office', label: 'Traditional Office' },
-            { value: 'Executive Office', label: 'Executive Office' },
-            { value: 'Medical Office', label: 'Medical Office' },
-            { value: 'Creative Office', label: 'Creative Office' },
+            { value: 'Hotel (Full Service) Area', label: 'Hotel (Full Service)' },
+            { value: 'Limited Service Hotel Area', label: 'Limited Service Hotel' },
+            { value: 'Motel Area', label: 'Motel' },
+            { value: 'Resort Area', label: 'Resort' },
+            { value: 'Extended Stay Area', label: 'Extended Stay' },
         ],
     },
     {
@@ -1204,10 +806,10 @@ const groupedOptions = [
     {
         label: 'Land',
         options: [
-            { value: 'Traditional Office', label: 'Traditional Office' },
-            { value: 'Executive Office', label: 'Executive Office' },
-            { value: 'Medical Office', label: 'Medical Office' },
-            { value: 'Creative Office', label: 'Creative Office' },
+            { value: 'Raw / Vacant Land Area', label: 'Raw / Vacant Land' },
+            { value: 'Development Land (zoned / permitted) Area', label: 'Development Land (zoned / permitted)' },
+            { value: 'Outlot / Pad Site Area', label: 'Outlot / Pad Site' },
+            { value: 'Land with Partial Improvements Area', label: 'Land with Partial Improvements' },
         ],
     },
 ];

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { swalMsg } from '../SweetAlert2';
 import axios from 'axios';
 import { GET_API, POST_API } from '../../Auth/Define';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
-const LocationHighlights = ({chkStatus}) => {
+const LocationHighlights = ({ chkStatus, prevStatus }) => {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -62,7 +63,13 @@ const LocationHighlights = ({chkStatus}) => {
             setUpdatePid(pid);
         }
 
-    }, []);
+    }, [location.search]);
+
+    useEffect(() => {
+        if (prevStatus === 101) {
+            window.history.back();
+        }
+    }, [prevStatus]);
 
 
     // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
@@ -190,6 +197,17 @@ const LocationHighlights = ({chkStatus}) => {
                 </div>
 
             </div>
+
+{
+  isLoading &&
+      <div className="loading">
+        <div className="loader-wrapper">
+          <div className="circle"></div>
+          <i class="icon-pass icon-home icon-center"></i>
+        </div>
+      </div>
+}
+
         </div>
 
     )

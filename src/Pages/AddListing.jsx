@@ -53,20 +53,7 @@ const AddListing = () => {
   }, [getPageNum]);
 
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const pageNum = params.get("pageNum");
-    const pid = params.get("pid");
 
-    if (pid) {
-      setCurrentPid(pid);
-    }
-
-    if (pageNum) {
-      setPageNumber(Number(pageNum));
-    }
-
-  }, [location]);
 
 
   // complete-list.php PID
@@ -81,19 +68,33 @@ const AddListing = () => {
     status7: 0,
   });
 
-  const completedList = () => {
+  const completedList = (PID) => {
     const listData = new FormData();
-    listData.append("pid", currentPid);
+    listData.append("pid", PID);
     axios.post(`${GET_API}/complete-list.php`, listData).then(resp => {
-      // console.log(resp.data);
       setCheckList(resp.data);
+      // console.log(resp.data);
+
     })
   }
 
+
   useEffect(() => {
-    if (!currentPid) return;
-    completedList();
-  }, [currentPid]);
+    const params = new URLSearchParams(location.search);
+    const pageNum = params.get("pageNum");
+    const pid = params.get("pid");
+
+    if (pid) {
+      setCurrentPid(pid);
+      completedList(pid);
+    }
+
+    if (pageNum) {
+      setPageNumber(Number(pageNum));
+    }
+
+  }, [location.search]);
+
 
 
   return (
@@ -135,18 +136,18 @@ const AddListing = () => {
         <div className="main-content">
           {
             pageNumber === 7
-              ? <ContactInformation chkStatus={checkList.status7} />
+              ? <ContactInformation chkStatus={checkList.status7} prevStatus={checkList.status6} callList={completedList} />
               : pageNumber === 6
-                ? <AttachmentsMedia chkStatus={checkList.status6} />
+                ? <AttachmentsMedia chkStatus={checkList.status6} prevStatus={checkList.status5} callList={completedList} />
                 : pageNumber === 5
-                  ? <FinancialTenencyInformation chkStatus={checkList.status5} />
+                  ? <FinancialTenencyInformation chkStatus={checkList.status5} prevStatus={checkList.status4} callList={completedList} />
                   : pageNumber === 4
-                    ? <LocationHighlights chkStatus={checkList.status4} />
+                    ? <LocationHighlights chkStatus={checkList.status4} prevStatus={checkList.status3} callList={completedList} />
                     : pageNumber === 3
-                      ? <PropertyFeatures chkStatus={checkList.status3} />
+                      ? <PropertyFeatures chkStatus={checkList.status3} prevStatus={checkList.status2} callList={completedList} />
                       : pageNumber === 2
-                        ? <TransactionDetails chkStatus={checkList.status2} />
-                        : <PropertyDetails chkStatus={checkList.status1} />
+                        ? <TransactionDetails chkStatus={checkList.status2} prevStatus={checkList.status1} callList={completedList} />
+                        : <PropertyDetails chkStatus={checkList.status1} callList={completedList} />
           }
 
         </div>

@@ -4,11 +4,12 @@ import axios from 'axios';
 import { GET_API, isAuthenticated, POST_API } from '../../Auth/Define';
 import { Countries, USAStates } from '../Reigons';
 import { swalMsg } from '../SweetAlert2';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-export const PropertyDetails = ({chkStatus}) => {
+export const PropertyDetails = ({ chkStatus }) => {
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
   const [selectedSubProperty, setSelectedSubProperty] = useState([]);
@@ -107,6 +108,7 @@ export const PropertyDetails = ({chkStatus}) => {
             parking_spaces: Value.parking_space,
           })
         } else {
+          window.history.back();
           console.log("API Error:", resp.data);
         }
       })
@@ -123,7 +125,7 @@ export const PropertyDetails = ({chkStatus}) => {
       setUpdatePid(pid);
     }
 
-  }, []);
+  }, [location.state]);
 
 
   // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
@@ -189,8 +191,8 @@ export const PropertyDetails = ({chkStatus}) => {
         swalMsg("error", resp.data.msg, 2000);
       }
 
+      setIsLoading(false);
     })
-    setIsLoading(false);
   }
 
   // xxxxxxxxxxxxxxxx Submit Property xxxxxxxxxxxxxxxx //
@@ -208,15 +210,15 @@ export const PropertyDetails = ({chkStatus}) => {
 
 
           <div>
-          {
-            Number(chkStatus) === 1 &&
-            <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
-              <div className='text'>Next</div>
-              <span class="material-symbols-outlined">
-                arrow_forward
-              </span>
-            </a>
-          }
+            {
+              Number(chkStatus) === 1 &&
+              <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
+                <div className='text'>Next</div>
+                <span class="material-symbols-outlined">
+                  arrow_forward
+                </span>
+              </a>
+            }
           </div>
         </h5>
         <hr />
@@ -349,7 +351,7 @@ export const PropertyDetails = ({chkStatus}) => {
                 Zip Code:<span className='text-danger'>*</span>
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 placeholder="Zip code here"
                 name='zip'
@@ -390,7 +392,7 @@ export const PropertyDetails = ({chkStatus}) => {
                 Year Built/ Renovated:
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 placeholder="Enter Built/ Renovated Year"
                 name='year_built'
@@ -411,7 +413,7 @@ export const PropertyDetails = ({chkStatus}) => {
                 Lot Size (Acres / Sq Ft.):
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 placeholder="Enter lot size"
                 name='lot_size'
@@ -428,7 +430,7 @@ export const PropertyDetails = ({chkStatus}) => {
                 Building Size (Sq Ft.):
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 placeholder="Enter building size"
                 name='building_size'
@@ -449,7 +451,7 @@ export const PropertyDetails = ({chkStatus}) => {
                 Number of Floors:
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 placeholder="Enter number of floors"
                 name='num_floors'
@@ -466,7 +468,7 @@ export const PropertyDetails = ({chkStatus}) => {
                 Parking Spaces / Ratio:
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 placeholder="Enter parking space / ratio"
                 name='parking_spaces'
@@ -485,12 +487,22 @@ export const PropertyDetails = ({chkStatus}) => {
 
           </div>
 
-             <div className="box-btn" style={{ marginTop: "60px" }}>
-          <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
-        </div>
+          <div className="box-btn" style={{ marginTop: "60px" }}>
+            <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
+          </div>
 
         </div>
       </div>
+
+{
+  isLoading &&
+      <div className="loading">
+        <div className="loader-wrapper">
+          <div className="circle"></div>
+          <i class="icon-pass icon-home icon-center"></i>
+        </div>
+      </div>
+}
 
     </div>
   )

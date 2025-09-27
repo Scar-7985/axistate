@@ -4,13 +4,14 @@ import 'react-quill/dist/quill.snow.css';
 import { swalMsg } from '../SweetAlert2';
 import axios from 'axios';
 import { GET_API, POST_API } from '../../Auth/Define';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 
-const PropertyFeatures = ({chkStatus}) => {
+const PropertyFeatures = ({ chkStatus, prevStatus }) => {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -71,8 +72,14 @@ const PropertyFeatures = ({chkStatus}) => {
             setUpdatePid(pid);
         }
 
-    }, []);
+    }, [location.search]);
 
+
+    useEffect(() => {
+        if (prevStatus === 101) {
+            window.history.back();
+        }
+    }, [prevStatus]);
 
     // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
 
@@ -121,10 +128,10 @@ const PropertyFeatures = ({chkStatus}) => {
         <div className="main-content-inner">
             <div className="widget-box-2 mb-20 shadow">
                 <h5 className="title d-flex justify-content-between align-items-center">
-                <div>
-                Description
-                </div>
-                 <div className='d-flex align-items-center gap-2'>
+                    <div>
+                        Description
+                    </div>
+                    <div className='d-flex align-items-center gap-2'>
                         <div>
                             <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-listing?pageNum=2&pid=${updatePid}`)}>
                                 <span class="material-symbols-outlined">
@@ -135,15 +142,15 @@ const PropertyFeatures = ({chkStatus}) => {
                             </a>
                         </div>
                         <div>
-                               {
-            Number(chkStatus) === 1 &&
-                            <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
-                                <div className='text'>Next</div>
-                                <span class="material-symbols-outlined">
-                                    arrow_forward
-                                </span>
-                            </a>
-                               }
+                            {
+                                Number(chkStatus) === 1 &&
+                                <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
+                                    <div className='text'>Next</div>
+                                    <span class="material-symbols-outlined">
+                                        arrow_forward
+                                    </span>
+                                </a>
+                            }
                         </div>
                     </div>
                 </h5>
@@ -250,13 +257,24 @@ const PropertyFeatures = ({chkStatus}) => {
                     </fieldset>
                 </div>
 
-  <div className="box-btn" style={{ marginTop: "60px" }}>
-                  
+                <div className="box-btn" style={{ marginTop: "60px" }}>
+
                     <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
-                   
+
                 </div>
 
             </div>
+
+{
+  isLoading &&
+      <div className="loading">
+        <div className="loader-wrapper">
+          <div className="circle"></div>
+          <i class="icon-pass icon-home icon-center"></i>
+        </div>
+      </div>
+}
+
         </div>
 
     )

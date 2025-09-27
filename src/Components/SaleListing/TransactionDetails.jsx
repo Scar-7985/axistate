@@ -3,11 +3,12 @@ import React, { useState, useEffect } from "react";
 import { swalMsg } from "../SweetAlert2";
 import { GET_API, POST_API } from "../../Auth/Define";
 import ChipBox from "../Inputs/ChipBox";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const TransactionDetails = ({chkStatus}) => {
+const TransactionDetails = ({ chkStatus, prevStatus }) => {
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedTenant, setSelectedTenant] = useState([]);
@@ -75,8 +76,13 @@ const TransactionDetails = ({chkStatus}) => {
       setUpdatePid(pid);
     }
 
-  }, []);
+  }, [location.search]);
 
+  useEffect(() => {
+    if (prevStatus === 101) {
+      window.history.back();
+    }
+  }, [prevStatus]);
 
   // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
 
@@ -137,7 +143,7 @@ const TransactionDetails = ({chkStatus}) => {
           </div>
           <div className='d-flex align-items-center gap-2'>
             <div>
-            
+
               <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate(`/add-listing?pageNum=1&pid=${updatePid}`)}>
                 <span class="material-symbols-outlined">
                   arrow_back
@@ -145,18 +151,18 @@ const TransactionDetails = ({chkStatus}) => {
                 <div className='text'>Previous</div>
 
               </a>
-             
+
             </div>
             <div>
-             {
-            Number(chkStatus) === 1 &&
-              <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
-                <div className='text'>Next</div>
-                <span class="material-symbols-outlined">
-                  arrow_forward
-                </span>
-              </a>
-             }
+              {
+                Number(chkStatus) === 1 &&
+                <a className="btn-secondary d-flex align-items-center gap-3" onClick={handleSubmit}>
+                  <div className='text'>Next</div>
+                  <span class="material-symbols-outlined">
+                    arrow_forward
+                  </span>
+                </a>
+              }
             </div>
           </div>
         </h5>
@@ -289,6 +295,16 @@ const TransactionDetails = ({chkStatus}) => {
           <a className="tf-btn dark" onClick={handleSubmit}>Submit</a>
         </div>
       </div>
+
+      {
+        isLoading &&
+        <div className="loading">
+          <div className="loader-wrapper">
+            <div className="circle"></div>
+            <i class="icon-pass icon-home icon-center"></i>
+          </div>
+        </div>
+      }
 
     </div>
 
