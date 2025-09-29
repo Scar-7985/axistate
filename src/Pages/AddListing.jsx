@@ -9,7 +9,7 @@ import FinancialTenencyInformation from "../Components/SaleListing/FinancialTene
 import AttachmentsMedia from "../Components/SaleListing/AttachmentsMedia";
 import ContactInformation from "../Components/SaleListing/ContactInformation";
 import axios from "axios";
-import { GET_API, POST_API } from "../Auth/Define";
+import { GET_API } from "../Auth/Define";
 
 const sideMenu = [
   { id: 1, title: "Property Details" },
@@ -26,34 +26,12 @@ const AddListing = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentPid, setCurrentPid] = useState(null);
-
-  const getPageNum = window.localStorage.getItem("gtpnum") || null;
-  const getChangePage = window.localStorage.getItem("gtchngpg") || null;
-
 
   const { userData } = useContext(UserContext);
   const uName = userData?.fname + " " + userData?.lname;
   const userName = uName.length > 10 ? uName.substring(0, 10) + "..." : uName;
 
   const [pageNumber, setPageNumber] = useState(1);
-  const [canChangePage, setCanChangePage] = useState(false);
-
-
-
-  useEffect(() => {
-    if (getPageNum) {
-      setPageNumber(Number(getPageNum));
-    }
-    if (getChangePage) {
-      setCanChangePage(true);
-    }
-
-
-  }, [getPageNum]);
-
-
-
 
 
   // complete-list.php PID
@@ -73,7 +51,7 @@ const AddListing = () => {
     listData.append("pid", PID);
     axios.post(`${GET_API}/complete-list.php`, listData).then(resp => {
       setCheckList(resp.data);
-      // console.log(resp.data);
+      console.log("LIST CALLED XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", resp.data);
 
     })
   }
@@ -85,7 +63,6 @@ const AddListing = () => {
     const pid = params.get("pid");
 
     if (pid) {
-      setCurrentPid(pid);
       completedList(pid);
     }
 
@@ -111,8 +88,7 @@ const AddListing = () => {
 
                   return (
                     <li className={`nav-menu-item ${pageNumber === item.id ? 'active' : ''}`} key={index}>
-                      <a className="d-flex justify-content-between align-items-center nav-menu-link"
-                        onClick={() => { canChangePage ? setPageNumber(item.id) : null }}>
+                      <a className="d-flex justify-content-between align-items-center nav-menu-link">
                         <span>{index + 1}. {" "} {item.title}</span>
                         <span
                           className="material-symbols-outlined"

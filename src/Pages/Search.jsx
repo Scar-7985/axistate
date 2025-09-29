@@ -48,14 +48,16 @@ const Search = () => {
         if (isLoading) return;
         setIsLoading(true);
 
-        const REQ_API = searchQuery ? `${GET_API}/search-property.php${searchQuery}` : `${GET_API}/test-get.php`
+        console.log(searchQuery);
+
+        const REQ_API = searchQuery ? `${GET_API}/search-property.php${searchQuery}` : `${GET_API}/search-property.php`
 
         axios.post(REQ_API).then(resp => {
-            console.log("REQUESTED API ===>", resp.data);
+            console.log("REQUESTED API ===>", resp.data.prop_data);
             if (resp.data.status === 100) {
 
                 // if (!searchVal) {
-                setSaleProperties(resp.data.sale_data);
+                setSaleProperties(resp.data.prop_data);
                 // } else {
                 //     const filtered = resp.data.sale_data.filter((item) => item.property_name.toLowerCase().includes(searchVal.toLowerCase()));
                 //     // console.log("filtered => ", filtered);
@@ -692,7 +694,7 @@ const Search = () => {
                                     showMap &&
 
                                     <div className="wrap-right">
-                                        <GoogleMap />
+                                        {/* <GoogleMap /> */}
                                     </div>
                                 }
 

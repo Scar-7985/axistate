@@ -5,7 +5,7 @@ import { GET_API, POST_API } from "../../Auth/Define";
 import ChipBox from "../Inputs/ChipBox";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const ContactInformation = ({ prevStatus }) => {
+const ContactInformation = ({ prevStatus, callList }) => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -99,6 +99,7 @@ const ContactInformation = ({ prevStatus }) => {
             console.log(resp.data);
 
             if (jsonData.status === 100) {
+                callList();
                 swalMsg("success", resp.data.msg, 2000);
                 setTimeout(() => {
                     if (!updateId) {

@@ -5,11 +5,14 @@ import { GET_API, MEDIA_URL, POST_API } from '../../Auth/Define';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
+const AttachmentsMedia = ({ chkStatus, prevStatus, callList }) => {
 
     const navigate = useNavigate();
     const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
+
+    const [thumbnail, setThumbnail] = useState(null);
+    const [prevThumbnail, setPrevThumbnail] = useState(null);
 
     const [photos, setFiles] = useState([]);
     const [prevPhotos, setPrevPhotos] = useState([]);
@@ -19,7 +22,7 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
 
     const [brochure, setBrochure] = useState(null);
     const [prevBrochure, setPrevBrochure] = useState(null);
-    console.log(photos);
+    console.log(thumbnail);
 
     const photoRef = useRef();
     const floorRef = useRef();
@@ -119,6 +122,7 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
                     const prevFloor = getArray(resp.data.value.site_plan);
                     setPrevFloor(prevFloor);
                     setPrevBrochure(resp.data.value.brochure);
+                    setPrevThumbnail(resp.data.value.banner);
                 } else {
                     console.log("No Existing Data:", resp.data);
                 }
@@ -162,6 +166,7 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
         }
 
         const prevPic = prevPhotos.join("@@");
+        mediaData.append("banner", thumbnail);
 
         mediaData.append("photos", JSON.stringify(prevPhotos)); // send old ones as JSON
         photos.forEach(file => {
@@ -184,6 +189,7 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
 
             const jsonData = resp.data;
             if (jsonData.status === 100) {
+                callList();
                 swalMsg("success", resp.data.msg, 2000);
                 setTimeout(() => {
                     if (!updateId) {
@@ -196,8 +202,8 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
                 swalMsg("error", resp.data.msg, 2000);
             }
 
+            setIsLoading(false);
         })
-        setIsLoading(false);
     }
 
 
@@ -243,7 +249,7 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
             <div className="widget-box-2 mb-20 shadow">
                 <h5 className="title d-flex justify-content-between">
                     <div>
-                        Upload Photos
+                        Thumbhnail
                     </div>
                     <div className='d-flex align-items-center gap-2'>
                         <div>
@@ -268,6 +274,65 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
                         </div>
                     </div>
                 </h5>
+
+                <div
+                    className="box-uploadfile text-center"
+                // onDrop={handleDrop}
+                // onDragOver={handleDragOver}
+                >
+                    <div className="uploadfile cursor-pointer" style={{ padding: "30px 30px" }} >
+                        <div className="box-floor-img d-flex flex-column align-items-start mt-20">
+                            <div className="btn-upload tf-btn primary mx-auto">
+                                <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2.375 13.125L6.67417 8.82583C6.84828 8.65172 7.05498 8.51361 7.28246 8.41938C7.50995 8.32515 7.75377 8.27665 8 8.27665C8.24623 8.27665 8.49005 8.32515 8.71754 8.41938C8.94502 8.51361 9.15172 8.65172 9.32583 8.82583L13.625 13.125M12.375 11.875L13.5492 10.7008C13.7233 10.5267 13.93 10.3886 14.1575 10.2944C14.385 10.2001 14.6288 10.1516 14.875 10.1516C15.1212 10.1516 15.365 10.2001 15.5925 10.2944C15.82 10.3886 16.0267 10.5267 16.2008 10.7008L18.625 13.125M3.625 16.25H17.375C17.7065 16.25 18.0245 16.1183 18.2589 15.8839C18.4933 15.6495 18.625 15.3315 18.625 15V5C18.625 4.66848 18.4933 4.35054 18.2589 4.11612C18.0245 3.8817 17.7065 3.75 17.375 3.75H3.625C3.29348 3.75 2.97554 3.8817 2.74112 4.11612C2.5067 4.35054 2.375 4.66848 2.375 5V15C2.375 15.3315 2.5067 15.6495 2.74112 15.8839C2.97554 16.1183 3.29348 16.25 3.625 16.25ZM12.375 6.875H12.3817V6.88167H12.375V6.875ZM12.6875 6.875C12.6875 6.95788 12.6546 7.03737 12.596 7.09597C12.5374 7.15458 12.4579 7.1875 12.375 7.1875C12.2921 7.1875 12.2126 7.15458 12.154 7.09597C12.0954 7.03737 12.0625 6.95788 12.0625 6.875C12.0625 6.79212 12.0954 6.71263 12.154 6.65403C12.2126 6.59542 12.2921 6.5625 12.375 6.5625C12.4579 6.5625 12.5374 6.59542 12.596 6.65403C12.6546 6.71263 12.6875 6.79212 12.6875 6.875Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                Choose File
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="ip-file"
+                                    onChange={(e) => setThumbnail(e.target.files[0])}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="box-img-upload">
+                    {thumbnail && (
+                        <div className="item-upload file-delete">
+                            <img
+                                src={URL.createObjectURL(thumbnail)}
+                                alt="preview-thumbnail"
+                                style={{ objectFit: "cover" }}
+                            />
+                            <span
+                                className="icon icon-trash remove-file"
+                                style={{ cursor: "pointer" }}
+                                // onClick={() => setThumbnail(null)}
+                            ></span>
+                        </div>
+                    )}
+
+                    {prevThumbnail && (
+                        <div className="item-upload file-delete">
+                            <img
+                                src={`${MEDIA_URL}/${prevThumbnail}`}
+                                alt={`preview-thumb`}
+                                style={{ objectFit: 'cover' }}
+                            />
+                            <span
+                                className="icon icon-trash remove-file"
+                                style={{ cursor: 'pointer' }}
+                            ></span>
+                        </div>
+                    )}
+                </div>
+
+
+                <h5 className='title'>More Photos</h5>
+
+
                 <div
                     className="box-uploadfile text-center"
                 // onDrop={handleDrop}
@@ -419,25 +484,43 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
                                     onChange={(e) => handlePdfChange(e, 'offering')}
                                 />
                             </div>
-
-                            {brochure && (
-                                <div className="box-img-upload d-flex flex-column align-items-center">
-                                    <div className="item-upload file-delete">
-                                        <img
-                                            src="/assets/images/logo/pdf.png"
-                                            alt="PDF"
-                                            style={{ objectFit: "contain" }}
-                                        />
-                                        <span
-                                            className="icon icon-trash remove-file"
-                                            onClick={() => removePdf()}
-                                            style={{ cursor: "pointer", marginTop: 10 }}
-                                        ></span>
-                                    </div>
-                                    <div className='text-muted'>{brochure.name.length > 14 ? brochure.name.substring(0, 14) + "..." : brochure.name}</div>
-                                </div>
-                            )}
                         </div>
+
+                        {brochure && (
+                            <div className="box-img-upload d-flex flex-column align-items-center">
+                                <div className="item-upload file-delete">
+                                    <img
+                                        src="/assets/images/logo/pdf.png"
+                                        alt="PDF"
+                                        style={{ objectFit: "contain" }}
+                                    />
+                                    <span
+                                        className="icon icon-trash remove-file"
+                                        onClick={() => removePdf()}
+                                        style={{ cursor: "pointer", marginTop: 10 }}
+                                    ></span>
+                                </div>
+                                <div className='text-muted'>{brochure.name.length > 14 ? brochure.name.substring(0, 14) + "..." : brochure.name}</div>
+                            </div>
+                        )}
+
+                        {prevBrochure && (
+                            <div className="box-img-upload d-flex flex-column align-items-center">
+                                <a href={`${MEDIA_URL}/${prevBrochure}`} target='_blank' className="item-upload">
+                                    <img
+                                        src="/assets/images/logo/pdf.png"
+                                        alt="PDF"
+                                        style={{ objectFit: "contain" }}
+                                    />
+                                    <span
+                                        className="icon icon-eye"
+                                        style={{ cursor: "pointer", marginTop: 10 }}
+                                    ></span>
+                                </a>
+                                <div className='text-muted'>{prevBrochure}</div>
+                            </div>
+                        )}
+
                     </div>
                 </div>
 
@@ -449,15 +532,15 @@ const AttachmentsMedia = ({ chkStatus, prevStatus }) => {
 
             </div>
 
-{
-  isLoading &&
-      <div className="loading">
-        <div className="loader-wrapper">
-          <div className="circle"></div>
-          <i class="icon-pass icon-home icon-center"></i>
-        </div>
-      </div>
-}
+            {
+                isLoading &&
+                <div className="loading">
+                    <div className="loader-wrapper">
+                        <div className="circle"></div>
+                        <i class="icon-pass icon-home icon-center"></i>
+                    </div>
+                </div>
+            }
 
         </div>
     );

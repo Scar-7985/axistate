@@ -3,7 +3,6 @@ import { createContext } from 'react'
 import { isAuthenticated, GET_API } from '../Auth/Define';
 import axios from 'axios';
 import { useEffect } from 'react';
-import secureLocalStorage from 'react-secure-storage';
 
 export const UserContext = createContext();
 

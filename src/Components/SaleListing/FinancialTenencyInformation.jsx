@@ -4,7 +4,7 @@ import axios from 'axios';
 import { GET_API, POST_API } from '../../Auth/Define';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const FinancialTenencyInformation = ({ chkStatus, prevStatus }) => {
+const FinancialTenencyInformation = ({ chkStatus, prevStatus, callList }) => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -94,6 +94,7 @@ const FinancialTenencyInformation = ({ chkStatus, prevStatus }) => {
         axios.post(`${POST_API}/tenancy-lnformation.php`, descData).then(resp => {
             const jsonData = resp.data;
             if (jsonData.status === 100) {
+                callList();
                 swalMsg("success", resp.data.msg, 2000);
                 setTimeout(() => {
                     if (!updateId) {
@@ -229,15 +230,15 @@ const FinancialTenencyInformation = ({ chkStatus, prevStatus }) => {
 
             </div>
 
-{
-  isLoading &&
-      <div className="loading">
-        <div className="loader-wrapper">
-          <div className="circle"></div>
-          <i class="icon-pass icon-home icon-center"></i>
-        </div>
-      </div>
-}
+            {
+                isLoading &&
+                <div className="loading">
+                    <div className="loader-wrapper">
+                        <div className="circle"></div>
+                        <i class="icon-pass icon-home icon-center"></i>
+                    </div>
+                </div>
+            }
 
         </div>
 

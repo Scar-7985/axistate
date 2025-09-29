@@ -5,7 +5,7 @@ import { GET_API, POST_API } from '../../Auth/Define';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
-const LocationHighlights = ({ chkStatus, prevStatus }) => {
+const LocationHighlights = ({ chkStatus, prevStatus, callList }) => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -93,6 +93,7 @@ const LocationHighlights = ({ chkStatus, prevStatus }) => {
         axios.post(`${POST_API}/location_highlights.php`, descData).then(resp => {
             const jsonData = resp.data;
             if (jsonData.status === 100) {
+                callList();
                 swalMsg("success", resp.data.msg, 2000);
                 setTimeout(() => {
                     if (!updateId) {

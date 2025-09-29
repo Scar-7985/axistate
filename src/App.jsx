@@ -18,6 +18,15 @@ const MyListings = lazy(() => import("./Pages/MyListings"));
 const Search = lazy(() => import("./Pages/Search"));
 const Terms = lazy(() => import("./Pages/Terms"));
 const Settings = lazy(() => import("./Pages/Settings"));
+// ADD LISTING FORMS
+const PropertyDetails = lazy(() => import("./Pages/AddListingPages/PropertyDetails"));
+const TransactionDetails = lazy(() => import("./Pages/AddListingPages/TransactionDetails"));
+const PropertyFeatures = lazy(() => import("./Pages/AddListingPages/PropertyFeatures"));
+const LocationHighlights = lazy(() => import("./Pages/AddListingPages/LocationHighlights"));
+const FinancialTenency = lazy(() => import("./Pages/AddListingPages/FinancialTenency"));
+const Media = lazy(() => import("./Pages/AddListingPages/Media"));
+const ContactInfo = lazy(() => import("./Pages/AddListingPages/ContactInfo"));
+// ADD LISTING FORMS
 
 const App = () => {
 
@@ -26,7 +35,13 @@ const App = () => {
   const showHeader = location.pathname !== "/add-lease" && location.pathname !== "/settings";
   const showFooter = location.pathname !== "/add-property" &&
     location.pathname !== "/properties" &&
-    location.pathname !== "/add-listing"
+    location.pathname !== "/property-details" &&
+    location.pathname !== "/transaction-details" &&
+    location.pathname !== "/property-features" &&
+    location.pathname !== "/location-highlights";
+  location.pathname !== "/financial-tenency";
+  location.pathname !== "/media";
+  location.pathname !== "/contact-info";
 
   return (
     <div id="wrapper">
@@ -54,6 +69,17 @@ const App = () => {
             <Route path='/add-lease' element={<AddLease />} />
             <Route path='/my-listings' element={<MyListings />} />
             <Route path='/settings' element={<Settings />} />
+
+            {/* ADD LISTING ROUTES */}
+            <Route path='/property-details' element={<PropertyDetails />} />
+            <Route path='/transaction-details' element={<TransactionDetails />} />
+            <Route path='/property-features' element={<PropertyFeatures />} />
+            <Route path='/location-highlights' element={<LocationHighlights />} />
+            <Route path='/financial-tenency' element={<FinancialTenency />} />
+            <Route path='/media' element={<Media />} />
+            <Route path='/contact-info' element={<ContactInfo />} />
+            {/* ADD LISTING ROUTES */}
+
           </Route>
 
           <Route path='*' element={<Home />} />

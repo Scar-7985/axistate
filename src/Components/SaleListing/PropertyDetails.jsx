@@ -6,7 +6,7 @@ import { Countries, USAStates } from '../Reigons';
 import { swalMsg } from '../SweetAlert2';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-export const PropertyDetails = ({ chkStatus }) => {
+export const PropertyDetails = ({ chkStatus, callList }) => {
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -171,8 +171,9 @@ export const PropertyDetails = ({ chkStatus }) => {
       console.log(jsonData);
 
       if (jsonData.status === 100) {
+        // completedList();
         swalMsg("success", resp.data.msg, 2000);
-
+          
         setTimeout(() => {
           if (!updateId) {
             navigate(`/add-listing?pageNum=2&pid=${jsonData.pid}`);

@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 
 
-const PropertyFeatures = ({ chkStatus, prevStatus }) => {
+const PropertyFeatures = ({ chkStatus, prevStatus, callList }) => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -105,8 +105,8 @@ const PropertyFeatures = ({ chkStatus, prevStatus }) => {
         axios.post(`${POST_API}/property-features.php`, descData).then(resp => {
             const jsonData = resp.data;
             if (jsonData.status === 100) {
+                callList();
                 swalMsg("success", resp.data.msg, 2000);
-                window.localStorage.setItem("gtpnum", 4);
                 setTimeout(() => {
 
                     if (!updateId) {

@@ -56,6 +56,8 @@ const Settings = () => {
                 <div id="page" class="clearfix">
                     <div class="layout-wrap">
                         <header class="main-header fixed-header header-dashboard">
+                            {/* TEST */}
+                            {/* <button onClick={() => navigate("/property-details", {state:{ PID: "PID36605"}})}>wefewfewf</button> */}
                             <div class="header-lower">
                                 <div class="row">
                                     <div class="col-lg-12">
