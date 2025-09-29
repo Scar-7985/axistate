@@ -172,9 +172,9 @@ const ContactInfo = () => {
                             </div>
                             <div className='d-flex align-items-center gap-2'>
                                 <div>
-                                    <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate("/media", { state: { PID: PID } })}>
+                                    <a className="btn-dark d-flex align-items-center gap-1" onClick={() => navigate("/media", { state: { PID: PID } })}>
                                         <span class="material-symbols-outlined">
-                                            arrow_back
+                                            chevron_backward
                                         </span>
                                         <div className='text'>Previous</div>
 

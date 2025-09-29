@@ -14,7 +14,7 @@ const MyListings = () => {
         const formData = new FormData();
         formData.append("cuid", isAuthenticated);
         axios.post(`${GET_API}/list-details.php`, formData).then(resp => {
-            console.log(resp.data.data);
+            // console.log(resp.data.data);
 
             if (resp.data.status === 100) {
                 setListingData(resp.data.data);
@@ -27,10 +27,10 @@ const MyListings = () => {
         fetchListings();
     }, [])
 
-const editModal = (PID) => {
-console.log(PID);
+    const editModal = (PID) => {
+        console.log(PID);
 
-}
+    }
 
     return (
 
@@ -76,7 +76,6 @@ console.log(PID);
                                                         const getFirstImage = mediaStr.includes("@@")
                                                             ? mediaStr.split("@@")[0]
                                                             : mediaStr;
-
 
                                                         return {
                                                             id: item.id,
@@ -146,8 +145,9 @@ console.log(PID);
                                                             $(row).find(".status-role").on("click", () => {
                                                                 status_n_deleteRole(data.id, "status");
                                                             });
-                                                            $(row).find(".edit-role").on("click", () => {
-                                                                editModal(data.id);
+                                                            $(row).find(".edit-role").on("click", (e) => {
+                                                                e.preventDefault(); // stop <a href="#"> navigation
+                                                                editModal(data);
                                                             });
                                                             $(row).find(".delete-role").on("click", () => {
                                                                 status_n_deleteRole(data.id, "delete");

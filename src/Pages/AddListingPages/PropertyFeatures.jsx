@@ -182,22 +182,22 @@ const PropertyFeatures = () => {
                             </div>
                             <div className='d-flex align-items-center gap-2'>
                                 <div>
-                                    <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate("/transaction-details", { state: { PID: PID } })}>
-                                        <span class="material-symbols-outlined">
-                                            arrow_back
-                                        </span>
+                                    <a className="btn-dark d-flex align-items-center gap-1" onClick={() => navigate("/transaction-details", { state: { PID: PID } })}>
+                                       <span class="material-symbols-outlined">
+                        chevron_backward
+                      </span>
                                         <div className='text'>Previous</div>
 
                                     </a>
                                 </div>
                                 <div>
                                     {
-                                 Number(checkList.status4) === 4 &&
-                                        <a className="btn-secondary d-flex align-items-center gap-3" onClick={() => navigate("/location-highlights", { state: { PID: PID } })}>
+                                 Number(checkList.status3) === 3 &&
+                                        <a className="btn-secondary d-flex align-items-center gap-1" onClick={() => navigate("/location-highlights", { state: { PID: PID } })}>
                                             <div className='text'>Next</div>
                                             <span class="material-symbols-outlined">
-                                                arrow_forward
-                                            </span>
+                        chevron_forward
+                      </span>
                                         </a>
                                     }
                                 </div>

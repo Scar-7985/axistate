@@ -175,21 +175,20 @@ const FinancialTenency = () => {
                             </div>
                             <div className='d-flex align-items-center gap-2'>
                                 <div>
-                                    <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate("/location-highlights", { state: { PID: PID } })}>
+                                    <a className="btn-dark d-flex align-items-center gap-1" onClick={() => navigate("/location-highlights", { state: { PID: PID } })}>
                                         <span class="material-symbols-outlined">
-                                            arrow_back
+                                            chevron_backward
                                         </span>
                                         <div className='text'>Previous</div>
-
                                     </a>
                                 </div>
                                 <div>
                                     {
-                                        Number(checkList.status6) === 6 &&
-                                        <a className="btn-secondary d-flex align-items-center gap-3" onClick={() => navigate("/media", { state: { PID: PID } })}>
+                                        Number(checkList.status5) === 5 &&
+                                        <a className="btn-secondary d-flex align-items-center gap-1" onClick={() => navigate("/media", { state: { PID: PID } })}>
                                             <div className='text'>Next</div>
                                             <span class="material-symbols-outlined">
-                                                arrow_forward
+                                                chevron_forward
                                             </span>
                                         </a>
                                     }

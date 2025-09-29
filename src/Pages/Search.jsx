@@ -100,8 +100,8 @@ const Search = () => {
         const params = new URLSearchParams(location.search);
 
 
-        params.delete("types[]");
-        params.delete("subtypes[]");
+        // params.delete("types[]");
+        // params.delete("subtypes[]");
 
         propType.forEach(type => {
             const existingOptions = groupedOptions.find(g => g.label === type);
@@ -128,7 +128,7 @@ const Search = () => {
 
         console.log(queryString);
 
-        // navigate(`${location.pathname}?${queryString}`);
+        navigate(`${location.pathname}?${queryString}`);
     };
 
 
@@ -300,9 +300,9 @@ const Search = () => {
                                 </div>
                                 <div className='d-none d-md-flex'>
 
-                                    <div class="toggle-switch d-flex align-items-center">
+                                    <div className="toggle-switch d-flex align-items-center">
                                         <span style={{ fontWeight: "600" }}>Show Map</span>
-                                        <input type="checkbox" checked={showMap} onClick={() => { setShowMap(!showMap); window.sessionStorage.setItem("showMap", !showMap) }} />
+                                        <input type="checkbox" checked={showMap} onChange={() => { setShowMap(!showMap); window.sessionStorage.setItem("showMap", !showMap) }} />
                                     </div>
                                 </div>
                                 {/* xxxxxxxxxx Advance Filter xxxxxxxxxx */}
@@ -723,24 +723,24 @@ const groupedOptions = [
     {
         label: 'Retail',
         options: [
-            { value: 'Gas Station Area', label: 'Gas Station' },
-            { value: 'Bank Area', label: 'Bank' },
-            { value: 'Convenience Store Area', label: 'Convenience Store' },
-            { value: 'Day Care / Nursery Area', label: 'Day Care / Nursery' },
-            { value: 'QSR / Fast Food Area', label: 'QSR / Fast Food' },
-            { value: 'Grocery Store Area', label: 'Grocery Store' },
-            { value: 'Pharmacy / Drug Area', label: 'Pharmacy / Drug Store' },
-            { value: 'Restaurant / Café Area', label: 'Restaurant / Café' },
-            { value: 'Shopping Center Area', label: 'Shopping Center' },
-            { value: 'Big Box / Anchor Store Area', label: 'Big Box / Anchor Store' },
-            { value: 'Factory Outlet Area', label: 'Factory Outlet' },
-            { value: 'Theme Center Area', label: 'Theme Center' },
-            { value: 'Strip Center / Neighborhood Center Area', label: 'Strip Center / Neighborhood Center' },
-            { value: 'Lifestyle Center Area', label: 'Lifestyle Center' },
-            { value: 'Mixed-Use Retail Area', label: 'Mixed-Use Retail' },
-            { value: 'Standalone Store / Pad Site Area', label: 'Standalone Store / Pad Site' },
-            { value: 'Fitness / Gym Area', label: 'Fitness / Gym' },
-            { value: 'Specialty Retail Area', label: 'Specialty Retail' },
+            { id: 1, value: 'Gas Station Area', label: 'Gas Station' },
+            { id: 2, value: 'Bank Area', label: 'Bank' },
+            { id: 3, value: 'Convenience Store Area', label: 'Convenience Store' },
+            { id: 4, value: 'Day Care / Nursery Area', label: 'Day Care / Nursery' },
+            { id: 5, value: 'QSR / Fast Food Area', label: 'QSR / Fast Food' },
+            { id: 6, value: 'Grocery Store Area', label: 'Grocery Store' },
+            { id: 7, value: 'Pharmacy / Drug Area', label: 'Pharmacy / Drug Store' },
+            { id: 8, value: 'Restaurant / Café Area', label: 'Restaurant / Café' },
+            { id: 9, value: 'Shopping Center Area', label: 'Shopping Center' },
+            { id: 10, value: 'Big Box / Anchor Store Area', label: 'Big Box / Anchor Store' },
+            { id: 11, value: 'Factory Outlet Area', label: 'Factory Outlet' },
+            { id: 12, value: 'Theme Center Area', label: 'Theme Center' },
+            { id: 13, value: 'Strip Center / Neighborhood Center Area', label: 'Strip Center / Neighborhood Center' },
+            { id: 14, value: 'Lifestyle Center Area', label: 'Lifestyle Center' },
+            { id: 15, value: 'Mixed-Use Retail Area', label: 'Mixed-Use Retail' },
+            { id: 16, value: 'Standalone Store / Pad Site Area', label: 'Standalone Store / Pad Site' },
+            { id: 17, value: 'Fitness / Gym Area', label: 'Fitness / Gym' },
+            { id: 18, value: 'Specialty Retail Area', label: 'Specialty Retail' },
         ],
     },
     {

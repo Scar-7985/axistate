@@ -9,7 +9,6 @@ import Footer from './Components/Footer';
 import ScrollToTop from './Components/ScrollToTop';
 
 const Home = lazy(() => import("./Pages/Home"));
-const AddListing = lazy(() => import("./Pages/AddListing"));
 const ViewProperty = lazy(() => import("./Pages/ViewProperty"));
 const AccountDetails = lazy(() => import("./Pages/AccountDetails"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
@@ -33,15 +32,16 @@ const App = () => {
   const location = useLocation();
 
   const showHeader = location.pathname !== "/add-lease" && location.pathname !== "/settings";
-  const showFooter = location.pathname !== "/add-property" &&
+  const showFooter =
+    location.pathname !== "/add-property" &&
     location.pathname !== "/properties" &&
     location.pathname !== "/property-details" &&
     location.pathname !== "/transaction-details" &&
     location.pathname !== "/property-features" &&
-    location.pathname !== "/location-highlights";
-  location.pathname !== "/financial-tenency";
-  location.pathname !== "/media";
-  location.pathname !== "/contact-info";
+    location.pathname !== "/location-highlights" &&
+    location.pathname !== "/financial-tenency" &&
+    location.pathname !== "/media" &&
+    location.pathname !== "/contact-info";
 
   return (
     <div id="wrapper">
@@ -65,7 +65,6 @@ const App = () => {
 
           <Route element={<ProtectedRoutes />}>
             <Route path='/account-details' element={<AccountDetails />} />
-            <Route path='/add-listing' element={<AddListing />} />
             <Route path='/add-lease' element={<AddLease />} />
             <Route path='/my-listings' element={<MyListings />} />
             <Route path='/settings' element={<Settings />} />

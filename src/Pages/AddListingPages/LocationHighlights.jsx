@@ -169,22 +169,22 @@ const LocationHighlights = () => {
                             </div>
                             <div className='d-flex align-items-center gap-2'>
                                 <div>
-                                    <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate("/property-features", { state: { PID: PID } })}>
-                                        <span class="material-symbols-outlined">
-                                            arrow_back
-                                        </span>
+                                    <a className="btn-dark d-flex align-items-center gap-1" onClick={() => navigate("/property-features", { state: { PID: PID } })}>
+                                         <span class="material-symbols-outlined">
+                        chevron_backward
+                      </span>
                                         <div className='text'>Previous</div>
 
                                     </a>
                                 </div>
                                 <div>
                                     {
-                                        Number(checkList.status5) === 5 &&
-                                        <a className="btn-secondary d-flex align-items-center gap-3" onClick={() => navigate("/financial-tenency", { state: { PID: PID } })}>
+                                        Number(checkList.status4) === 4 &&
+                                        <a className="btn-secondary d-flex align-items-center gap-1" onClick={() => navigate("/financial-tenency", { state: { PID: PID } })}>
                                             <div className='text'>Next</div>
-                                            <span class="material-symbols-outlined">
-                                                arrow_forward
-                                            </span>
+                                         <span class="material-symbols-outlined">
+                        chevron_forward
+                      </span>
                                         </a>
                                     }
                                 </div>

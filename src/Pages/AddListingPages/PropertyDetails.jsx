@@ -268,11 +268,11 @@ const PropertyDetails = () => {
 
               <div>
                 {
-                  Number(checkList.status2) === 2 &&
-                  <a className="btn-secondary d-flex align-items-center gap-3" onClick={() => navigate("/transaction-details", { state: { PID: PID } })}>
+                  Number(checkList.status1) === 1 &&
+                  <a className="btn-secondary d-flex align-items-center gap-1" onClick={() => navigate("/transaction-details", { state: { PID: PID } })}>
                     <div className='text'>Next</div>
                     <span class="material-symbols-outlined">
-                      arrow_forward
+                      chevron_forward
                     </span>
                   </a>
                 }

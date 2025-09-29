@@ -7,7 +7,7 @@ import "swiper/css/pagination";
 import { Link, useNavigate } from "react-router-dom";
 import HeroBanner from "../Components/HeroBanner";
 import axios from "axios";
-import { GET_API } from "../Auth/Define";
+import { GET_API, POST_API } from "../Auth/Define";
 
 const Home = () => {
 
@@ -38,6 +38,13 @@ const Home = () => {
   ];
 
 
+  useEffect(() => {
+    // axios.post(`${GET_API}/fillter.php?ptype%5B%5D=Industrial`).then(resp => {
+    axios.post(`${GET_API}/fillter.php?zip=211001`).then(resp => {
+      console.log(resp.data);
+
+    })
+  }, [])
 
 
 

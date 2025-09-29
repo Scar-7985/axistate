@@ -199,10 +199,10 @@ const TransactionDetails = () => {
               <div className='d-flex align-items-center gap-2'>
                 <div>
 
-                  <a className="btn-dark d-flex align-items-center gap-3" onClick={() => navigate("/property-details", { state: { PID: PID } })}>
-                    <span class="material-symbols-outlined">
-                      arrow_back
-                    </span>
+                  <a className="btn-dark d-flex align-items-center gap-1" onClick={() => navigate("/property-details", { state: { PID: PID } })}>
+                   <span class="material-symbols-outlined">
+                        chevron_backward
+                      </span>
                     <div className='text'>Previous</div>
 
                   </a>
@@ -210,11 +210,11 @@ const TransactionDetails = () => {
                 </div>
                 <div>
                   {
-                 Number(checkList.status3) === 3 &&
-                    <a className="btn-secondary d-flex align-items-center gap-3" onClick={() => navigate("/property-features", { state: { PID: PID } })}>
+                    Number(checkList.status2) === 2 &&
+                    <a className="btn-secondary d-flex align-items-center gap-1" onClick={() => navigate("/property-features", { state: { PID: PID } })}>
                       <div className='text'>Next</div>
                       <span class="material-symbols-outlined">
-                        arrow_forward
+                        chevron_forward
                       </span>
                     </a>
                   }
