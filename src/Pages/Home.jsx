@@ -11,9 +11,6 @@ import { GET_API, POST_API } from "../Auth/Define";
 
 const Home = () => {
 
-
-
-
   const agents = [
     {
       name: "Chris Patt",
@@ -37,14 +34,6 @@ const Home = () => {
     },
   ];
 
-
-  useEffect(() => {
-    // axios.post(`${GET_API}/fillter.php?ptype%5B%5D=Industrial`).then(resp => {
-    axios.post(`${GET_API}/fillter.php?zip=211001`).then(resp => {
-      console.log(resp.data);
-
-    })
-  }, [])
 
 
 

@@ -216,11 +216,12 @@ const PropertyDetails = () => {
 
   // xxxxxxxxxxxxxxxx Submit Property xxxxxxxxxxxxxxxx //
 
+  const [showSidebar, setShowSidebar] = useState(false);
 
 
   return (
     <div className="layout-wrap">
-      <div className="sidebar-menu-dashboard d-flex shadow ">
+      <div className="sidebar-menu-dashboard" id={`add-listing-sidemenu${showSidebar ? "-open" : ""}`}>  {/* d-flex shadow  */}
         <div className="menu-box">
           {/* <div className="title fw-6">Menu</div> */}
           <ul className="box-menu-dashboard">
@@ -258,6 +259,10 @@ const PropertyDetails = () => {
 
       <div className="main-content">
         <div className="main-content-inner">
+
+          <div class="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
+            <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
+          </div>
 
           <div className="widget-box-2 mb-20 shadow">
             <h5 className="title d-flex justify-content-between align-items-center">
@@ -349,13 +354,13 @@ const PropertyDetails = () => {
                 <label>
                   Country:<span className='text-danger'>*</span>
                 </label>
-                <div className="nice-select" tabindex="0">
+                <div className="nice-select" tabIndex="0">
                   <span className="current">{formData.country}</span>
                   <ul className="list" style={{ maxHeight: "250px" }}>
                     {
                       Countries.map((item, index) => {
                         return <li data-value={index} className={`option ${item.label === formData.country ? "selected focus" : ""}`}
-                          onClick={() => setFormData({ ...formData, country: item.label })}>{item.label}</li>
+                          onClick={() => setFormData({ ...formData, country: item.label })} key={index}>{item.label}</li>
                       })
                     }
                   </ul>
@@ -385,13 +390,13 @@ const PropertyDetails = () => {
                   <label>
                     State:<span className='text-danger'>*</span>
                   </label>
-                  <div className="nice-select" tabindex="0">
+                  <div className="nice-select" tabIndex="0">
                     <span className="current">{formData.state}</span>
                     <ul className="list" style={{ maxHeight: "250px" }}>
                       {
                         USAStates.map((item, index) => {
                           return <li data-value={index} className={`option ${item.title === formData.state ? "selected focus" : ""}`}
-                            onClick={() => setFormData({ ...formData, state: item.title })}>{item.title}</li>
+                            onClick={() => setFormData({ ...formData, state: item.title })} key={index}>{item.title}</li>
                         })
                       }
                     </ul>

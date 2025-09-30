@@ -64,37 +64,37 @@ const Profile = () => {
 
 
     return (
-        <div class="main-content-inner wrap-dashboard-content-2" style={{ minHeight: "calc(100vh - 100px)" }}>
-            {/* <div class="button-show-hide show-mb">
-                <span class="body-1">Show Dashboard</span>
+        <div className="main-content-inner wrap-dashboard-content-2" style={{ minHeight: "calc(100vh - 100px)" }}>
+            {/* <div className="button-show-hide show-mb">
+                <span className="body-1">Show Dashboard</span>
             </div> */}
-            <div class="widget-box-2 shadow">
+            <div className="widget-box-2 shadow">
 
-                <h5 class="title">Profile</h5>
+                <h5 className="title">Profile</h5>
 
-                <div class="box grid-2 gap-30 mb-0">
-                    <div class="box box-fieldset">
+                <div className="box grid-2 gap-30 mb-0">
+                    <div className="box box-fieldset">
                         <label>First name:<span>*</span></label>
-                        <input type="text" name='fname' value={formData.fname} onChange={handleChange} class="form-control style-1" />
+                        <input type="text" name='fname' value={formData.fname} onChange={handleChange} className="form-control style-1" />
                     </div>
-                    <div class="box box-fieldset">
+                    <div className="box box-fieldset">
                         <label>Last name:<span>*</span></label>
-                        <input type="text" name='lname' value={formData.lname} onChange={handleChange} class="form-control style-1" />
+                        <input type="text" name='lname' value={formData.lname} onChange={handleChange} className="form-control style-1" />
                     </div>
                 </div>
 
-                <div class="box box-fieldset">
+                <div className="box box-fieldset">
                     <label>Email:<span>*</span></label>
-                    <input type="text" name='email' value={formData.email} onChange={handleChange} class="form-control style-1" />
+                    <input type="text" name='email' value={formData.email} onChange={handleChange} className="form-control style-1" />
                 </div>
-                <div class="box box-fieldset">
+                <div className="box box-fieldset">
                     <label>Phone:<span>*</span></label>
-                    <input type="text" name='phone' value={formData.phone} onChange={handleChange} class="form-control style-1" />
+                    <input type="text" name='phone' value={formData.phone} onChange={handleChange} className="form-control style-1" />
                 </div>
 
 
-                <div class="box">
-                    <a href="#" class="tf-btn primary" onClick={UpdateProfile}>Save & Update</a>
+                <div className="box">
+                    <a href="#" className="tf-btn primary" onClick={UpdateProfile}>Save & Update</a>
                 </div>
 
             </div>

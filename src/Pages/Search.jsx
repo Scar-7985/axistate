@@ -1,75 +1,369 @@
 import React, { useState, useEffect } from 'react'
 import SelectOption from '../Components/MultiCheckBox/SelectOption';
 import axios from 'axios';
-import { GET_API, SITE_LOGO } from '../Auth/Define';
+import { GET_API, MEDIA_URL, SITE_LOGO } from '../Auth/Define';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Pagination from "../Components/Pagination";
 import GoogleMap from '../Components/GoogleMap/GoogleMap';
 
 const Search = () => {
 
+    // xxxx More Filters xxxxxxx //
+
+    const [showMenu, setShowMenu] = useState(false);
+    const [minValue, setMinValue] = useState(0);
+    const [maxValue, setMaxValue] = useState(100);
+    const [minYear, setMinYear] = useState(0);
+    const [maxYear, setMaxYear] = useState(100);
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(100);
+    const [minCap, setMinCap] = useState(0);
+    const [maxCap, setMaxCap] = useState(100);
+    const [activeThumb, setActiveThumb] = useState(null);
+    const [activeTab, setActiveTab] = useState("time");
+
+    const [unitTab, setUnitTab] = useState("Units");
+
+    const [open, setOpen] = useState(false);
+
+    const [formData, setFormData] = useState({
+        buildingName: "",
+        minYear: 0,
+        maxYear: 100,
+        minValue: 0,
+        maxValue: 100,
+        minPrice: 0,
+        maxPrice: 100,
+        minCap: 0,
+        maxCap: 100,
+        broker: "",
+        minSF: "",
+        maxSF: "",
+        minDoller: "",
+        maxDoller: "",
+        minAcres: "",
+        maxAcres: "",
+        tenancy: [],
+        LeaseType: [],
+        tenantCredit: [],
+        class: [],
+        activeListings: false,
+        onMarket: false,
+        auction: false,
+        highestBest: false,
+        callForOffers: false,
+        contractPending: false,
+        underContract: false,
+        agentCo: false,
+        owner: false,
+        opportunityZone: false,
+        type: "",
+        min: "",
+        max: "",
+        yearBuilt: "",
+        lotSize: "",
+        buildingSize: "",
+        floors: "",
+        parkingSpaces: "",
+        saleCond: "",
+        ownershipType: "",
+        ceilingHeight: "",
+        loadingDocks: "",
+        hvac: "",
+        utilities: "",
+        elevator: "",
+        accessibility: "",
+        trafficCount: "",
+        highways: "",
+        nearbyBusinesses: "",
+        walkScore: "",
+        numberTenants: "",
+        leaseExp: "",
+        noi: "",
+        zoning: "",
+
+    });
+
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+            type: unitTab, // ✅ ensure type always matches current tab
+        }));
+    };
+
+    // tab change
+    const handleTabClick = (tab) => {
+        setUnitTab(tab);
+        setFormData((prev) => ({
+            ...prev,
+            type: tab, // ✅ update type on tab change
+        }));
+    };
+    const handleSubmit = async () => {
+        let finalData = { ...formData }; // baaki ka data same rakha
+
+        if (activeTab === "time") {
+            delete finalData.startDate;
+            delete finalData.endDate;
+        } else if (activeTab === "custom") {
+            delete finalData.timePeriod;
+        }
+
+        console.log(finalData);
+    };
+    const handleClassClick = (value) => {
+        setFormData((prev) => ({
+            ...prev,
+            class: prev.class.includes(value)
+                ? prev.class.filter((item) => item !== value) // already selected → remove
+                : [...prev.class, value], // not selected → add
+        }));
+    };
+
+    const handleTenancyClick = (value) => {
+        setFormData((prev) => ({
+            ...prev,
+            tenancy: prev.tenancy.includes(value)
+                ? prev.tenancy.filter((item) => item !== value)
+                : [...prev.tenancy, value],
+        }));
+    };
+    const handleLeaseTypeClick = (value) => {
+        setFormData((prev) => ({
+            ...prev,
+            LeaseType: prev.LeaseType.includes(value)
+                ? prev.LeaseType.filter((item) => item !== value)
+                : [...prev.LeaseType, value],
+        }));
+    };
+    const handleTenantCreditClick = (value) => {
+        setFormData((prev) => ({
+            ...prev,
+            tenantCredit: prev.tenantCredit.includes(value)
+                ? prev.tenantCredit.filter((item) => item !== value)
+                : [...prev.tenantCredit, value],
+        }));
+    };
+
+    const handleMinChange = (e) => {
+        const value = Math.min(Number(e.target.value), maxValue);
+        setMinValue(value);
+        setActiveThumb("min");
+
+        setFormData((prev) => ({
+            ...prev,
+            minValue: value,
+        }));
+    };
+
+    const handleMaxChange = (e) => {
+        const value = Math.max(Number(e.target.value), minValue);
+        setMaxValue(value);
+        setActiveThumb("max");
+
+        setFormData((prev) => ({
+            ...prev,
+            maxValue: value,
+        }));
+    };
+
+    // year
+
+    const handleMinYearChange = (e) => {
+        const value = Math.min(Number(e.target.value), maxYear);
+        setMinYear(value);
+        setActiveThumb("min");
+
+        setFormData((prev) => ({
+            ...prev,
+            minYear: value,
+        }));
+    };
+
+    const handleMaxYearChange = (e) => {
+        const value = Math.max(Number(e.target.value), minYear);
+        setMaxYear(value);
+        setActiveThumb("max");
+
+        setFormData((prev) => ({
+            ...prev,
+            maxYear: value,
+        }));
+    };
+
+    // price
+
+    const handleMinPriceChange = (e) => {
+        const value = Math.min(Number(e.target.value), maxPrice);
+        setMinPrice(value);
+        setActiveThumb("min");
+
+        setFormData((prev) => ({
+            ...prev,
+            minPrice: value,
+        }));
+    };
+
+    const handleMaxPriceChange = (e) => {
+        const value = Math.max(Number(e.target.value), minPrice);
+        setMaxPrice(value);
+        setActiveThumb("max");
+
+        setFormData((prev) => ({
+            ...prev,
+            maxPrice: value,
+        }));
+    };
+
+    // cap
+
+    const handleMinCapChange = (e) => {
+        const value = Math.min(Number(e.target.value), maxCap);
+        setMinCap(value);
+        setActiveThumb("min");
+
+        setFormData((prev) => ({
+            ...prev,
+            minCap: value,
+        }));
+    };
+
+    const handleMaxCapChange = (e) => {
+        const value = Math.max(Number(e.target.value), minCap);
+        setMaxCap(value);
+        setActiveThumb("max");
+
+        setFormData((prev) => ({
+            ...prev,
+            maxCap: value,
+        }));
+    };
+
+    const tabs = ["Units", "Keys", "Beds", "Pads", "Pumps"];
+
+    const handleParentChange = (e) => {
+        const checked = e.target.checked;
+        setFormData((prev) => ({
+            ...prev,
+            activeListings: checked,
+            onMarket: checked,
+            auction: checked,
+            highestBest: checked,
+            callForOffers: checked,
+        }));
+    };
+
+    const handleChildChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: checked }));
+    };
+
+    // Independent checkbox change
+    const handleIndependentChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: checked }));
+    };
+
+    useEffect(() => {
+        const allChecked =
+            formData.onMarket &&
+            formData.auction &&
+            formData.highestBest &&
+            formData.callForOffers;
+
+        const noneChecked =
+            !formData.onMarket &&
+            !formData.auction &&
+            !formData.highestBest &&
+            !formData.callForOffers;
+
+        if (allChecked) {
+            setFormData((prev) => ({ ...prev, activeListings: true }));
+        } else if (noneChecked) {
+            setFormData((prev) => ({ ...prev, activeListings: false }));
+        } else {
+            setFormData((prev) => ({ ...prev, activeListings: false }));
+        }
+    }, [
+        formData.onMarket,
+        formData.auction,
+        formData.highestBest,
+        formData.callForOffers,
+    ]);
+
+    const handleOtherChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: checked }));
+    };
+    const handleOpportunityChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: checked }));
+    };
+
+
+    // xxxx More Filters xxxxxxx //
+
     const [isLoading, setIsLoading] = useState(false);
 
     const [totalPages, setTotalPages] = useState(1);
     const [pageNum, setPageNum] = useState(1);
+    const [showMap, setShowMap] = useState(true);
 
     // xxxxxxxxxxxx URL Parameters xxxxxxxxxxxx //
     const navigate = useNavigate();
     const location = useLocation();
 
-    // xxxxxxxxxxxxxxxxxxxxx Get Disply Map xxxxxxxxxxxxxxxxxxxxx //
-    const sessionShowMap = window.sessionStorage.getItem("showMap") || null;
-    const [showMap, setShowMap] = useState(true);
-    // xxxxxxxxxxxxxxxxxxxxx Get Disply Map xxxxxxxxxxxxxxxxxxxxx //
-
-
-    useEffect(() => {
-
-        if (sessionShowMap) {
-            setShowMap(sessionShowMap === "true");
-        }
-    }, [showMap]);
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx //
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx //
-
-
     const [showSorting, setShowSorting] = useState("Recommended");
     const [selectedValues, setSelectedValues] = useState([]);
-    const [searchValue, setSearchValue] = useState("");
 
     // Sale Properties
     const [tempSaleProperties, setTempSaleProperties] = useState([]);
     const [saleProperties, setSaleProperties] = useState([]);
+
+    console.log(tempSaleProperties);
+    // console.log(saleProperties);
+
     // Sale Properties
 
-    // xxxxxxxxxx Fetch All Sale Properties xxxxxxxxxx //
+    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx //
+    // xxxxxxxxxxxxxxx Filtration Variables & Settings xxxxxxxxxxxxxxx //
+    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx //
+
+    const [searchValue, setSearchValue] = useState("");
+
+    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx //
+    // xxxxxxxxxxxxxxx Filtration Variables & Settings xxxxxxxxxxxxxxx //
+    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx //
+
+
     const fetchListings = (searchQuery = null) => {
 
         if (isLoading) return;
+        const DisplayMap = window.localStorage.getItem("showMap") ? true : false;
+        setShowMap(DisplayMap);
         setIsLoading(true);
 
-        console.log(searchQuery);
 
         const REQ_API = searchQuery ? `${GET_API}/search-property.php${searchQuery}` : `${GET_API}/search-property.php`
 
         axios.post(REQ_API).then(resp => {
-            console.log("REQUESTED API ===>", resp.data.prop_data);
+            // console.log("REQUESTED API ===>", resp.data.prop_data);
             if (resp.data.status === 100) {
 
-                // if (!searchVal) {
+
                 setSaleProperties(resp.data.prop_data);
-                // } else {
-                //     const filtered = resp.data.sale_data.filter((item) => item.property_name.toLowerCase().includes(searchVal.toLowerCase()));
-                //     // console.log("filtered => ", filtered);
-                //     setSaleProperties(filtered);
-                // }
-                setTempSaleProperties(resp.data.sale_data);
+                setTempSaleProperties(resp.data.prop_data);
                 setTotalPages(resp.data.total_pages);
                 setPageNum(resp.data.current_page);
+            } else {
+                setSaleProperties([]);
             }
         }).finally(() => {
             setIsLoading(false);
-        })
+        });
 
     }
 
@@ -77,8 +371,6 @@ const Search = () => {
     useEffect(() => {
         fetchListings();
     }, []);
-
-    // xxxxxxxxxx Fetch All Sale Properties xxxxxxxxxx //
 
     const RunSearch = () => {
         const params = new URLSearchParams(location.search);
@@ -96,12 +388,12 @@ const Search = () => {
         navigate(`/view-property?pid=${PID}`);
     }
 
+
+    
     const handlePropertyTypes = (propSubTypes, propType) => {
         const params = new URLSearchParams(location.search);
-
-
-        // params.delete("types[]");
-        // params.delete("subtypes[]");
+        params.delete("ptype[]");
+        params.delete("subtype[]");
 
         propType.forEach(type => {
             const existingOptions = groupedOptions.find(g => g.label === type);
@@ -111,25 +403,25 @@ const Search = () => {
                 const selectedSubs = propSubTypes.filter(sub => allSubtypes.includes(sub));
 
                 if (selectedSubs.length === allSubtypes.length) {
-                    params.append("types[]", type);
+                    // all subtypes selected → only append parent
+                    params.append("ptype[]", type);
                 } else if (selectedSubs.length > 0) {
-                    params.append("types[]", type);
+                    // some subtypes selected → append parent + each subtype
+                    params.append("ptype[]", type);
                     selectedSubs.forEach(sub => {
-                        params.append("subtypes[]", sub);
+                        params.append("subtype[]", sub);
                     });
                 } else {
-                    // if no subtypes picked, default to all
-                    params.append("types[]", type);
+                    // no subtype selected → just parent
+                    params.append("ptype[]", type);
                 }
             }
         });
 
         const queryString = params.toString().replace(/\+/g, "%20");
-
-        console.log(queryString);
-
         navigate(`${location.pathname}?${queryString}`);
     };
+
 
 
 
@@ -152,13 +444,14 @@ const Search = () => {
 
     // xxxxxxxxxx Pagination Ends xxxxxxxxxx //
 
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        const allowedParams = ["page", "search", "types[]", "subtypes[]"];
+        const allowedParams = ["page", "search", "ptype[]", "subtype[]"];
         const pageQuery = params.get("page");
         const searchQuery = params.get("search");
-        const propertyType = params.getAll("types[]");
-        const subPropertyType = params.getAll("subtypes[]");
+        const propertyType = params.getAll("ptype[]");
+        const subPropertyType = params.getAll("subtype[]");
 
 
         for (const [key] of params.entries()) {
@@ -179,17 +472,18 @@ const Search = () => {
         }
 
         if (propertyType.length > 0) {
-            params.append("types[]", propertyType);
+
+            params.append("ptype[]", propertyType);
 
             // Find all subtypes for selected property type
             let aps = groupedOptions.filter((item) => propertyType.includes(item.label));
-            let allSubtypes = aps.flatMap((item) => item.options.map((opt) => opt.label));
+            let allSubtypes = aps.flatMap((item) => item.options.map((opt) => opt.value));
 
             if (subPropertyType.length === allSubtypes.length) {
                 setSelectedValues(allSubtypes);
             } else if (subPropertyType.length > 0) {
                 setSelectedValues(subPropertyType);
-                params.append("subtypes[]", subPropertyType);
+                params.append("subtype[]", subPropertyType);
             } else {
                 setSelectedValues(allSubtypes);
             }
@@ -302,252 +596,923 @@ const Search = () => {
 
                                     <div className="toggle-switch d-flex align-items-center">
                                         <span style={{ fontWeight: "600" }}>Show Map</span>
-                                        <input type="checkbox" checked={showMap} onChange={() => { setShowMap(!showMap); window.sessionStorage.setItem("showMap", !showMap) }} />
+                                        <input type="checkbox" checked={showMap} onChange={() => { setShowMap(!showMap); window.localStorage.setItem("showMap", !showMap) }} />
                                     </div>
                                 </div>
                                 {/* xxxxxxxxxx Advance Filter xxxxxxxxxx */}
-                                <div className="modal modal-account fade" id="searchAdvanced" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-                                    <div className="modal-dialog modal-dialog-centered">
+                                <div className="modal modal-account fade" id="searchAdvanced">
+                                    <div className="modal-dialog modal-dialog-centered custom-modal-width">
                                         <div className="modal-content">
-                                            <div className="flat-account">
+                                            <span
+                                                className="close-modal icon-close2 mx-3 mt-2"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"
+                                            ></span>
+                                            <div className="filter-grid">
+                                                <div
+                                                    className="filter-group p-3"
+                                                    style={{ background: "#F6F6F6" }}
+                                                >
+                                                    <h4>Location(s)</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="City, State, County, Zip Code"
+                                                    />
+                                                    <input type="text" value="House Springs, MO" />
+                                                    <h4>Keywords</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Ex: New construction or three-story"
+                                                    />
+                                                    <h4>Property Type(s)</h4>
+                                                    <div className="checkbox-group">
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb1"
+                                                                checked
+                                                            />
+                                                            <label for="cb1" className="text-cb-amenities">
+                                                                All
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb2"
+                                                            />
+                                                            <label for="cb2" className="text-cb-amenities">
+                                                                Retail
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb3"
+                                                            />
+                                                            <label for="cb3" className="text-cb-amenities">
+                                                                Multifamily
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb4"
+                                                            />
+                                                            <label for="cb4" className="text-cb-amenities">
+                                                                Office
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb5"
+                                                            />
+                                                            <label for="cb5" className="text-cb-amenities">
+                                                                Industrial
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb6"
+                                                            />
+                                                            <label for="cb6" className="text-cb-amenities">
+                                                                Hospitality
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb7"
+                                                            />
+                                                            <label for="cb7" className="text-cb-amenities">
+                                                                Mixed Use
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb8"
+                                                            />
+                                                            <label for="cb8" className="text-cb-amenities">
+                                                                Land
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb9"
+                                                            />
+                                                            <label for="cb9" className="text-cb-amenities">
+                                                                Self Storage
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb10"
+                                                            />
+                                                            <label for="cb10" className="text-cb-amenities">
+                                                                Mobile Home Park
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb11"
+                                                            />
+                                                            <label for="cb11" className="text-cb-amenities">
+                                                                Senior Living
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb12"
+                                                            />
+                                                            <label for="cb12" className="text-cb-amenities">
+                                                                Special Purpose
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb13"
+                                                            />
+                                                            <label for="cb13" className="text-cb-amenities">
+                                                                Note/Loan
+                                                            </label>
+                                                        </fieldset>
+                                                        <fieldset className="d-flex">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="tf-checkbox style-1"
+                                                                id="cb14"
+                                                            />
+                                                            <label for="cb14" className="text-cb-amenities">
+                                                                Business for Sale
+                                                            </label>
+                                                        </fieldset>
 
-                                                <form className="form-account">
-                                                    <div className="title-box">
-                                                        <h4>Register</h4>
-                                                        <span className="close-modal icon-close2" data-bs-dismiss="modal"></span>
-                                                    </div>
-                                                    <div className="box">
-                                                        <div className="row">
-                                                            <div className="wd-search-for">
-                                                                <div className="grid-2 group-box group-price">
-                                                                    <div className="widget-price">
-                                                                        <div className="box-title-price">
-                                                                            <span className="title-price fw-6">Price:</span>
-                                                                            <div className="caption-price">
-                                                                                <span id="slider-range-value1" className="fw-6"></span>
-                                                                                <span>-</span>
-                                                                                <span id="slider-range-value2" className="fw-6"></span>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div id="slider-range"></div>
-                                                                        <div className="slider-labels">
-                                                                            <div>
-                                                                                <input type="hidden" name="min-value" />
-                                                                                <input type="hidden" name="max-value" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                        <h4 className="mt-3">Asking Price</h4>
+                                                        <div className="range-group">
+                                                            <div>
 
-                                                                    <div className="widget-price">
-                                                                        <div className="box-title-price">
-                                                                            <span className="title-price fw-6">Size:</span>
-                                                                            <div className="caption-price">
-                                                                                <span id="slider-range-value01" className="fw-7"></span>
-                                                                                <span>-</span>
-                                                                                <span id="slider-range-value02" className="fw-7"></span>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div id="slider-range2"></div>
-                                                                        <div className="slider-labels">
-                                                                            <div>
-                                                                                <input type="hidden" name="min-value2" />
-                                                                                <input type="hidden" name="max-value2" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="grid-2 group-box">
-                                                                    <div className="group-select grid-2">
-                                                                        <div className="box-select">
-                                                                            <label className="title-select fw-6">Rooms</label>
-                                                                            <div className="nice-select" tabIndex="0"><span className="current">2</span>
-                                                                                <ul className="list">
-                                                                                    <li data-value="1" className="option">1</li>
-                                                                                    <li data-value="2" className="option selected">2</li>
-                                                                                    <li data-value="3" className="option">3</li>
-                                                                                    <li data-value="4" className="option">4</li>
-                                                                                    <li data-value="5" className="option">5</li>
-                                                                                    <li data-value="6" className="option">6</li>
-                                                                                    <li data-value="7" className="option">7</li>
-                                                                                    <li data-value="8" className="option">8</li>
-                                                                                    <li data-value="9" className="option">9</li>
-                                                                                    <li data-value="10" className="option">10</li>
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="box-select">
-                                                                            <label className="title-select fw-6">Bathrooms</label>
-                                                                            <div className="nice-select" tabIndex="0"><span className="current">2</span>
-                                                                                <ul className="list">
-                                                                                    <li data-value="1" className="option">1</li>
-                                                                                    <li data-value="2" className="option selected">2</li>
-                                                                                    <li data-value="3" className="option">3</li>
-                                                                                    <li data-value="4" className="option">4</li>
-                                                                                    <li data-value="5" className="option">5</li>
-                                                                                    <li data-value="6" className="option">6</li>
-                                                                                    <li data-value="7" className="option">7</li>
-                                                                                    <li data-value="8" className="option">8</li>
-                                                                                    <li data-value="9" className="option">9</li>
-                                                                                    <li data-value="10" className="option">10</li>
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="group-select grid-2">
-                                                                        <div className="box-select">
-                                                                            <label className="title-select fw-6">Bedrooms</label>
-                                                                            <div className="nice-select" tabIndex="0"><span className="current">2</span>
-                                                                                <ul className="list">
-                                                                                    <li data-value="1" className="option">1</li>
-                                                                                    <li data-value="2" className="option selected">2</li>
-                                                                                    <li data-value="3" className="option">3</li>
-                                                                                    <li data-value="4" className="option">4</li>
-                                                                                    <li data-value="5" className="option">5</li>
-                                                                                    <li data-value="6" className="option">6</li>
-                                                                                    <li data-value="7" className="option">7</li>
-                                                                                    <li data-value="8" className="option">8</li>
-                                                                                    <li data-value="9" className="option">9</li>
-                                                                                    <li data-value="10" className="option">10</li>
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="box-select">
-                                                                            <label className="title-select fw-6">Type</label>
-                                                                            <div className="nice-select" tabIndex="0"><span className="current">2</span>
-                                                                                <ul className="list">
-                                                                                    <li data-value="1" className="option">1</li>
-                                                                                    <li data-value="2" className="option selected">2</li>
-                                                                                    <li data-value="3" className="option">3</li>
-                                                                                    <li data-value="4" className="option">4</li>
-                                                                                    <li data-value="5" className="option">5</li>
-                                                                                    <li data-value="6" className="option">6</li>
-                                                                                    <li data-value="7" className="option">7</li>
-                                                                                    <li data-value="8" className="option">8</li>
-                                                                                    <li data-value="9" className="option">9</li>
-                                                                                    <li data-value="10" className="option">10</li>
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                                Min Price($)
 
-                                                                </div>
 
-                                                                <div className="group-checkbox">
-                                                                    <div className="text-1 text-black-2">Amenities:</div>
-                                                                    <div className="group-amenities grid-6">
-                                                                        <div className="box-amenities">
-                                                                            <fieldset className="amenities-item">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb1" />
-                                                                                <label htmlFor="cb1" className="text-cb-amenities">Air Condition</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb2" />
-                                                                                <label htmlFor="cb2" className="text-cb-amenities">Cable TV</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb3" />
-                                                                                <label htmlFor="cb3" className="text-cb-amenities">Ceiling Height</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb4" />
-                                                                                <label htmlFor="cb4" className="text-cb-amenities">Fireplace</label>
-                                                                            </fieldset>
-                                                                        </div>
-                                                                        <div className="box-amenities">
-                                                                            <fieldset className="amenities-item">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb5" />
-                                                                                <label htmlFor="cb5" className="text-cb-amenities">Disabled Access</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb6" />
-                                                                                <label htmlFor="cb6" className="text-cb-amenities">Elevator</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb7" />
-                                                                                <label htmlFor="cb7" className="text-cb-amenities">Fence</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb8" />
-                                                                                <label htmlFor="cb8" className="text-cb-amenities">Garden</label>
-                                                                            </fieldset>
-                                                                        </div>
-                                                                        <div className="box-amenities">
-                                                                            <fieldset className="amenities-item">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb9" />
-                                                                                <label htmlFor="cb9" className="text-cb-amenities">Floor</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb10" />
-                                                                                <label htmlFor="cb10" className="text-cb-amenities">Furnishing</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb11" />
-                                                                                <label htmlFor="cb11" className="text-cb-amenities">Garage</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb12" />
-                                                                                <label htmlFor="cb12" className="text-cb-amenities">Pet Friendly</label>
-                                                                            </fieldset>
-                                                                        </div>
-                                                                        <div className="box-amenities">
-                                                                            <fieldset className="amenities-item">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb13" />
-                                                                                <label htmlFor="cb13" className="text-cb-amenities">Heating</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb14" />
-                                                                                <label htmlFor="cb14" className="text-cb-amenities">Intercom</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb15" />
-                                                                                <label htmlFor="cb15" className="text-cb-amenities">Parking</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb16" />
-                                                                                <label htmlFor="cb16" className="text-cb-amenities">WiFi</label>
-                                                                            </fieldset>
-                                                                        </div>
-                                                                        <div className="box-amenities">
-                                                                            <fieldset className="amenities-item">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb17" />
-                                                                                <label htmlFor="cb17" className="text-cb-amenities">Renovation</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb18" />
-                                                                                <label htmlFor="cb18" className="text-cb-amenities">Security</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb19" />
-                                                                                <label htmlFor="cb19" className="text-cb-amenities">Swimming Pool</label>
-                                                                            </fieldset>
-
-                                                                        </div>
-                                                                        <div className="box-amenities">
-                                                                            <fieldset className="amenities-item">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb20" />
-                                                                                <label htmlFor="cb20" className="text-cb-amenities">Window Type</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb21" />
-                                                                                <label htmlFor="cb21" className="text-cb-amenities">Search property</label>
-                                                                            </fieldset>
-                                                                            <fieldset className="amenities-item mt-16">
-                                                                                <input type="checkbox" className="tf-checkbox style-1" id="cb22" />
-                                                                                <label htmlFor="cb22" className="text-cb-amenities">Construction Year</label>
-                                                                            </fieldset>
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                </div>
+                                                                <input
+                                                                    type="text"
+                                                                    placeholder="Min Price"
+                                                                    value={minPrice}
+                                                                    onChange={handleMinPriceChange}
+                                                                />
                                                             </div>
+                                                            <div>
+                                                                Max Price($)
+                                                                <input
+                                                                    type="text"
+                                                                    placeholder="Max Price"
+                                                                    value={maxPrice}
+                                                                    onChange={handleMaxPriceChange}
+                                                                />
+                                                            </div>
+                                                        </div>
 
+                                                        <div className="slider-container">
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="100"
+                                                                value={minPrice}
+                                                                onChange={handleMinPriceChange}
+                                                                className={`thumb thumb-left ${activeThumb === "min" ? "active" : ""
+                                                                    }`}
+                                                            />
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="100"
+                                                                value={maxPrice}
+                                                                onChange={handleMaxPriceChange}
+                                                                className={`thumb thumb-right ${activeThumb === "max" ? "active" : ""
+                                                                    }`}
+                                                            />
+
+                                                            <div className="slider">
+                                                                <div className="track" />
+                                                                <div
+                                                                    className="range"
+                                                                    style={{
+                                                                        left: `${minPrice}%`,
+                                                                        width: `${maxPrice - minPrice}%`,
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <h4 className="mt-3">Cap Rate</h4>
+                                                        <div className="range-group">
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Min %"
+                                                                value={minCap}
+                                                                onChange={handleMinCapChange}
+                                                            />
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Max %"
+                                                                value={maxCap}
+                                                                onChange={handleMaxCapChange}
+                                                            />
+                                                        </div>
+
+                                                        <div className="slider-container">
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="100"
+                                                                value={minCap}
+                                                                onChange={handleMinCapChange}
+                                                                className={`thumb thumb-left ${activeThumb === "min" ? "active" : ""
+                                                                    }`}
+                                                            />
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="100"
+                                                                value={maxCap}
+                                                                onChange={handleMaxCapChange}
+                                                                className={`thumb thumb-right ${activeThumb === "max" ? "active" : ""
+                                                                    }`}
+                                                            />
+
+                                                            <div className="slider">
+                                                                <div className="track" />
+                                                                <div
+                                                                    className="range"
+                                                                    style={{
+                                                                        left: `${minCap}%`,
+                                                                        width: `${maxCap - minCap}%`,
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="filter-group p-3">
+                                                    <h4>Building Name / Project Name</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Builidng name / project name"
+                                                        name="buildingName"
+                                                        value={formData.buildingName}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>Year Built / Renovated</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Year Built / Renovated"
+                                                        name="yearBuilt"
+                                                        value={formData.yearBuilt}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>Lot Size</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Acres/Sq Ft)"
+                                                        name="lotSize"
+                                                        value={formData.lotSize}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>Building Size</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Sq Ft)"
+                                                        name="buildingSize"
+                                                        value={formData.buildingSize}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>Number of Floors</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Number of floors"
+                                                        name="floors"
+                                                        value={formData.floors}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>Parking Spaces / Ratio</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Parking Spaces"
+                                                        name="parkingSpaces"
+                                                        value={formData.parkingSpaces}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>Remaining Term</h4>
+                                                    <div className="range-group">
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Min Years"
+                                                            name="minYear"
+                                                            value={minYear}
+                                                            onChange={handleMinYearChange}
+                                                        />
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Max Years"
+                                                            name="maxYear"
+                                                            value={maxYear}
+                                                            onChange={handleMaxYearChange}
+                                                        />
+                                                    </div>
+
+                                                    <div className="slider-container">
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="100"
+                                                            value={minYear}
+                                                            onChange={handleMinYearChange}
+                                                            className={`thumb thumb-left ${activeThumb === "min" ? "active" : ""
+                                                                }`}
+                                                        />
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="100"
+                                                            value={maxYear}
+                                                            onChange={handleMaxYearChange}
+                                                            className={`thumb thumb-right ${activeThumb === "max" ? "active" : ""
+                                                                }`}
+                                                        />
+
+                                                        <div className="slider">
+                                                            <div className="track" />
+                                                            <div
+                                                                className="range"
+                                                                style={{
+                                                                    left: `${minYear}%`,
+                                                                    width: `${maxYear - minYear}%`,
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <h4>Broker/Agent</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Ex: Glen Kunofsky"
+                                                        name="broker"
+                                                        value={formData.broker}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>Zoning</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Zoning"
+                                                        name="zoning"
+                                                        value={formData.zoning}
+                                                        onChange={handleChange}
+                                                    />
+
+                                                    <h4>Tenancy</h4>
+                                                    <div className="btn-group">
+                                                        {["Net", "MNN", "Multi"].map((val) => {
+                                                            const isSelected = formData.tenancy?.includes(val);
+                                                            return (
+                                                                <button
+                                                                    type="button"
+                                                                    key={val}
+                                                                    onClick={() => handleTenancyClick(val)}
+                                                                    className={`btn ${isSelected
+                                                                        ? "btn-primary"
+                                                                        : "btn-outline-primary"
+                                                                        }`}
+                                                                    style={{
+                                                                        backgroundColor: isSelected ? "#0d6efd" : "",
+                                                                        color: isSelected ? "#fff" : "#acacacff",
+                                                                        borderColor: "#b9b9b9ff",
+                                                                        margin: 2,
+                                                                        borderRadius: "5px",
+                                                                    }}
+                                                                >
+                                                                    {val}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    <h4 className="mt-2">Lease Type</h4>
+                                                    <div className="btn-group">
+                                                        {[
+                                                            "NNN",
+                                                            "Gross",
+                                                            "Modified Gross",
+
+                                                        ].map((val) => {
+                                                            const isSelected = formData.LeaseType?.includes(val);
+                                                            return (
+                                                                <button
+                                                                    type="button"
+                                                                    key={val}
+                                                                    onClick={() => handleLeaseTypeClick(val)}
+                                                                    className={`btn ${isSelected
+                                                                        ? "btn-primary"
+                                                                        : "btn-outline-primary"
+                                                                        }`}
+                                                                    style={{
+                                                                        backgroundColor: isSelected ? "#0d6efd" : "",
+                                                                        color: isSelected ? "#fff" : "#acacacff",
+                                                                        borderColor: "#b9b9b9ff",
+                                                                        margin: 2,
+                                                                        borderRadius: "5px",
+                                                                    }}
+                                                                >
+                                                                    {val}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    {/* <h4>Unit Measurements</h4>
+
+                      <div
+                        className="tab-container"
+                        style={{ display: "flex", gap: "12px" }}
+                      >
+                        {tabs.map((tab) => (
+                          <button
+                            key={tab}
+                            onClick={() => {
+                              handleTabClick(tab);
+                            }}
+                            className={`p-2 tab ${
+                              unitTab === tab ? "active" : ""
+                            }`}
+                            style={{
+                              padding: "8px 16px",
+                              borderRadius: "6px",
+                              border: "1px solid #ccc",
+                              background: unitTab === tab ? "#007bff" : "#fff",
+                              color: unitTab === tab ? "#fff" : "#000",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {tab}
+                          </button>
+                        ))}
+                      </div> */}
+
+                                                    {/* {"unitTab" && (
+                        <div
+                          style={{
+                            marginTop: "20px",
+                            display: "flex",
+                            gap: "10px",
+                          }}
+                          className="align-items-center"
+                        >
+                          <input
+                            type="number"
+                            name="min"
+                            value={formData.min}
+                            onChange={handleChange}
+                            placeholder={`Min ${unitTab.toLowerCase()}`}
+                            style={{
+                              padding: "8px",
+                              border: "1px solid #ccc",
+                              borderRadius: "6px",
+                            }}
+                          />
+                          -
+                          <input
+                            type="number"
+                            name="max"
+                            value={formData.max}
+                            onChange={handleChange}
+                            placeholder={`Max ${unitTab.toLowerCase()}`}
+                            style={{
+                              padding: "8px",
+                              border: "1px solid #ccc",
+                              borderRadius: "6px",
+                            }}
+                          />
+                        </div>
+                      )} */}
+                                                </div>
+
+                                                <div className="filter-group p-3">
+                                                    <h4>Additional Property Details</h4>
+                                                    <div className="range-group">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Min SF"
+                                                            name="minSF"
+                                                            value={formData.minSF}
+                                                            onChange={handleChange}
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Max SF"
+                                                            name="maxSF"
+                                                            value={formData.maxSF}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                    <div className="range-group">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Min $ / SF"
+                                                            name="minDoller"
+                                                            value={formData.minDoller}
+                                                            onChange={handleChange}
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Max $ / SF"
+                                                            name="maxDoller"
+                                                            value={formData.maxDoller}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                    <div className="range-group">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Min acres"
+                                                            name="minAcres"
+                                                            value={formData.minAcres}
+                                                            onChange={handleChange}
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Max acres"
+                                                            name="maxAcres"
+                                                            value={formData.maxAcres}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                    <h4>Tenant Credit</h4>
+                                                    <div className="btn-group">
+                                                        {[
+                                                            "Credit Rated",
+                                                            "Corporate Guarantee",
+                                                            "Franchisee",
+                                                            "No Credit Rating",
+                                                        ].map((val) => {
+                                                            const isSelected =
+                                                                formData.tenantCredit?.includes(val);
+                                                            return (
+                                                                <button
+                                                                    type="button"
+                                                                    key={val}
+                                                                    onClick={() => handleTenantCreditClick(val)}
+                                                                    className={`btn ${isSelected
+                                                                        ? "btn-primary"
+                                                                        : "btn-outline-primary"
+                                                                        }`}
+                                                                    style={{
+                                                                        backgroundColor: isSelected ? "#0d6efd" : "",
+                                                                        color: isSelected ? "#fff" : "#acacacff",
+                                                                        borderColor: "#b9b9b9ff",
+                                                                        margin: 2,
+                                                                        borderRadius: "5px",
+                                                                    }}
+                                                                >
+                                                                    {val}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+
+                                                    <h4 className="mt-3">Occupancy</h4>
+                                                    <div className="range-group">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Min %"
+                                                            value={minValue}
+                                                            onChange={handleMinChange}
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Max %"
+                                                            value={maxValue}
+                                                            onChange={handleMaxChange}
+                                                        />
+                                                    </div>
+
+                                                    <div className="slider-container">
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="100"
+                                                            value={minValue}
+                                                            onChange={handleMinChange}
+                                                            className={`thumb thumb-left ${activeThumb === "min" ? "active" : ""
+                                                                }`}
+                                                        />
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="100"
+                                                            value={maxValue}
+                                                            onChange={handleMaxChange}
+                                                            className={`thumb thumb-right ${activeThumb === "max" ? "active" : ""
+                                                                }`}
+                                                        />
+
+                                                        <div className="slider">
+                                                            <div className="track" />
+                                                            <div
+                                                                className="range"
+                                                                style={{
+                                                                    left: `${minValue}%`,
+                                                                    width: `${maxValue - minValue}%`,
+                                                                }}
+                                                            />
                                                         </div>
                                                     </div>
 
-                                                </form>
 
+                                                    <div>
+                                                        <h4 className="mt-3">Sale Condition</h4>
+                                                        <select
+                                                            className="dropdown-list mt-2"
+                                                            name="saleCond"
+                                                            value={formData.saleCond}
+                                                            onChange={handleChange}
+                                                            style={{
+                                                                fontSize: "14px",
+                                                                color: "#000000ff",
+                                                            }}
+                                                        >
+                                                            {[
+                                                                "For sale",
+                                                                "Lease",
+                                                                "Built to suit",
+                                                                "Ground lease",
+                                                            ].map((item) => (
+                                                                <option
+                                                                    key={item}
+                                                                    value={item}
+                                                                    className="text-dark"
+                                                                >
+                                                                    {item}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="mt-3">Ownership Type</h4>
+                                                        <select
+                                                            className="dropdown-list mt-2"
+                                                            name="ownershipType"
+                                                            value={formData.ownershipType}
+                                                            onChange={handleChange}
+                                                            style={{
+                                                                fontSize: "14px",
+                                                                color: "#000000ff",
+                                                            }}
+                                                        >
+                                                            {[
+                                                                "Fee simple",
+                                                                "Leasehold",
+                                                                "Condo",
 
+                                                            ].map((item) => (
+                                                                <option
+                                                                    key={item}
+                                                                    value={item}
+                                                                    className="text-dark"
+                                                                >
+                                                                    {item}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+
+                                                    <h4 className="mt-3">Traffic Count</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Traffic Count"
+                                                        name="trafficCount"
+                                                        value={formData.trafficCount}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4 className="mt-3">Proximity to Highways / Transit</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Proximity to Highways / Transit"
+                                                        name="highways"
+                                                        value={formData.highways}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4 className="mt-3">Nearby Businesses / Anchors</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Nearby Businesses / Anchors"
+                                                        name="nearbyBusinesses"
+                                                        value={formData.nearbyBusinesses}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4 className="mt-3">Walk Score / Transit Score</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Walk Score / Transit Score"
+                                                        name="walkScore"
+                                                        value={formData.walkScore}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+
+                                                <div className="filter-group p-3">
+                                                    <div className="d-flex justify-content-between align-items-center">
+                                                        <h4> Property Features </h4>
+                                                    </div>
+
+                                                    <h4>Ceiling Height (Industrial)</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Ceiling Height (Industrial)"
+                                                        name="ceilingHeight"
+                                                        value={formData.ceilingHeight}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>Loading Docks / Drive-ins</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Loading Docks / Drive-ins"
+                                                        name="loadingDocks"
+                                                        value={formData.loadingDocks}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4>HVAC / Sprinkler System</h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="HVAC / Sprinkler System"
+                                                        name="hvac"
+                                                        value={formData.hvac}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <div>
+                                                        <h4 className="mt-3">Utilities</h4>
+                                                        <select
+                                                            className="dropdown-list mt-2"
+                                                            name="utilities"
+                                                            value={formData.utilities}
+                                                            onChange={handleChange}
+                                                            style={{
+                                                                fontSize: "14px",
+                                                                color: "#000000ff",
+                                                            }}
+                                                        >
+                                                            {[
+                                                                "Water",
+                                                                "Gas",
+                                                                "Sewer",
+                                                                "Electricity",
+                                                            ].map((item) => (
+                                                                <option
+                                                                    key={item}
+                                                                    value={item}
+                                                                    className="text-dark"
+                                                                >
+                                                                    {item}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <h4 className="mt-3">Elevator</h4>
+                                                        <select
+                                                            className="dropdown-list mt-2"
+                                                            name="elevator"
+                                                            value={formData.elevator}
+                                                            onChange={handleChange}
+                                                            style={{
+                                                                fontSize: "14px",
+                                                                color: "#000000ff",
+                                                            }}
+                                                        >
+                                                            {[
+                                                                "Yes",
+                                                                "No",
+                                                            ].map((item) => (
+                                                                <option
+                                                                    key={item}
+                                                                    value={item}
+                                                                    className="text-dark"
+                                                                >
+                                                                    {item}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <h4 className="mt-3">Accessibility / ADA Compliant</h4>
+                                                        <select
+                                                            className="dropdown-list mt-2"
+                                                            name="accessibility"
+                                                            value={formData.accessibility}
+                                                            onChange={handleChange}
+                                                            style={{
+                                                                fontSize: "14px",
+                                                                color: "#000000ff",
+                                                            }}
+                                                        >
+                                                            {[
+                                                                "Yes",
+                                                                "No",
+                                                            ].map((item) => (
+                                                                <option
+                                                                    key={item}
+                                                                    value={item}
+                                                                    className="text-dark"
+                                                                >
+                                                                    {item}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+
+                                                    <h4 className="mt-3">Class</h4>
+                                                    <div
+                                                        className="btn-group"
+                                                        role="group"
+                                                        aria-label="Class"
+                                                    >
+                                                        {["A", "B", "C", "D"].map((val) => {
+                                                            const isSelected = formData.class?.includes(val);
+                                                            return (
+                                                                <button
+                                                                    type="button"
+                                                                    key={val}
+                                                                    onClick={() => handleClassClick(val)}
+                                                                    className={`btn ${isSelected
+                                                                        ? "btn-primary"
+                                                                        : "btn-outline-primary"
+                                                                        }`}
+                                                                    style={{
+                                                                        backgroundColor: isSelected ? "#0d6efd" : "",
+                                                                        color: isSelected ? "#fff" : "#acacacff",
+                                                                        borderColor: "#b9b9b9ff",
+                                                                        margin: 2,
+                                                                        borderRadius: "5px",
+                                                                    }}
+                                                                >
+                                                                    {val}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    <h4 className=""> Financial / Tenancy Information </h4>
+                                                    <h4> Number of Tenants </h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Number of Tenants"
+                                                        name="numberTenants"
+                                                        value={formData.numberTenants}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4> Lease Expiration(s) </h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Lease Expiration(s)"
+                                                        name="leaseExp"
+                                                        value={formData.leaseExp}
+                                                        onChange={handleChange}
+                                                    />
+                                                    <h4> NOI (Net Operating Income) </h4>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="NOI (Net Operating Income) "
+                                                        name="noi"
+                                                        value={formData.noi}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="position-relative mt-3">
+                                                <button
+                                                    className="tf-btn primary pointer-cursor position-absolute bottom-0 end-0 translate-middle"
+                                                    style={{ width: "200px" }}
+                                                    onClick={handleSubmit}
+                                                >
+                                                    add 999+ Listings
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -590,14 +1555,16 @@ const Search = () => {
                                                                                 <div className="archive-top">
                                                                                     <span className="images-group">
                                                                                         <div className="images-style">
-                                                                                            <img className="lazyload" data-src="/assets/images/home/house-7.jpg" src="/assets/images/home/house-7.jpg" alt="img" />
+                                                                                            <img className="lazyload" data-src={`${MEDIA_URL}/${item.banner}`} src={`${MEDIA_URL}/${item.banner}`} alt="img" />
                                                                                         </div>
+
                                                                                         {/* <div className="top">
                                                                                             <ul className="d-flex gap-6">
                                                                                                 <li className="flag-tag primary">Featured</li>
                                                                                                 <li className="flag-tag style-1">For Sale</li>
                                                                                             </ul>
                                                                                         </div> */}
+
                                                                                         <div className="bottom">
                                                                                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                                                 <path d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -723,95 +1690,77 @@ const groupedOptions = [
     {
         label: 'Retail',
         options: [
-            { id: 1, value: 'Gas Station Area', label: 'Gas Station' },
-            { id: 2, value: 'Bank Area', label: 'Bank' },
-            { id: 3, value: 'Convenience Store Area', label: 'Convenience Store' },
-            { id: 4, value: 'Day Care / Nursery Area', label: 'Day Care / Nursery' },
-            { id: 5, value: 'QSR / Fast Food Area', label: 'QSR / Fast Food' },
-            { id: 6, value: 'Grocery Store Area', label: 'Grocery Store' },
-            { id: 7, value: 'Pharmacy / Drug Area', label: 'Pharmacy / Drug Store' },
-            { id: 8, value: 'Restaurant / Café Area', label: 'Restaurant / Café' },
-            { id: 9, value: 'Shopping Center Area', label: 'Shopping Center' },
-            { id: 10, value: 'Big Box / Anchor Store Area', label: 'Big Box / Anchor Store' },
-            { id: 11, value: 'Factory Outlet Area', label: 'Factory Outlet' },
-            { id: 12, value: 'Theme Center Area', label: 'Theme Center' },
-            { id: 13, value: 'Strip Center / Neighborhood Center Area', label: 'Strip Center / Neighborhood Center' },
-            { id: 14, value: 'Lifestyle Center Area', label: 'Lifestyle Center' },
-            { id: 15, value: 'Mixed-Use Retail Area', label: 'Mixed-Use Retail' },
-            { id: 16, value: 'Standalone Store / Pad Site Area', label: 'Standalone Store / Pad Site' },
-            { id: 17, value: 'Fitness / Gym Area', label: 'Fitness / Gym' },
-            { id: 18, value: 'Specialty Retail Area', label: 'Specialty Retail' },
+            { value: 'Gas Station' },
+            { value: 'Bank' },
+            { value: 'Convenience Store' },
+            { value: 'Day Care / Nursery' },
+            { value: 'QSR / Fast Food' },
+            { value: 'Grocery Store' },
+            { value: 'Pharmacy / Drug Store' },
+            { value: 'Restaurant / Café' },
+            { value: 'Shopping Center' },
+            { value: 'Big Box / Anchor Store' },
+            { value: 'Factory Outlet' },
+            { value: 'Theme Center' },
+            { value: 'Strip Center / Neighborhood Center' },
+            { value: 'Lifestyle Center' },
+            { value: 'Mixed-Use Retail' },
+            { value: 'Standalone Store / Pad Site' },
+            { value: 'Fitness / Gym' },
+            { value: 'Specialty Retail' },
         ],
     },
     {
         label: 'Office',
         options: [
-            { value: 'High-Rise Office Area', label: 'High-Rise Office' },
-            { value: 'Mid-Rise Office Area', label: 'Mid-Rise Office' },
-            { value: 'Low-Rise / Garden Office Area', label: 'Low-Rise / Garden Office' },
-            { value: 'Suburban Office Park Area', label: 'Suburban Office Park' },
-            { value: 'Medical Office Area', label: 'Medical Office' },
-            { value: 'Co-Working / Shared Office Area', label: 'Co-Working / Shared Office' },
-            { value: 'Flex Office Area', label: 'Flex Office' },
-        ],
-    },
-    {
-        label: 'Multifamily',
-        options: [
-            { value: 'Apartment Complex (Low-, Mid-, High-rise) Area', label: 'Apartment Complex (Low-, Mid-, High-rise)' },
-            { value: 'Student Housing Area', label: 'Student Housing' },
-            { value: 'Senior / Assisted Living Housing Area', label: 'Senior / Assisted Living Housing' },
-            { value: 'Duplex / Triplex / Fourplex Area', label: 'Duplex / Triplex / Fourplex' },
-            { value: 'Condominiums / Co-ops Area', label: 'Condominiums / Co-ops' },
+            { value: 'High-Rise Office' },
+            { value: 'Mid-Rise Office' },
+            { value: 'Low-Rise / Garden Office' },
+            { value: 'Suburban Office Park' },
+            { value: 'Medical Office' },
+            { value: 'Co-Working / Shared Office' },
+            { value: 'Flex Office' },
         ],
     },
     {
         label: 'Industrial',
         options: [
-            { value: 'Warehouse / Distribution Area', label: 'Warehouse / Distribution' },
-            { value: 'Manufacturing Facility Area', label: 'Manufacturing Facility' },
-            { value: 'Flex Industrial Area', label: 'Flex Industrial' },
-            { value: 'Cold Storage Area', label: 'Cold Storage' },
-            { value: 'Data Center Area', label: 'Data Center' },
-            { value: 'R&D Facility / Laboratory Area', label: 'R&D Facility / Laboratory' },
-            { value: 'Bulk / Logistics Hub Area', label: 'Bulk / Logistics Hub' },
-        ],
-    },
-    {
-        label: 'Office',
-        options: [
-            { value: 'Traditional Office', label: 'Traditional Office' },
-            { value: 'Executive Office', label: 'Executive Office' },
-            { value: 'Medical Office', label: 'Medical Office' },
-            { value: 'Creative Office', label: 'Creative Office' },
+            { value: 'Warehouse / Distribution' },
+            { value: 'Manufacturing Facility' },
+            { value: 'Flex Industrial' },
+            { value: 'Cold Storage' },
+            { value: 'Data Center' },
+            { value: 'R&D Facility / Laboratory' },
+            { value: 'Bulk / Logistics Hub' },
         ],
     },
     {
         label: 'Hospitality / Hotels',
         options: [
-            { value: 'Hotel (Full Service) Area', label: 'Hotel (Full Service)' },
-            { value: 'Limited Service Hotel Area', label: 'Limited Service Hotel' },
-            { value: 'Motel Area', label: 'Motel' },
-            { value: 'Resort Area', label: 'Resort' },
-            { value: 'Extended Stay Area', label: 'Extended Stay' },
+            { value: 'Hotel (Full Service)' },
+            { value: 'Limited Service Hotel' },
+            { value: 'Motel' },
+            { value: 'Resort' },
+            { value: 'Extended Stay' },
         ],
     },
     {
         label: 'Multifamily',
         options: [
-            { value: 'Traditional Office', label: 'Traditional Office' },
-            { value: 'Executive Office', label: 'Executive Office' },
-            { value: 'Medical Office', label: 'Medical Office' },
-            { value: 'Creative Office', label: 'Creative Office' },
+            { value: 'Apartment Complex (Low-, Mid-, High-rise)' },
+            { value: 'Student Housing' },
+            { value: 'Senior / Assisted Living Housing' },
+            { value: 'Duplex / Triplex / Fourplex' },
+            { value: 'Condominiums / Co-ops' },
         ],
     },
     {
         label: 'Land',
         options: [
-            { value: 'Raw / Vacant Land Area', label: 'Raw / Vacant Land' },
-            { value: 'Development Land (zoned / permitted) Area', label: 'Development Land (zoned / permitted)' },
-            { value: 'Outlot / Pad Site Area', label: 'Outlot / Pad Site' },
-            { value: 'Land with Partial Improvements Area', label: 'Land with Partial Improvements' },
+            { value: 'Raw / Vacant Land' },
+            { value: 'Development Land (zoned / permitted)' },
+            { value: 'Outlot / Pad Site' },
+            { value: 'Land with Partial Improvements' },
         ],
     },
 ];

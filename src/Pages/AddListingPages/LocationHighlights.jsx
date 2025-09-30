@@ -9,8 +9,7 @@ const LocationHighlights = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const { PID } = location.state;
-    console.log(PID);
+    const { PID } = location.state || {};
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -122,9 +121,11 @@ const LocationHighlights = () => {
         setIsLoading(true);
     }
 
+      const [showSidebar, setShowSidebar] = useState(false);
+
     return (
         <div className="layout-wrap">
-            <div className="sidebar-menu-dashboard d-flex shadow">
+            <div className="sidebar-menu-dashboard" id={`add-listing-sidemenu${showSidebar ? "-open" : ""}`}>  {/* d-flex shadow  */}
                 <div className="menu-box">
                     {/* <div className="title fw-6">Menu</div> */}
                     <ul className="box-menu-dashboard">
@@ -162,6 +163,9 @@ const LocationHighlights = () => {
 
             <div className="main-content">
                 <div className="main-content-inner">
+                  <div class="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
+       <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
+          </div>
                     <div className="widget-box-2 mb-20 shadow">
                         <h5 className="title d-flex justify-content-between align-item-center">
                             <div>

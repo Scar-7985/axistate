@@ -151,9 +151,11 @@ const TransactionDetails = () => {
     })
   }
 
+    const [showSidebar, setShowSidebar] = useState(false);
+
   return (
     <div className="layout-wrap">
-      <div className="sidebar-menu-dashboard d-flex shadow ">
+   <div className="sidebar-menu-dashboard" id={`add-listing-sidemenu${showSidebar ? "-open" : ""}`}>  {/* d-flex shadow  */}
         <div className="menu-box">
           {/* <div className="title fw-6">Menu</div> */}
           <ul className="box-menu-dashboard">
@@ -191,6 +193,9 @@ const TransactionDetails = () => {
 
       <div className="main-content">
         <div className="main-content-inner">
+          <div class="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
+            <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
+          </div>
           <div className="widget-box-2 mb-20 shadow">
             <h5 className="title d-flex justify-content-between align-items-center">
               <div>
@@ -200,9 +205,9 @@ const TransactionDetails = () => {
                 <div>
 
                   <a className="btn-dark d-flex align-items-center gap-1" onClick={() => navigate("/property-details", { state: { PID: PID } })}>
-                   <span class="material-symbols-outlined">
-                        chevron_backward
-                      </span>
+                    <span class="material-symbols-outlined">
+                      chevron_backward
+                    </span>
                     <div className='text'>Previous</div>
 
                   </a>

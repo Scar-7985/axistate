@@ -208,6 +208,14 @@ const Header = () => {
     }
 
 
+    const MobileNavigate = (path) => {
+        showMobileMenu();
+        setTimeout(() => {
+            navigate(path);
+        }, 200);
+    }
+
+
     return (
         <header id="header" className="main-header header-fixed fixed-header">
             <div className="header-lower">
@@ -360,10 +368,7 @@ const Header = () => {
 
                         <div className="mobi-icon-box">
                             <div className="box d-flex align-items-center">
-                                <span className="material-symbols-outlined mr-2">
-                                    forms_add_on
-                                </span>
-
+                                <span className="material-symbols-outlined mr-2">forms_add_on</span>
 
                                 <a onClick={() => {
                                     if (isAuthenticated) {
@@ -376,10 +381,23 @@ const Header = () => {
                                     }, 200);
                                 }}>Add Listing</a>
                             </div>
-                            <div className="box d-flex align-items-center">
-                                <span className="icon icon-mail"></span>
-                                <div>themesflat@gmail.com</div>
-                            </div>
+                            {
+                                isAuthenticated &&
+                                <React.Fragment>
+                                    <div className="box d-flex align-items-center" onClick={() => MobileNavigate("/settings")}>
+                                        <span className="material-symbols-outlined mr-2">dashboard</span>
+                                        <div>Dashboard</div>
+                                    </div>
+                                    <div className="box d-flex align-items-center" onClick={() => MobileNavigate("/my-listings")}>
+                                        <span className="material-symbols-outlined mr-2">lists</span>
+                                        <div>My Listings</div>
+                                    </div>
+                                    <div className="box d-flex align-items-center">
+                                        <span className="material-symbols-outlined mr-2">mail</span>
+                                        <div>axisestate@gmail.com</div>
+                                    </div>
+                                </React.Fragment>
+                            }
                         </div>
 
                         <div className="menu-outer"></div>

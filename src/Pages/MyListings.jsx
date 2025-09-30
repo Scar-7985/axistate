@@ -3,18 +3,20 @@ import { isAuthenticated, GET_API, MEDIA_URL } from "../Auth/Define"
 import axios from 'axios';
 import DataTable from "datatables.net-react";
 import DT from "datatables.net-bs5";
+import { useNavigate } from 'react-router-dom';
 
 DataTable.use(DT);
 
 const MyListings = () => {
 
+    const navigate = useNavigate();
     const [listingData, setListingData] = useState([]);
 
     const fetchListings = () => {
         const formData = new FormData();
         formData.append("cuid", isAuthenticated);
         axios.post(`${GET_API}/list-details.php`, formData).then(resp => {
-            // console.log(resp.data.data);
+            console.log(resp.data.data);
 
             if (resp.data.status === 100) {
                 setListingData(resp.data.data);
@@ -27,39 +29,39 @@ const MyListings = () => {
         fetchListings();
     }, [])
 
-    const editModal = (PID) => {
-        console.log(PID);
-
+    const editModal = (getPid) => {
+        // console.log(PID);
+        navigate("/property-details", { state: { PID: getPid } });
     }
 
     return (
 
         <div id="wrapper">
-            <div id="page" class="clearfix">
-                <div class="layout-wrap">
-                    <div class="main-content pl-0">
-                        <div class="main-content-inner">
-                            <div class="wrapper-content row">
-                                <div class="col-12">
-                                    <div class="widget-box-2 wd-listing shadow">
-                                        <div class="d-flex justify-content-between align-items-center">
+            <div id="page" className="clearfix">
+                <div className="layout-wrap">
+                    <div className="main-content pl-0">
+                        <div className="main-content-inner">
+                            <div className="wrapper-content row">
+                                <div className="col-12">
+                                    <div className="widget-box-2 wd-listing shadow">
+                                        <div className="d-flex justify-content-between align-items-center">
                                             <div className="">
-                                                <h5 class="title">My Listing</h5>
-                                                <div class="d-flex gap-4"><span class="text-primary fw-7">{listingData.length}</span><span class="fw-6">Results found</span></div>
+                                                <h5 className="title">My Listing</h5>
+                                                <div className="d-flex gap-4"><span className="text-primary fw-7">{listingData.length}</span><span className="fw-6">Results found</span></div>
                                             </div>
-                                            <div class="">
-                                                <div class="wd-chart">
-                                                    <div class="wd-filter-date">
-                                                        <div class="left">
-                                                            {/* <div class="dates active">Sale</div>
-                                        <div class="dates">Lease</div> */}
+                                            <div className="">
+                                                <div className="wd-chart">
+                                                    <div className="wd-filter-date">
+                                                        <div className="left">
+                                                            {/* <div className="dates active">Sale</div>
+                                        <div className="dates">Lease</div> */}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="wrap-table">
+                                        <div className="wrap-table">
                                             <div className="table-responsive" style={{ overflowX: "hidden" }}>
                                                 <DataTable
                                                     // Columns
@@ -72,27 +74,24 @@ const MyListings = () => {
 
                                                     // Row Data
                                                     data={listingData.map((item, index) => {
-                                                        const mediaStr = typeof item.media?.photos === "string" ? item.media?.photos : "";
-                                                        const getFirstImage = mediaStr.includes("@@")
-                                                            ? mediaStr.split("@@")[0]
-                                                            : mediaStr;
+
 
                                                         return {
-                                                            id: item.id,
+                                                            id: item.pid,
                                                             // sr: index + 1,
                                                             listing: `<div class="d-flex align-items-center">
-                                                    <div><img src="${MEDIA_URL}/${getFirstImage}" style="height: 60px; border-radius: 4px" /></div>
+                                                    <div><img src="${MEDIA_URL}/${item.banner}" style="height: 60px; border-radius: 4px" /></div>
                                                     <div class="content ml-3">
-                                                        <h6 class="title mb-0"><a href="/view-property?pid=${item.basic.pid}">${item.basic.project_name}</a></h6>
-                                                        <div class="text-date">Posting date: ${item.basic.date}</div>
-                                                        <div class="text-btn text-primary">${item.transaction ? ('$' + ' ' + item.transaction.asking_price) : "Unpriced"}</div> 
+                                                        <h6 class="title mb-0"><a href="/view-property?pid=${item.pid}">${item.project_name}</a></h6>
+                                                        <div class="text-date">Posting date: ${item.date}</div>
+                                                        <div class="text-btn text-primary">${item.asking_price ? ('$' + ' ' + item.asking_price) : "Unpriced"}</div> 
                                                     </div>
                                                     </div>
                                                     `,
                                                             // Show badges in table
-                                                            status: `<div class="status-wrap"><a href="#" class="btn-status ${item.basic.status === 1 ? "pending" : item.basic.status === 2 ? "sold" : ""}">${item.basic.status === 1
+                                                            status: `<div class="status-wrap"><a href="#" class="btn-status ${item.status === 1 ? "pending" : item.status === 2 ? "sold" : ""}">${item.status === 1
                                                                 ? "Pending"
-                                                                : item.basic.status === 2
+                                                                : item.status === 2
                                                                     ? "Sold"
                                                                     : "In Review"
                                                                 }</a></div>`,
@@ -133,12 +132,12 @@ const MyListings = () => {
                                                         language: {
                                                             lengthMenu: `<span>Show</span> _MENU_ <span>listings</span>`,
                                                             paginate: {
-                                                                previous: `<span class="page-num"><i class="icon icon-arr-l"></i></span>`,
-                                                                next: `<span class="page-num"><i class="icon icon-arr-r"></i></span>`
+                                                                previous: `<span className="page-num"><i className="icon icon-arr-l"></i></span>`,
+                                                                next: `<span className="page-num"><i className="icon icon-arr-r"></i></span>`
                                                             },
-                                                            emptyTable: `<div class="text-center text-danger">
-                          <div class="mt-3">There is no data to show you at the moment.</div>
-                         </div>`
+                                                            emptyTable: `<div className="text-center text-danger">
+                                                                          <div className="mt-3">There is no data to show you at the moment.</div>
+                                                                         </div>`
                                                         },
                                                         createdRow: (row, data, dataIndex) => {
                                                             // Bind click for delete button
@@ -147,7 +146,7 @@ const MyListings = () => {
                                                             });
                                                             $(row).find(".edit-role").on("click", (e) => {
                                                                 e.preventDefault(); // stop <a href="#"> navigation
-                                                                editModal(data);
+                                                                editModal(data.id);
                                                             });
                                                             $(row).find(".delete-role").on("click", () => {
                                                                 status_n_deleteRole(data.id, "delete");
@@ -156,6 +155,12 @@ const MyListings = () => {
                                                     }}
 
                                                 />
+                                            </div>
+                                        </div>
+
+                                        <div className="wrap-table">
+                                            <div className="table-responsive" style={{ overflowX: "hidden" }}>
+
                                             </div>
                                         </div>
                                     </div>
