@@ -3,16 +3,24 @@ import { UserContext } from '../../Context/UserProvider'
 import React, { useState, useEffect, useContext } from 'react'
 import { isAuthenticated, GET_API, MEDIA_URL } from "../../Auth/Define"
 import axios from 'axios';
-import DataTable from "datatables.net-react";
-import DT from "datatables.net-bs5";
 
-DataTable.use(DT);
+import { DataTable } from "../../Components/Datatable/Datatable";
+import Swal from 'sweetalert2';
+import { swalMsg } from '../../Components/SweetAlert2';
+import { useNavigate } from 'react-router-dom';
+
 
 const Dashboard = () => {
 
+    const navigate = useNavigate(); 
     const [listingData, setListingData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchListings = () => {
+        if (!isLoading) {
+            setIsLoading(true);
+        }
+
         const formData = new FormData();
         formData.append("cuid", isAuthenticated);
         axios.post(`${GET_API}/list-details.php`, formData).then(resp => {
@@ -21,18 +29,58 @@ const Dashboard = () => {
             if (resp.data.status === 100) {
                 setListingData(resp.data.data);
             }
+
+            if (!isLoading) {
+                setIsLoading(false);
+            }
         })
     }
+
 
     useEffect(() => {
         if (!isAuthenticated) return;
         fetchListings();
-    }, [])
+    }, []);
+
+
+    const deleteProperty = (getPid) => {
+
+        Swal.fire({
+            title: "Delete Property?",
+            text: "Are you sure!",
+            imageUrl: "/assets/images/logo/logout.png",
+            imageWidth: 60,
+            imageHeight: 60,
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const delData = new FormData();
+                delData.append("pid", getPid);
+                axios.post(`${POST_API}/delete.php`, delData).then(resp => {
+                    console.log(resp.data);
+                    if (resp.data.status === 100) {
+                        swalMsg("success", resp.data.msg, 2000);
+                        fetchListings();
+                    } else {
+                        swalMsg("error", resp.data.msg, 2000);
+                    }
+                })
+            }
+
+        });
+
+
+    }
+
+
 
     return (
         <div className="main-content-inner">
 
-        
+
 
 
 
@@ -114,97 +162,72 @@ const Dashboard = () => {
                         <div className="wrap-table">
                             <div className="table-responsive" style={{ overflowX: "hidden" }}>
                                 <DataTable
-                                    // Columns
-                                    columns={[
-                                        // { title: "Sr.", data: "sr", className: "text-left" },
-                                        { title: "Listing", data: "listing", className: "text-left" },
-                                        { title: "Status", data: "status", className: "text-left" },
-                                        { title: "Action", data: "action", className: "text-center" }
-                                    ]}
+                                    loadingState={isLoading}
+                                    children={
+                                        <React.Fragment>
+                                            <thead>
+                                                <tr className='bg-gre'>
+                                                    <th>Listing</th>
+                                                    <th>Score</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
 
-                                    // Row Data
-                                    data={listingData.map((item, index) => {
-                                       
+                                            <tbody>
+                                                {listingData.map((item, index) => {
 
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <div>
+                                                                        <img src={`${MEDIA_URL}/${item.banner}`} style={{ height: "60px", borderRadius: "4px" }} />
+                                                                    </div>
+                                                                    <div class="content ml-3">
+                                                                        <h6 class="title mb-0">
+                                                                            <span className='cursor-pointer' onClick={() => navigate("/view-property", { state: { PID: item.pid } })} >{item.project_name}</span></h6>
+                                                                        <div class="text-date">Posting date: {item.date}</div>
+                                                                        <div class="text-btn text-primary">
+                                                                            {item.asking_price ? ('$' + ' ' + item.asking_price) : "Unpriced"}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className='text-capitalize'>{item.complete_score}</td>
+                                                            <td className='text-capitalize'>
+                                                                <ul className="list-action">
+                                                                    <li>
+                                                                        <a className="item" onClick={() => navigate("/property-details", { state: { PID: item.pid } })}>
+                                                                            <span class="material-symbols-outlined">
+                                                                                edit
+                                                                            </span>
+                                                                            Edit</a>
 
-                                        return {
-                                            id: item.id,
-                                            // sr: index + 1,
-                                            listing: `<div className="d-flex align-items-center">
-                                                    <div><img src="${MEDIA_URL}/${item.banner}" style="height: 60px; border-radius: 4px" /></div>
-                                                    <div className="content ml-3">
-                                                        <h6 className="title mb-0"><a href="/view-property?pid=${item.pid}">${item.project_name}</a></h6>
-                                                        <div className="text-date">Posting date: ${item.date}</div>
-                                                        <div className="text-btn text-primary">${item.transaction ? ('$' + ' ' + item.transaction.asking_price) : "Unpriced"}</div> 
-                                                    </div>
-                                                    </div>
-                                                    `,
-                                            // Show badges in table
-                                            status: `<div className="status-wrap"><a href="#" className="btn-status ${item.status === 1 ? "pending" : item.status === 2 ? "sold" : ""}">${item.status === 1
-                                                ? "Pending"
-                                                : item.status === 2
-                                                    ? "Sold"
-                                                    : "In Review"
-                                                }</a></div>`,
+                                                                    </li>
+                                                                    <li><a className="item">
+                                                                        <span class="material-symbols-outlined">
+                                                                            edit
+                                                                        </span>
 
-                                            action: `
-                                               <ul className="list-action">
-                                                    <li><a className="item">
-                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M11.2413 2.9915L12.366 1.86616C12.6005 1.63171 12.9184 1.5 13.25 1.5C13.5816 1.5 13.8995 1.63171 14.134 1.86616C14.3685 2.10062 14.5002 2.4186 14.5002 2.75016C14.5002 3.08173 14.3685 3.39971 14.134 3.63416L4.55467 13.2135C4.20222 13.5657 3.76758 13.8246 3.29 13.9668L1.5 14.5002L2.03333 12.7102C2.17552 12.2326 2.43442 11.7979 2.78667 11.4455L11.242 2.9915H11.2413ZM11.2413 2.9915L13 4.75016" stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                        </svg> 
-                                                        Edit</a>
-                                                    </li>
-                                                    <li><a className="item">
-                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M12.2427 12.2427C13.3679 11.1175 14.0001 9.59135 14.0001 8.00004C14.0001 6.40873 13.3679 4.8826 12.2427 3.75737C11.1175 2.63214 9.59135 2 8.00004 2C6.40873 2 4.8826 2.63214 3.75737 3.75737M12.2427 12.2427C11.1175 13.3679 9.59135 14.0001 8.00004 14.0001C6.40873 14.0001 4.8826 13.3679 3.75737 12.2427C2.63214 11.1175 2 9.59135 2 8.00004C2 6.40873 2.63214 4.8826 3.75737 3.75737M12.2427 12.2427L3.75737 3.75737" stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                        </svg>
-                                                            
-                                                        Sold</a>
-                                                    </li>
-                                                    <li><a className="remove-file item">
-                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M9.82667 6.00035L9.596 12.0003M6.404 12.0003L6.17333 6.00035M12.8187 3.86035C13.0467 3.89501 13.2733 3.93168 13.5 3.97101M12.8187 3.86035L12.1067 13.1157C12.0776 13.4925 11.9074 13.8445 11.63 14.1012C11.3527 14.3579 10.9886 14.5005 10.6107 14.5003H5.38933C5.0114 14.5005 4.64735 14.3579 4.36999 14.1012C4.09262 13.8445 3.92239 13.4925 3.89333 13.1157L3.18133 3.86035M12.8187 3.86035C12.0492 3.74403 11.2758 3.65574 10.5 3.59568M3.18133 3.86035C2.95333 3.89435 2.72667 3.93101 2.5 3.97035M3.18133 3.86035C3.95076 3.74403 4.72416 3.65575 5.5 3.59568M10.5 3.59568V2.98501C10.5 2.19835 9.89333 1.54235 9.10667 1.51768C8.36908 1.49411 7.63092 1.49411 6.89333 1.51768C6.10667 1.54235 5.5 2.19901 5.5 2.98501V3.59568M10.5 3.59568C8.83581 3.46707 7.16419 3.46707 5.5 3.59568" stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                        </svg>  
-                                                        Delete</a>
-                                                    </li>
-                                                </ul>
-        `
-                                        }
-                                    })}
+                                                                        Sold</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a className="remove-file item" onClick={() => deleteProperty(item.pid)}>
+                                                                            <span class="material-symbols-outlined">
+                                                                                delete
+                                                                            </span>
+                                                                            Delete</a>
 
+                                                                    </li>
+                                                                </ul>
+                                                            </td>
 
-                                    // Settings And onClick Funtions
-
-                                    options={{
-                                        pageLength: 10,
-                                        lengthMenu: [10, 25, 50, 100],
-                                        pagingType: "simple_numbers",
-                                        language: {
-                                            lengthMenu: `<span>Show</span> _MENU_ <span>listings</span>`,
-                                            paginate: {
-                                                previous: `<span className="page-num"><i className="icon icon-arr-l"></i></span>`,
-                                                next: `<span className="page-num"><i className="icon icon-arr-r"></i></span>`
-                                            },
-                                            emptyTable: `<div className="text-center text-danger">
-                          <div className="mt-3">There is no data to show you at the moment.</div>
-                         </div>`
-                                        },
-                                        createdRow: (row, data, dataIndex) => {
-                                            // Bind click for delete button
-                                            $(row).find(".status-role").on("click", () => {
-                                                status_n_deleteRole(data.id, "status");
-                                            });
-                                            $(row).find(".edit-role").on("click", () => {
-                                                editModal(data.role_name, data.rawPermissions);
-                                            });
-                                            $(row).find(".delete-role").on("click", () => {
-                                                status_n_deleteRole(data.id, "delete");
-                                            });
-                                        },
-                                    }}
-
-                                />
+                                                        </tr>
+                                                    )
+                                                })}
+                                            </tbody>
+                                        </React.Fragment>
+                                    } />
                             </div>
                         </div>
                     </div>

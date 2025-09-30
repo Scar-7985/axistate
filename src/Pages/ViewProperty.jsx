@@ -9,9 +9,17 @@ import axios from 'axios';
 import { GET_API, IMAGE_URL, MEDIA_URL } from '../Auth/Define';
 import { Link, useLocation } from 'react-router-dom';
 
+
+import Lightbox from "yet-another-react-lightbox";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+
 const ViewProperty = () => {
 
     const location = useLocation();
+    const { PID } = location.state || {};
+
     const [propertyData, setPropertyData] = useState(null);
     const [images, setImages] = useState([]);
     const [sitePlan, setSitePlan] = useState([]);
@@ -60,18 +68,19 @@ const ViewProperty = () => {
     }
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const pid = params.get("pid");
 
-        if (pid) {
-            fetchListings(pid);
+        if (PID) {
+            fetchListings(PID);
         } else {
             window.history.back();
         }
 
-    }, [location.search])
+    }, [location])
 
 
+    const slides = (images.length > 0 ? images : tempImages).map((src) => ({
+        src: images.length > 0 ? `${MEDIA_URL}/${src}` : src,
+    }));
 
 
     return (
@@ -112,8 +121,6 @@ const ViewProperty = () => {
                                                     images.map((src, index) => (
                                                         <SwiperSlide key={index}>
                                                             <a
-                                                                href={`${MEDIA_URL}/${src}`}
-                                                                target='_blank'
                                                                 data-fancybox="gallery"
                                                                 className="box-img-detail d-block"
                                                                 style={{ height: "calc(100vh - 400px)" }}
@@ -127,6 +134,7 @@ const ViewProperty = () => {
                                                                         height: "100%",
                                                                         objectFit: "contain"   // keeps aspect ratio, no zoom
                                                                     }}
+                                                                    onClick={() => setOpen(index)}
                                                                 />
                                                             </a>
 
@@ -147,6 +155,13 @@ const ViewProperty = () => {
 
 
                                     </Swiper>
+                                    <Lightbox
+                                        open={open !== false}
+                                        close={() => setOpen(false)}
+                                        index={open || 0}
+                                        slides={slides}
+                                        plugins={[Thumbnails]}
+                                    />
 
                                     {/* Custom Navigation Arrows */}
                                     <div className="box-navigation">

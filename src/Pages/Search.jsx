@@ -389,7 +389,7 @@ const Search = () => {
     }
 
 
-    
+
     const handlePropertyTypes = (propSubTypes, propType) => {
         const params = new URLSearchParams(location.search);
         params.delete("ptype[]");
@@ -1609,7 +1609,7 @@ const Search = () => {
                                                                                             </div>
                                                                                             <span>Testing User</span>
                                                                                         </div>
-                                                                                        <h6 className="price">{`${'$' + ' ' + item.asking_price}`}</h6>
+                                                                                        <h6 className="price">{`${item.asking_price ? ('$' + ' ' + item.asking_price) : "Unpriced"}`}</h6>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>

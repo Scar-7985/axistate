@@ -303,7 +303,7 @@ const Media = () => {
                     <div className="widget-box-2 mb-20 shadow">
                         <h5 className="title d-flex justify-content-between">
                             <div>
-                                Thumbhnail
+                                Thumbnail
                             </div>
                             <div className='d-flex align-items-center gap-2'>
                                 <div>
