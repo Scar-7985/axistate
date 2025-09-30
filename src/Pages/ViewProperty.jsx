@@ -20,6 +20,7 @@ const ViewProperty = () => {
     const location = useLocation();
     const { PID } = location.state || {};
 
+    const [openLightBox, setOpenLightBox] = useState(false);
     const [propertyData, setPropertyData] = useState(null);
     const [images, setImages] = useState([]);
     const [sitePlan, setSitePlan] = useState([]);
@@ -134,7 +135,7 @@ const ViewProperty = () => {
                                                                         height: "100%",
                                                                         objectFit: "contain"   // keeps aspect ratio, no zoom
                                                                     }}
-                                                                    onClick={() => setOpen(index)}
+                                                                    onClick={() => setOpenLightBox(index)}
                                                                 />
                                                             </a>
 
@@ -156,9 +157,9 @@ const ViewProperty = () => {
 
                                     </Swiper>
                                     <Lightbox
-                                        open={open !== false}
-                                        close={() => setOpen(false)}
-                                        index={open || 0}
+                                        open={openLightBox !== false}
+                                        close={() => setOpenLightBox(false)}
+                                        index={openLightBox || 0}
                                         slides={slides}
                                         plugins={[Thumbnails]}
                                     />

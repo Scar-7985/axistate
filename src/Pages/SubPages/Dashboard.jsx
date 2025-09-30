@@ -3,6 +3,7 @@ import { UserContext } from '../../Context/UserProvider'
 import React, { useState, useEffect, useContext } from 'react'
 import { isAuthenticated, GET_API, MEDIA_URL } from "../../Auth/Define"
 import axios from 'axios';
+import { UserPropStatus } from '../MyListings';
 
 import { DataTable } from "../../Components/Datatable/Datatable";
 import Swal from 'sweetalert2';
@@ -161,73 +162,101 @@ const Dashboard = () => {
 
                         <div className="wrap-table">
                             <div className="table-responsive" style={{ overflowX: "hidden" }}>
-                                <DataTable
-                                    loadingState={isLoading}
-                                    children={
-                                        <React.Fragment>
-                                            <thead>
-                                                <tr className='bg-gre'>
-                                                    <th>Listing</th>
-                                                    <th>Score</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                {listingData.map((item, index) => {
-
-                                                    return (
-                                                        <tr key={index}>
-                                                            <td>
-                                                                <div class="d-flex align-items-center">
-                                                                    <div>
-                                                                        <img src={`${MEDIA_URL}/${item.banner}`} style={{ height: "60px", borderRadius: "4px" }} />
-                                                                    </div>
-                                                                    <div class="content ml-3">
-                                                                        <h6 class="title mb-0">
-                                                                            <span className='cursor-pointer' onClick={() => navigate("/view-property", { state: { PID: item.pid } })} >{item.project_name}</span></h6>
-                                                                        <div class="text-date">Posting date: {item.date}</div>
-                                                                        <div class="text-btn text-primary">
-                                                                            {item.asking_price ? ('$' + ' ' + item.asking_price) : "Unpriced"}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className='text-capitalize'>{item.complete_score}</td>
-                                                            <td className='text-capitalize'>
-                                                                <ul className="list-action">
-                                                                    <li>
-                                                                        <a className="item" onClick={() => navigate("/property-details", { state: { PID: item.pid } })}>
-                                                                            <span class="material-symbols-outlined">
-                                                                                edit
-                                                                            </span>
-                                                                            Edit</a>
-
-                                                                    </li>
-                                                                    <li><a className="item">
-                                                                        <span class="material-symbols-outlined">
-                                                                            edit
-                                                                        </span>
-
-                                                                        Sold</a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a className="remove-file item" onClick={() => deleteProperty(item.pid)}>
-                                                                            <span class="material-symbols-outlined">
-                                                                                delete
-                                                                            </span>
-                                                                            Delete</a>
-
-                                                                    </li>
-                                                                </ul>
-                                                            </td>
-
-                                                        </tr>
-                                                    )
-                                                })}
-                                            </tbody>
-                                        </React.Fragment>
-                                    } />
+                               <DataTable
+                                                                                  loadingState={isLoading}
+                                                                                  children={
+                                                                                      <React.Fragment>
+                                                                                          <thead>
+                                                                                              <tr className='bg-gre'>
+                                                                                                  <th className='text-dark'>Listing</th>
+                                                                                                  <th className='text-dark'>Score</th>
+                                                                                                  <th className='text-dark'>Status</th>
+                                                                                                  <th className='text-dark'>Action</th>
+                                                                                              </tr>
+                                                                                          </thead>
+                              
+                                                                                          <tbody>
+                                                                                              {listingData.map((item, index) => {
+                              
+                                                                                                  return (
+                                                                                                      <tr key={index}>
+                                                                                                          <td>
+                                                                                                              <div className="d-flex align-items-center">
+                                                                                                                  <div>
+                                                                                                                      <img src={`${MEDIA_URL}/${item.banner}`} style={{ height: "60px", borderRadius: "4px" }} />
+                                                                                                                  </div>
+                                                                                                                  <div className="content ml-3">
+                                                                                                                      <h6 className="title mb-0">
+                                                                                                                          <span className='cursor-pointer' onClick={() => navigate("/view-property", { state: { PID: item.pid } })} >{item.project_name}</span></h6>
+                                                                                                                      <div className="text-date">Posting date: {item.date}</div>
+                                                                                                                      <div className="text-btn text-primary">
+                                                                                                                          {item.asking_price ? ('$' + ' ' + item.asking_price) : "Unpriced"}
+                                                                                                                      </div>
+                                                                                                                  </div>
+                                                                                                              </div>
+                                                                                                          </td>
+                                                                                                          <td className='text-capitalize'>{item.complete_score}</td>
+                                                                                                          <td className='text-capitalize'>
+                              
+                                                                                                              <div className="nice-select p-2 rounded-3" tabIndex="0">
+                                                                                                                  <span className="current">
+                                                                                                                      {
+                                                                                                                          UserPropStatus.find(
+                                                                                                                              (status) => Number(item.a_status) === status.id
+                                                                                                                          )?.title || "Unknown"
+                                                                                                                      }
+                                                                                                                  </span>
+                                                                                                                  <ul className="list">
+                                                                                                                      {UserPropStatus.map((status, index) => {
+                                                                                                                          const isSelected = Number(item.a_status) === status.id;
+                                                                                                                          return (
+                                                                                                                              <li
+                                                                                                                                  key={index}
+                                                                                                                                  data-value={status.id}
+                                                                                                                                  className={`option ${isSelected ? "selected focus" : ""}`}
+                                                                                                                              >
+                                                                                                                                  {status.title}
+                                                                                                                              </li>
+                                                                                                                          );
+                                                                                                                      })}
+                                                                                                                  </ul>
+                                                                                                              </div>
+                              
+                                                                                                          </td>
+                                                                                                          <td className='text-capitalize'>
+                                                                                                              <ul className="list-action">
+                                                                                                                  <li>
+                                                                                                                      <a className="item" onClick={() => navigate("/property-details", { state: { PID: item.pid } })}>
+                                                                                                                          <span className="material-symbols-outlined">
+                                                                                                                              edit
+                                                                                                                          </span>
+                                                                                                                          Edit</a>
+                              
+                                                                                                                  </li>
+                                                                                                                  <li><a className="item">
+                                                                                                                      <span className="material-symbols-outlined">
+                                                                                                                          edit
+                                                                                                                      </span>
+                              
+                                                                                                                      Sold</a>
+                                                                                                                  </li>
+                                                                                                                  <li>
+                                                                                                                      <a className="remove-file item" onClick={() => deleteProperty(item.pid)}>
+                                                                                                                          <span className="material-symbols-outlined">
+                                                                                                                              delete
+                                                                                                                          </span>
+                                                                                                                          Delete</a>
+                              
+                                                                                                                  </li>
+                                                                                                              </ul>
+                                                                                                          </td>
+                              
+                                                                                                      </tr>
+                                                                                                  )
+                                                                                              })}
+                                                                                          </tbody>
+                                                                                      </React.Fragment>
+                                                                                  } />
                             </div>
                         </div>
                     </div>

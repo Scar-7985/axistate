@@ -384,8 +384,8 @@ const Search = () => {
         navigate(`?${params.toString()}`);
     };
 
-    const ViewProperty = (PID) => {
-        navigate(`/view-property?pid=${PID}`);
+    const ViewProperty = (getPID) => {
+        navigate("/view-property", { state: { PID: getPID } });
     }
 
 
