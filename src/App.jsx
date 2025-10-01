@@ -17,6 +17,7 @@ const MyListings = lazy(() => import("./Pages/MyListings"));
 const Search = lazy(() => import("./Pages/Search"));
 const Terms = lazy(() => import("./Pages/Terms"));
 const Settings = lazy(() => import("./Pages/Settings"));
+const ViewDashboard = lazy(() => import("./Pages/ViewDashboard"));
 // ADD LISTING FORMS
 const PropertyDetails = lazy(() => import("./Pages/AddListingPages/PropertyDetails"));
 const TransactionDetails = lazy(() => import("./Pages/AddListingPages/TransactionDetails"));
@@ -68,6 +69,7 @@ const App = () => {
             <Route path='/add-lease' element={<AddLease />} />
             <Route path='/my-listings' element={<MyListings />} />
             <Route path='/settings' element={<Settings />} />
+            <Route path='/view-dashboard' element={<ViewDashboard />} />
 
             {/* ADD LISTING ROUTES */}
             <Route path='/property-details' element={<PropertyDetails />} />

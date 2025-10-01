@@ -170,6 +170,15 @@ const MyListings = () => {
 
                                                                             </td>
                                                                             <td className='text-capitalize'>
+
+                                                                                <div className="nice-select p-2 rounded-3" tabIndex="0"
+                                                                                    onClick={() => navigate("/view-dashboard", { state: { PID: item.pid } })}>
+                                                                                    <span className="current">
+                                                                                        View Dashboard
+                                                                                    </span>
+
+                                                                                </div>
+
                                                                                 <ul className="list-action">
                                                                                     <li>
                                                                                         <a className="item" onClick={() => navigate("/property-details", { state: { PID: item.pid } })}>
