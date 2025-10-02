@@ -1,15 +1,18 @@
 import { default as SimpleDataTable } from 'datatables.net-react';
 import DT from 'datatables.net-dt';
-// import "./Datatable.css"
+import "./Datatable.css"
+import "../../Components/Loading/Loading.css"
 
 SimpleDataTable.use(DT);
 
 export const DataTable = ({ loadingState = true, children: dataList, ...dataListProps }) => {
     if (loadingState) {
-        return <h5 className='text-center'>
-            <button className="btn btn-primary btn-icon btn-rounded is-loading">
-                <i className="anticon anticon-loading"></i>
-            </button>
+        return <h5 className='text-center' style={{ height: "50px" }}>
+            <div class="load-3">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
         </h5>;
     }
 
@@ -24,9 +27,9 @@ export const DataTable = ({ loadingState = true, children: dataList, ...dataList
                     lengthMenu: 'Show _MENU_ entries',
                     paginate: { previous: "Previous", next: "Next" },
                     emptyTable: `
-            <div className="text-center">
-              <img src="/assets/images/others/nodb.png" style="border-radius:10px;max-width:150px;" />
-              <div className="mt-3 text-danger">There is no data to show you at the moment.</div>
+            <div className="d-flex align-items-center">
+              <img src="/assets/images/nodata.svg" style="border-radius:10px;height:250px;" />
+              <div className="m" style="font-size:16px;font-weight:500; color: #161E2D;">There is no data to show you at the moment.</div>
             </div>
           `
                 }

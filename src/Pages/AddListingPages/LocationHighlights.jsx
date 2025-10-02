@@ -13,8 +13,11 @@ const LocationHighlights = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
+        longitude: "",
+        latitude: "",
         traffic_count: "",
-        proximity_highway_transit: "",
+        proximity_highway_transit: "No",
+        proximity_distance: "",
         nearly_businesses_anchors: "",
         walk_score_transit_score: "",
     })
@@ -52,8 +55,11 @@ const LocationHighlights = () => {
                     setUpdateID(Value.id);
 
                     setFormData({
+                        longitude: Value.longitude,
+                        latitude: Value.latitude,
                         traffic_count: Value.traffic_count,
                         proximity_highway_transit: Value.transit,
+                        proximity_distance: Value.proximity_distance,
                         nearly_businesses_anchors: Value.anchors,
                         walk_score_transit_score: Value.walk_score,
                     })
@@ -98,8 +104,11 @@ const LocationHighlights = () => {
         }
         descData.append("pid", PID);
 
+        descData.append("longitude", formData.longitude);
+        descData.append("latitude", formData.latitude);
         descData.append("traffic_count", formData.traffic_count);
         descData.append("transit", formData.proximity_highway_transit);
+        descData.append("proximity_distance", formData.proximity_distance);
         descData.append("anchors", formData.nearly_businesses_anchors);
         descData.append("walk_score", formData.walk_score_transit_score);
 
@@ -121,7 +130,34 @@ const LocationHighlights = () => {
         setIsLoading(true);
     }
 
-      const [showSidebar, setShowSidebar] = useState(false);
+    const [locLoading, setLocLoading] = useState(false);
+
+    const getLocation = () => {
+        if (locLoading) return;
+        setLocLoading(true);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const long = position.coords.longitude;
+                    setFormData({ ...formData, longitude: long, latitude: lat });
+                    setLocLoading(false);
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                    setLocLoading(false);
+                }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+            setLocLoading(false);
+        }
+    };
+
+
+
+    const [showSidebar, setShowSidebar] = useState(false);
+
 
     return (
         <div className="layout-wrap">
@@ -163,9 +199,9 @@ const LocationHighlights = () => {
 
             <div className="main-content">
                 <div className="main-content-inner">
-                  <div class="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
-       <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
-          </div>
+                    <div className="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
+                        <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
+                    </div>
                     <div className="widget-box-2 mb-20 shadow">
                         <h5 className="title d-flex justify-content-between align-item-center">
                             <div>
@@ -174,9 +210,9 @@ const LocationHighlights = () => {
                             <div className='d-flex align-items-center gap-2'>
                                 <div>
                                     <a className="btn-dark d-flex align-items-center gap-1" onClick={() => navigate("/property-features", { state: { PID: PID } })}>
-                                         <span class="material-symbols-outlined">
-                        chevron_backward
-                      </span>
+                                        <span className="material-symbols-outlined">
+                                            chevron_backward
+                                        </span>
                                         <div className='text'>Previous</div>
 
                                     </a>
@@ -186,9 +222,9 @@ const LocationHighlights = () => {
                                         Number(checkList.status4) === 4 &&
                                         <a className="btn-secondary d-flex align-items-center gap-1" onClick={() => navigate("/financial-tenency", { state: { PID: PID } })}>
                                             <div className='text'>Next</div>
-                                         <span class="material-symbols-outlined">
-                        chevron_forward
-                      </span>
+                                            <span className="material-symbols-outlined">
+                                                chevron_forward
+                                            </span>
                                         </a>
                                     }
                                 </div>
@@ -197,8 +233,10 @@ const LocationHighlights = () => {
                         <hr />
 
                         <div className="box grid-3 gap-30 mt-30">
+
+
                             <fieldset className="box-fieldset">
-                                <label>Traffic Count:</label>
+                                <label>Traffic Count:<span className='text-danger'>*</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -208,17 +246,32 @@ const LocationHighlights = () => {
                                 />
                             </fieldset>
                             <fieldset className="box-fieldset">
-                                <label>Proximity to Highways / Transit:</label>
+                                <label>Proximity to Highways / Transit:<span className='text-danger'>*</span></label>
+                                <div className="nice-select " tabIndex="0">
+                                    <span className="current">{formData.proximity_highway_transit}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.proximity_highway_transit === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, proximity_highway_transit: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.proximity_highway_transit === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, proximity_highway_transit: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box-fieldset">
+                                <label>Distance:<span className='text-danger'>*</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
-                                    name="proximity_highway_transit"
-                                    value={formData.proximity_highway_transit}
+                                    name="proximity_distance"
+                                    value={formData.proximity_distance}
                                     onChange={handleChange}
                                 />
                             </fieldset>
                             <fieldset className="box-fieldset">
-                                <label>Nearby Businesses / Anchors:</label>
+                                <label>Nearby Businesses / Anchors:<span className='text-danger'>*</span></label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -227,13 +280,9 @@ const LocationHighlights = () => {
                                     onChange={handleChange}
                                 />
                             </fieldset>
-                        </div>
-
-                        <div className="box grid-3 gap-30 mt-30">
-
                             <fieldset className="box-fieldset">
                                 <label>
-                                    Walk Score / Transit Score:
+                                    Walk Score / Transit Score:<span className='text-danger'>*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -243,6 +292,43 @@ const LocationHighlights = () => {
                                 />
                             </fieldset>
                         </div>
+
+
+                        <div className="box grid-2 gap-30 mt-30">
+                            <fieldset className="box-fieldset">
+                                <label>Longitude:<span className='text-danger'>*</span></label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    name="longitude"
+                                    value={formData.longitude}
+                                    onChange={handleChange}
+                                />
+                            </fieldset>
+                            <div className="box-fieldset">
+                                <label>Latitude:<span className='text-danger'>*</span></label>
+                                <div className="box-ip">
+                                    <input type="text" className="form-control" name='latitude' value={formData.latitude} onChange={handleChange} />
+                                    <span className="btn-location cursor-pointer" onClick={getLocation}>
+                                        {
+                                            locLoading ?
+                                                (
+                                                    <span className="material-symbols-outlined">
+                                                        emergency_share
+                                                    </span>
+                                                ) : (
+                                                    <span className="material-symbols-outlined">
+                                                        location_on
+                                                    </span>
+                                                )
+                                        }
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <iframe className="map"
+                            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d135905.11693909427!2d-73.95165795400088!3d41.17584829642291!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1727094281524!5m2!1sen!2s" height="456" style={{ border: "0", width: "100%" }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
 
 
                         <div className="box-btn" style={{ marginTop: "60px" }}>
@@ -258,7 +344,7 @@ const LocationHighlights = () => {
                         <div className="loading">
                             <div className="loader-wrapper">
                                 <div className="circle"></div>
-                                <i class="icon-pass icon-home icon-center"></i>
+                                <i className="icon-pass icon-home icon-center"></i>
                             </div>
                         </div>
                     }

@@ -57,7 +57,7 @@ const Header = () => {
         lName: "",
         email: "",
         pass: "",
-        indusRole: "",
+        indusRole: "2",
         phone: "",
         officeZip: "",
         website: "",
@@ -455,7 +455,7 @@ const Header = () => {
                             {
                                 showForgotPass === 0
                                     ? (
-                                        <form className="form-account">
+                                        <div className="form-account">
                                             {/* ========= Login Form ========= */}
                                             <div className="title-box">
                                                 <h4>{showLotp
@@ -470,9 +470,35 @@ const Header = () => {
                                                         <fieldset className="box-fieldset">
                                                             <label>OTP</label>
                                                             <div className="ip-field">
-                                                                <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
+                                                                <svg
+                                                                    className="icon"
+                                                                    width="18"
+                                                                    height="18"
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                >
+                                                                    <rect
+                                                                        x="4"
+                                                                        y="10"
+                                                                        width="16"
+                                                                        height="10"
+                                                                        rx="2"
+                                                                        stroke="#A3ABB0"
+                                                                        strokeWidth="1.5"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                    />
+                                                                    <path
+                                                                        d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10"
+                                                                        stroke="#A3ABB0"
+                                                                        strokeWidth="1.5"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                    />
                                                                 </svg>
+
+
                                                                 <input
                                                                     type="text"
                                                                     className="form-control"
@@ -519,11 +545,11 @@ const Header = () => {
                                                 }
                                             </div>
 
-                                        </form>
+                                        </div>
                                     )
                                     : showForgotPass === 1
                                         ? (
-                                            <form className="form-account">
+                                            <div className="form-account">
                                                 {/* ========= Forgot Password Form ========= */}
                                                 <div className="title-box">
                                                     <h4>Forgot Password ?</h4>
@@ -551,9 +577,9 @@ const Header = () => {
                                                     <div className="tf-btn primary w-100 cursor-pointer" onClick={handleForgetPass}>Send OTP</div>
                                                 </div>
 
-                                            </form>
+                                            </div>
                                         ) : (
-                                            <form className="form-account">
+                                            <div className="form-account">
                                                 {/* ========= Confirm & Update Password Form ========= */}
                                                 <div className="title-box" style={{ marginBottom: "20px" }}>
                                                     <h4>Verify OTP</h4>
@@ -564,9 +590,34 @@ const Header = () => {
                                                     <fieldset className="box-fieldset">
                                                         <label>Enter OTP</label>
                                                         <div className="ip-field">
-                                                            <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M12.375 7.875V5.0625C12.375 4.16739 12.0194 3.30895 11.3865 2.67601C10.7535 2.04308 9.89511 1.6875 9 1.6875C8.10489 1.6875 7.24645 2.04308 6.61351 2.67601C5.98058 3.30895 5.625 4.16739 5.625 5.0625V7.875M5.0625 16.3125H12.9375C13.3851 16.3125 13.8143 16.1347 14.1307 15.8182C14.4472 15.5018 14.625 15.0726 14.625 14.625V9.5625C14.625 9.11495 14.4472 8.68573 14.1307 8.36926C13.8143 8.05279 13.3851 7.875 12.9375 7.875H5.0625C4.61495 7.875 4.18573 8.05279 3.86926 8.36926C3.55279 8.68573 3.375 9.11495 3.375 9.5625V14.625C3.375 15.0726 3.55279 15.5018 3.86926 15.8182C4.18573 16.1347 4.61495 16.3125 5.0625 16.3125Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
+                                                            <svg
+                                                                className="icon"
+                                                                width="18"
+                                                                height="18"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <rect
+                                                                    x="4"
+                                                                    y="10"
+                                                                    width="16"
+                                                                    height="10"
+                                                                    rx="2"
+                                                                    stroke="#A3ABB0"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                />
+                                                                <path
+                                                                    d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10"
+                                                                    stroke="#A3ABB0"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                />
                                                             </svg>
+
                                                             <input
                                                                 type="text"
                                                                 className="form-control"
@@ -635,7 +686,7 @@ const Header = () => {
                                                 <div className="box box-btn">
                                                     <div className="tf-btn primary w-100 cursor-pointer" onClick={handleForgetPass}>Login</div>
                                                 </div>
-                                            </form>
+                                            </div>
                                         )
                             }
 
@@ -715,9 +766,30 @@ const Header = () => {
                                             <fieldset className="box-fieldset">
                                                 <label>Email <span className='text-danger'>*</span></label>
                                                 <div className="ip-field">
-                                                    <svg className="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z" stroke="#A3ABB0" strokeLinecap="round" strokeLinejoin="round" />
+                                                    <svg
+                                                        className="icon"
+                                                        width="18"
+                                                        height="18"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <path
+                                                            d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z"
+                                                            stroke="#A3ABB0"
+                                                            strokeWidth="1.5"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                        <path
+                                                            d="M22 6L12 13L2 6"
+                                                            stroke="#A3ABB0"
+                                                            strokeWidth="1.5"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
                                                     </svg>
+
                                                     <input
                                                         type="text"
                                                         className="form-control"
@@ -729,22 +801,21 @@ const Header = () => {
                                                 </div>
                                             </fieldset>
                                             <fieldset className="box-fieldset">
-                                                <label>Industry Role <span className='text-danger'>*</span></label>
-                                                <div className="ip-field">
-                                                    <select name='indusRole'
-                                                        value={formData.indusRole}
-                                                        onChange={handleChange}
-                                                        style={{
-                                                            width: "100%", padding: "16px 20px",
-                                                            borderRadius: "30px", borderColor: "#e4e4e4",
-                                                            outline: "none",
-                                                        }}>
-                                                        <option value="1">Select a role</option>
-                                                        <option value="2">Buyer</option>
-                                                        <option value="3">Seller</option>
-                                                    </select>
+                                                <label>Industry Role: <span className='text-danger'>*</span></label>
+                                                <div className="nice-select" tabIndex="0">
+                                                    <span className="current">{Number(formData.indusRole) === 2 ? "Buyer" : "Seller"}</span>
+                                                    <ul className="list">
+                                                        <li data-value="2" className={`option ${Number(formData.indusRole) === 2 ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, indusRole: 2 })}>
+                                                            Buyer
+                                                        </li>
+                                                        <li data-value="3" className={`option ${Number(formData.indusRole) === 3 ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, indusRole: 3 })}>
+                                                            Seller
+                                                        </li>
+
+                                                    </ul>
                                                 </div>
                                             </fieldset>
+
                                             <fieldset className="box-fieldset">
                                                 <label>Phone <span className='text-danger'>*</span></label>
                                                 <div className="ip-field">
@@ -753,7 +824,7 @@ const Header = () => {
                                                     </svg>
 
                                                     <input
-                                                        type="phone"
+                                                        type="number"
                                                         className="form-control"
                                                         placeholder="555-555-5555"
                                                         name='phone'
@@ -773,7 +844,7 @@ const Header = () => {
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        placeholder="1234 or 12345-6789"
+                                                        placeholder="222333"
                                                         name='officeZip'
                                                         value={formData.officeZip}
                                                         onChange={handleChange}
@@ -806,11 +877,35 @@ const Header = () => {
                                             <fieldset className="box-fieldset">
                                                 <label>OTP <span className='text-danger'>*</span></label>
                                                 <div className="ip-field">
-                                                    <svg className="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <rect x="3" y="11" width="18" height="11" rx="2" stroke="#A3ABB0" strokeWidth="2" />
-                                                        <path d="M7 11V7C7 4.79086 8.79086 3 11 3H13C15.2091 3 17 4.79086 17 7V11" stroke="#A3ABB0" strokeWidth="2" />
-                                                        <circle cx="12" cy="16" r="1" fill="#A3ABB0" />
+                                                    <svg
+                                                        className="icon"
+                                                        width="18"
+                                                        height="18"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <rect
+                                                            x="4"
+                                                            y="10"
+                                                            width="16"
+                                                            height="10"
+                                                            rx="2"
+                                                            stroke="#A3ABB0"
+                                                            strokeWidth="1.5"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                        <path
+                                                            d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10"
+                                                            stroke="#A3ABB0"
+                                                            strokeWidth="1.5"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
                                                     </svg>
+
+
 
                                                     <input
                                                         type="number"

@@ -7,7 +7,7 @@ import "swiper/css/pagination";
 import { Link, useNavigate } from "react-router-dom";
 import HeroBanner from "../Components/HeroBanner";
 import axios from "axios";
-import { GET_API, POST_API } from "../Auth/Define";
+import { GET_API, MEDIA_URL, POST_API } from "../Auth/Define";
 
 const Home = () => {
 
@@ -34,6 +34,21 @@ const Home = () => {
     },
   ];
 
+  const navigate = useNavigate();
+  const [homeListings, setHomeListings] = useState([]);
+
+  const getListings = () => {
+    axios.post(`${GET_API}/home-view.php`).then(resp => {
+      console.log(resp.data.value);
+      if (resp.data.status === 100) {
+        setHomeListings(resp.data.value);
+      }
+    })
+  }
+
+  useEffect(() => {
+    getListings();
+  }, [])
 
 
 
@@ -56,14 +71,12 @@ const Home = () => {
             className="flat-tab-recommended flat-animate-tab wow fadeInUp"
             data-wow-delay=".2s"
           >
-            <ul
+            {/* <ul
               className="nav-tab-recommended justify-content-md-center"
               role="tablist"
             >
               <li className="nav-tab-item" role="presentation">
-                {/* <a href="#viewAll" className="nav-link-item" data-bs-toggle="tab">
-                 Find
-                </a> */}
+             
                 <a className="tf-btn btn-line btn-login">Find</a>
               </li>
               <li className="nav-tab-item" role="presentation">
@@ -72,531 +85,102 @@ const Home = () => {
               <li className="nav-tab-item" role="presentation">
                 <a className="tf-btn btn-line btn-login">List</a>
               </li>
-            </ul>
+            </ul> */}
             <div className="tab-content">
               <div className="tab-pane active show" id="viewAll" role="tabpanel">
                 <div className="row">
                   <div className="col-xl-4 col-lg-6 col-md-6">
-                    <Link to={"/property-search"} className="axs-box">
-                      <div className="archive-top">
-                        <a href="property-details-v1.html" className="images-group">
-                          <div className="images-style">
-                            <img
-                              className="lazyload"
-                              data-src="/assets/images/home/house-13.jpg"
-                              src="/assets/images/home/house-13.jpg"
-                              alt="img"
-                            />
-                          </div>
-                          <div className="top">
-                            <ul className="d-flex gap-6">
-                              <li className="flag-tag primary">Featured</li>
-                              <li className="flag-tag style-1">For Sale</li>
-                            </ul>
-                          </div>
-                          <div className="bottom">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            145 Brooklyn Ave, Califonia, New York
-                          </div>
-                        </a>
-                      </div>
-                      <div className="archive-bottom">
-                        <div className="content-top">
-                          <h6 className="text-capitalize">
-                            <a href="property-details-v1.html" className="link">
-                              {" "}
-                              Casa Lomas de Machalí Machas
-                            </a>
-                          </h6>
-                          <ul className="meta-list">
-                            <li className="item">
-                              <i className="icon icon-bed"></i>
-                              <span className="text-variant-1">Beds:</span>
-                              <span className="fw-6">3</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-bath"></i>
-                              <span className="text-variant-1">Baths:</span>
-                              <span className="fw-6">2</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-sqft"></i>
-                              <span className="text-variant-1">Sqft:</span>
-                              <span className="fw-6">1150</span>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="content-bottom">
-                          <div className="d-flex gap-8 align-items-center">
-                            <div className="avatar avt-40 round">
-                              <img
-                                src="/assets/images/avatar/avt-png1.png"
-                                alt="avt"
-                              />
+                    {
+                      homeListings.map((item, index) => {
+                        return (
+                          <div onClick={() => navigate("/view-property", { state: { PID: item.pid } })} className="axs-box cursor-pointer" key={index}>
+                            <div className="archive-top">
+                              <div href="#" className="images-group">
+                                <div className="images-style">
+                                  <img
+                                    className="lazyload"
+                                    data-src={`${MEDIA_URL}/${item.banner}`}
+                                    src={`${MEDIA_URL}/${item.banner}`}
+                                    alt="img"
+                                  />
+                                </div>
+                                {/* <div className="top">
+                                  <ul className="d-flex gap-6">
+                                    <li className="flag-tag primary">Featured</li>
+                                    <li className="flag-tag style-1">For Sale</li>
+                                  </ul>
+                                </div> */}
+                                <div className="bottom">
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
+                                      stroke="white"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                    <path
+                                      d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
+                                      stroke="white"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                  {item.address + "," + item.city + "," + item.state + "," + item.country}
+                                </div>
+                              </div>
                             </div>
-                            <span>Arlene McCoy</span>
-                          </div>
-                          <h6 className="price">$7250,00</h6>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="col-xl-4 col-lg-6 col-md-6">
-                    <Link to={"/property-search"} className="axs-box">
-                      <div className="archive-top">
-                        <a href="property-details-v1.html" className="images-group">
-                          <div className="images-style">
-                            <img
-                              className="lazyload"
-                              data-src="/assets/images/home/house-14.jpg"
-                              src="/assets/images/home/house-14.jpg"
-                              alt="img"
-                            />
-                          </div>
-                          <div className="top">
-                            <ul className="d-flex gap-6">
-                              <li className="flag-tag primary">Featured</li>
-                              <li className="flag-tag style-1">For Sale</li>
-                            </ul>
-                          </div>
-                          <div className="bottom">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            145 Brooklyn Ave, Califonia, New York
-                          </div>
-                        </a>
-                      </div>
-                      <div className="archive-bottom">
-                        <div className="content-top">
-                          <h6 className="text-capitalize">
-                            <a href="property-details-v1.html" className="link">
-                              {" "}
-                              Casa Lomas de Machalí Machas
-                            </a>
-                          </h6>
-                          <ul className="meta-list">
-                            <li className="item">
-                              <i className="icon icon-bed"></i>
-                              <span className="text-variant-1">Beds:</span>
-                              <span className="fw-6">3</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-bath"></i>
-                              <span className="text-variant-1">Baths:</span>
-                              <span className="fw-6">2</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-sqft"></i>
-                              <span className="text-variant-1">Sqft:</span>
-                              <span className="fw-6">1150</span>
-                            </li>
-                          </ul>
-                        </div>
+                            <div className="archive-bottom">
+                              <div className="content-top">
+                                <h6 className="text-capitalize">
+                                  <a href="property-details-v1.html" className="link">
+                                    {item.project_name}
+                                  </a>
+                                </h6>
+                                <ul className="meta-list">
+                                  <li className="item">
+                                    <i className="icon icon-bed"></i>
+                                    <span className="text-variant-1">Beds:</span>
+                                    <span className="fw-6">3</span>
+                                  </li>
+                                  <li className="item">
+                                    <i className="icon icon-bath"></i>
+                                    <span className="text-variant-1">Baths:</span>
+                                    <span className="fw-6">2</span>
+                                  </li>
+                                  <li className="item">
+                                    <i className="icon icon-sqft"></i>
+                                    <span className="text-variant-1">Sqft:</span>
+                                    <span className="fw-6">{item.building_size}</span>
+                                  </li>
+                                </ul>
+                              </div>
 
-                        <div className="content-bottom">
-                          <div className="d-flex gap-8 align-items-center">
-                            <div className="avatar avt-40 round">
-                              <img
-                                src="/assets/images/avatar/avt-png2.png"
-                                alt="avt"
-                              />
+                              <div className="content-bottom">
+                                <div className="d-flex gap-8 align-items-center">
+                                  <div className="avatar avt-40 round">
+                                    <img
+                                      src="/assets/images/avatar/avt-png1.png"
+                                      alt="avt"
+                                    />
+                                  </div>
+                                  <span>Arlene McCoy</span>
+                                </div>
+                                <h6 className="price">{item.asking_price ? ("$ " + item.asking_price) : ""}</h6>
+                              </div>
                             </div>
-                            <span>Arlene McCoy</span>
                           </div>
-                          <h6 className="price">$7250,00</h6>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="col-xl-4 col-lg-6 col-md-6">
-                    <Link to={"/property-search"} className="axs-box">
-                      <div className="archive-top">
-                        <a href="property-details-v1.html" className="images-group">
-                          <div className="images-style">
-                            <img
-                              className="lazyload"
-                              data-src="/assets/images/home/house-15.jpg"
-                              src="/assets/images/home/house-15.jpg"
-                              alt="img"
-                            />
-                          </div>
-                          <div className="top">
-                            <ul className="d-flex gap-6">
-                              <li className="flag-tag primary">Featured</li>
-                              <li className="flag-tag style-1">For Sale</li>
-                            </ul>
-                          </div>
-                          <div className="bottom">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            145 Brooklyn Ave, Califonia, New York
-                          </div>
-                        </a>
-                      </div>
-                      <div className="archive-bottom">
-                        <div className="content-top">
-                          <h6 className="text-capitalize">
-                            <a href="property-details-v1.html" className="link">
-                              {" "}
-                              Casa Lomas de Machalí Machas
-                            </a>
-                          </h6>
-                          <ul className="meta-list">
-                            <li className="item">
-                              <i className="icon icon-bed"></i>
-                              <span className="text-variant-1">Beds:</span>
-                              <span className="fw-6">3</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-bath"></i>
-                              <span className="text-variant-1">Baths:</span>
-                              <span className="fw-6">2</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-sqft"></i>
-                              <span className="text-variant-1">Sqft:</span>
-                              <span className="fw-6">1150</span>
-                            </li>
-                          </ul>
-                        </div>
+                        )
+                      })
+                    }
 
-                        <div className="content-bottom">
-                          <div className="d-flex gap-8 align-items-center">
-                            <div className="avatar avt-40 round">
-                              <img
-                                src="/assets/images/avatar/avt-png3.png"
-                                alt="avt"
-                              />
-                            </div>
-                            <span>Arlene McCoy</span>
-                          </div>
-                          <h6 className="price">$7250,00</h6>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="col-xl-4 col-lg-6 col-md-6">
-                    <Link to={"/property-search"} className="axs-box">
-                      <div className="archive-top">
-                        <a href="property-details-v1.html" className="images-group">
-                          <div className="images-style">
-                            <img
-                              className="lazyload"
-                              data-src="/assets/images/home/house-16.jpg"
-                              src="/assets/images/home/house-16.jpg"
-                              alt="img"
-                            />
-                          </div>
-                          <div className="top">
-                            <ul className="d-flex gap-6">
-                              <li className="flag-tag primary">Featured</li>
-                              <li className="flag-tag style-1">For Sale</li>
-                            </ul>
-                          </div>
-                          <div className="bottom">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            145 Brooklyn Ave, Califonia, New York
-                          </div>
-                        </a>
-                      </div>
-                      <div className="archive-bottom">
-                        <div className="content-top">
-                          <h6 className="text-capitalize">
-                            <a href="property-details-v1.html" className="link">
-                              {" "}
-                              Casa Lomas de Machalí Machas
-                            </a>
-                          </h6>
-                          <ul className="meta-list">
-                            <li className="item">
-                              <i className="icon icon-bed"></i>
-                              <span className="text-variant-1">Beds:</span>
-                              <span className="fw-6">3</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-bath"></i>
-                              <span className="text-variant-1">Baths:</span>
-                              <span className="fw-6">2</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-sqft"></i>
-                              <span className="text-variant-1">Sqft:</span>
-                              <span className="fw-6">1150</span>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="content-bottom">
-                          <div className="d-flex gap-8 align-items-center">
-                            <div className="avatar avt-40 round">
-                              <img
-                                src="/assets/images/avatar/avt-png4.png"
-                                alt="avt"
-                              />
-                            </div>
-                            <span>Arlene McCoy</span>
-                          </div>
-                          <h6 className="price">$7250,00</h6>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="col-xl-4 col-lg-6 col-md-6">
-                    <Link to={"/property-search"} className="axs-box">
-                      <div className="archive-top">
-                        <a href="property-details-v1.html" className="images-group">
-                          <div className="images-style">
-                            <img
-                              className="lazyload"
-                              data-src="/assets/images/home/house-17.jpg"
-                              src="/assets/images/home/house-17.jpg"
-                              alt="img"
-                            />
-                          </div>
-                          <div className="top">
-                            <ul className="d-flex gap-6">
-                              <li className="flag-tag primary">Featured</li>
-                              <li className="flag-tag style-1">For Sale</li>
-                            </ul>
-                          </div>
-                          <div className="bottom">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            145 Brooklyn Ave, Califonia, New York
-                          </div>
-                        </a>
-                      </div>
-                      <div className="archive-bottom">
-                        <div className="content-top">
-                          <h6 className="text-capitalize">
-                            <a href="property-details-v1.html" className="link">
-                              {" "}
-                              Casa Lomas de Machalí Machas
-                            </a>
-                          </h6>
-                          <ul className="meta-list">
-                            <li className="item">
-                              <i className="icon icon-bed"></i>
-                              <span className="text-variant-1">Beds:</span>
-                              <span className="fw-6">3</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-bath"></i>
-                              <span className="text-variant-1">Baths:</span>
-                              <span className="fw-6">2</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-sqft"></i>
-                              <span className="text-variant-1">Sqft:</span>
-                              <span className="fw-6">1150</span>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="content-bottom">
-                          <div className="d-flex gap-8 align-items-center">
-                            <div className="avatar avt-40 round">
-                              <img
-                                src="/assets/images/avatar/avt-png5.png"
-                                alt="avt"
-                              />
-                            </div>
-                            <span>Arlene McCoy</span>
-                          </div>
-                          <h6 className="price">$7250,00</h6>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="col-xl-4 col-lg-6 col-md-6">
-                    <Link to={"/property-search"} className="axs-box">
-                      <div className="archive-top">
-                        <a href="property-details-v1.html" className="images-group">
-                          <div className="images-style">
-                            <img
-                              className="lazyload"
-                              data-src="/assets/images/home/house-18.jpg"
-                              src="/assets/images/home/house-18.jpg"
-                              alt="img"
-                            />
-                          </div>
-                          <div className="top">
-                            <ul className="d-flex gap-6">
-                              <li className="flag-tag primary">Featured</li>
-                              <li className="flag-tag style-1">For Sale</li>
-                            </ul>
-                          </div>
-                          <div className="bottom">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            145 Brooklyn Ave, Califonia, New York
-                          </div>
-                        </a>
-                      </div>
-                      <div className="archive-bottom">
-                        <div className="content-top">
-                          <h6 className="text-capitalize">
-                            <a href="property-details-v1.html" className="link">
-                              {" "}
-                              Casa Lomas de Machalí Machas
-                            </a>
-                          </h6>
-                          <ul className="meta-list">
-                            <li className="item">
-                              <i className="icon icon-bed"></i>
-                              <span className="text-variant-1">Beds:</span>
-                              <span className="fw-6">3</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-bath"></i>
-                              <span className="text-variant-1">Baths:</span>
-                              <span className="fw-6">2</span>
-                            </li>
-                            <li className="item">
-                              <i className="icon icon-sqft"></i>
-                              <span className="text-variant-1">Sqft:</span>
-                              <span className="fw-6">1150</span>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="content-bottom">
-                          <div className="d-flex gap-8 align-items-center">
-                            <div className="avatar avt-40 round">
-                              <img
-                                src="/assets/images/avatar/avt-png6.png"
-                                alt="avt"
-                              />
-                            </div>
-                            <span>Arlene McCoy</span>
-                          </div>
-                          <h6 className="price">$7250,00</h6>
-                        </div>
-                      </div>
-                    </Link>
                   </div>
                 </div>
                 <div className="text-center">
@@ -636,9 +220,9 @@ const Home = () => {
                 />
               </div>
               <div className="content">
-                <h5 className="title">Buy A New Home</h5>
+                <h5 className="title">Buy A New Property</h5>
                 <p className="description">
-                  Discover your dream home effortlessly. Explore diverse
+                  Discover your dream property effortlessly. Explore diverse
                   properties and expert guidance for a seamless buying
                   experience.
                 </p>
@@ -657,7 +241,7 @@ const Home = () => {
                 />
               </div>
               <div className="content">
-                <h5 className="title">Sell a home</h5>
+                <h5 className="title">Sell a Property</h5>
                 <p className="description">
                   Sell confidently with expert guidance and effective
                   strategies, showcasing your property's best features for a
@@ -678,7 +262,7 @@ const Home = () => {
                 />
               </div>
               <div className="content">
-                <h5 className="title">Rent a home</h5>
+                <h5 className="title">Rent a Property</h5>
                 <p className="description">
                   Discover your perfect rental effortlessly. Explore a diverse
                   variety of listings tailored precisely to suit your unique

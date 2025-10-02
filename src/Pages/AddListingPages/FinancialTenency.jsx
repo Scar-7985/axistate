@@ -15,11 +15,14 @@ const FinancialTenency = () => {
 
     const [formData, setFormData] = useState({
         current_occupancy: "",
-        number_of_tenants: "",
-        tenant_names: "",
+        number_of_tenants: 0,
+        tenant_names: [],
         lease_exp: "",
         noi: "",
-        operating_expenses: "",
+        cam: "No",
+        taxes: "No",
+        insurance: "No",
+        utilities: "No",
     })
 
     const [checkList, setCheckList] = useState({
@@ -32,10 +35,18 @@ const FinancialTenency = () => {
         status7: 0,
     });
 
-    const handleChange = (e) => {
+    const handleChange = (e, index = null) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    }
+
+        if (name.startsWith("tenant_names")) {
+            const updatedNames = [...formData.tenant_names];
+            updatedNames[index] = value; // replace only the changed index
+            setFormData({ ...formData, tenant_names: updatedNames });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
+
 
     // xxxxxxxxxxxxxxxxxx Get Property xxxxxxxxxxxxxxxxxx //
 
@@ -54,13 +65,18 @@ const FinancialTenency = () => {
                     // console.log("API Response:", resp.data.value);
                     setUpdateID(Value.id);
 
+                    const tenantNames = Value.tenant_names.split("@@");
+
                     setFormData({
                         current_occupancy: Value.occupancy,
                         number_of_tenants: Value.num_of_tenants,
-                        tenant_names: Value.tenant_names,
+                        tenant_names: tenantNames,
                         lease_exp: Value.lease_expiration,
                         noi: Value.noi,
-                        operating_expenses: Value.op_expenses,
+                        cam: Value.cam,
+                        taxes: Value.taxes,
+                        insurance: Value.insurance,
+                        utilities: Value.utilities,
                     })
                 } else {
                     console.log("No Existing Data:", resp.data);
@@ -101,13 +117,19 @@ const FinancialTenency = () => {
         if (updateId) {
             descData.append("id", updateId);
         }
+
+        const tenantNames = formData.tenant_names.join("@@");
+
         descData.append("pid", PID);
         descData.append("occupancy", formData.current_occupancy);
         descData.append("num_of_tenants", formData.number_of_tenants);
-        descData.append("tenant_names", formData.tenant_names);
+        descData.append("tenant_names", tenantNames);
         descData.append("lease_expiration", formData.lease_exp);
         descData.append("noi", formData.noi);
-        descData.append("op_expenses", formData.operating_expenses);
+        descData.append("cam", formData.cam);
+        descData.append("taxes", formData.taxes);
+        descData.append("insurance", formData.insurance);
+        descData.append("utilities", formData.utilities);
 
         axios.post(`${POST_API}/tenancy-lnformation.php`, descData).then(resp => {
             const jsonData = resp.data;
@@ -127,7 +149,7 @@ const FinancialTenency = () => {
         setIsLoading(true);
     }
 
-      const [showSidebar, setShowSidebar] = useState(false);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     return (
         <div className="layout-wrap">
@@ -169,9 +191,9 @@ const FinancialTenency = () => {
 
             <div className="main-content">
                 <div className="main-content-inner">
-                  <div class="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
-            <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
-          </div>
+                    <div class="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
+                        <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
+                    </div>
                     <div className="widget-box-2 mb-20 shadow">
                         <h5 className="title d-flex justify-content-between align-item-center">
                             <div>
@@ -203,7 +225,7 @@ const FinancialTenency = () => {
 
                         <div className="box grid-3 gap-30 mt-30">
                             <fieldset className="box-fieldset">
-                                <label>Current Occupancy (%):</label>
+                                <label>Current Occupancy (%):<span className='text-danger'>*</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -213,7 +235,7 @@ const FinancialTenency = () => {
                                 />
                             </fieldset>
                             <fieldset className="box-fieldset">
-                                <label>Number of Tenents:</label>
+                                <label>Number of Tenents:<span className='text-danger'>*</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -222,23 +244,25 @@ const FinancialTenency = () => {
                                     onChange={handleChange}
                                 />
                             </fieldset>
-                            <fieldset className="box-fieldset">
-                                <label>Tenent Names (If Allowed):</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="tenant_names"
-                                    value={formData.tenant_names}
-                                    onChange={handleChange}
-                                />
-                            </fieldset>
-                        </div>
+                            {[...Array(Number(formData.number_of_tenants) || 0)].map((_, index) => (
+                                <fieldset className="box-fieldset" key={index}>
+                                    <label>Tenant Name {index + 1}:<span className='text-danger'>*</span></label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name={`tenant_names${index}`}
+                                        value={formData.tenant_names[index] || ""}
+                                        onChange={(e) => handleChange(e, index)}
+                                    />
+                                </fieldset>
+                            ))}
 
-                        <div className="box grid-3 gap-30 mt-30">
+
+
 
                             <fieldset className="box-fieldset">
                                 <label>
-                                    Lease Expiration(s):
+                                    Lease Expiration(s):<span className='text-danger'>*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -250,7 +274,7 @@ const FinancialTenency = () => {
 
                             <fieldset className="box-fieldset">
                                 <label>
-                                    NOI (Net Operating Income):
+                                    NOI (Net Operating Income):<span className='text-danger'>*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -260,19 +284,60 @@ const FinancialTenency = () => {
                                 />
                             </fieldset>
                             <fieldset className="box-fieldset">
-                                <label>Operating Expenses</label>
+                                <label>CAM: <span className='text-danger'>*</span></label>
                                 <div className="nice-select" tabindex="0">
-                                    <span className="current">{`${formData.operating_expenses !== "" ? formData.operating_expenses : "Choose"}`}</span>
+                                    <span className="current">{formData.cam}</span>
                                     <ul className="list">
-                                        {
-                                            OperatingExpenseOption.map((item, index) => {
-                                                return (
-                                                    <li data-value={index} className="option" key={index} onClick={() => setFormData({ ...formData, operating_expenses: item.title })}>
-                                                        {item.title}
-                                                    </li>
-                                                )
-                                            })
-                                        }
+                                        <li data-value="Yes" className={`option ${formData.cam === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, cam: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.cam === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, cam: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box-fieldset">
+                                <label>Taxes: <span className='text-danger'>*</span></label>
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.taxes}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.taxes === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, taxes: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.taxes === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, taxes: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box-fieldset">
+                                <label>Insurance: <span className='text-danger'>*</span></label>
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.insurance}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.insurance === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, insurance: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.insurance === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, insurance: "No" })}>
+                                            No
+                                        </li>
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box-fieldset">
+                                <label>Utilities: <span className='text-danger'>*</span></label>
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.utilities}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.utilities === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, utilities: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.utilities === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, utilities: "No" })}>
+                                            No
+                                        </li>
 
                                     </ul>
                                 </div>

@@ -20,8 +20,12 @@ const PropertyFeatures = () => {
         building_class: "A",
         ceiling_height: "",
         loading_docks_drive: "",
-        hvac_sprinkler: "",
-        utility: "",
+        hvac: "No",
+        sprinkler: "No",
+        water: "No",
+        gas: "No",
+        sewer: "No",
+        electricity: "No",
         elevator: "Choose",
         accessibility_ada: "Choose",
     })
@@ -51,19 +55,23 @@ const PropertyFeatures = () => {
         formData.append("pid", getPID);
         axios.post(`${GET_API}/property-features.php`, formData)
             .then(resp => {
-                console.log(resp.data);
+                // console.log(resp.data);
 
                 if (resp.data.status === 100) {
                     const Value = resp.data.value;
-                    // console.log("API Response:", resp.data.value);
+                    console.log("API Response:", resp.data.value);
                     setUpdateID(Value.id);
 
                     setFormData({
                         building_class: Value.building_class,
                         ceiling_height: Value.ceiling_height,
                         loading_docks_drive: Value.loading_docks,
-                        hvac_sprinkler: Value.hvac,
-                        utility: Value.utilities,
+                        hvac: Value.hvac,
+                        sprinkler: Value.sprinkler,
+                        water: Value.water,
+                        gas: Value.gas,
+                        sewer: Value.sewer,
+                        electricity: Value.electricity,
                         elevator: Value.elevator,
                         accessibility_ada: Value.accessibility,
                     })
@@ -111,8 +119,12 @@ const PropertyFeatures = () => {
         descData.append("building_class", formData.building_class);
         descData.append("ceiling_height", formData.ceiling_height);
         descData.append("loading_docks", formData.loading_docks_drive);
-        descData.append("hvac", formData.hvac_sprinkler);
-        descData.append("utilities", formData.utility);
+        descData.append("hvac", formData.hvac);
+        descData.append("sprinkler", formData.sprinkler);
+        descData.append("water", formData.water);
+        descData.append("gas", formData.gas);
+        descData.append("sewer", formData.sewer);
+        descData.append("electricity", formData.electricity);
         descData.append("elevator", formData.elevator);
         descData.append("accessibility", formData.accessibility_ada);
         axios.post(`${POST_API}/property-features.php`, descData).then(resp => {
@@ -135,11 +147,11 @@ const PropertyFeatures = () => {
         })
     }
 
-      const [showSidebar, setShowSidebar] = useState(false);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     return (
         <div className="layout-wrap">
-   <div className="sidebar-menu-dashboard" id={`add-listing-sidemenu${showSidebar ? "-open" : ""}`}>  {/* d-flex shadow  */}
+            <div className="sidebar-menu-dashboard" id={`add-listing-sidemenu${showSidebar ? "-open" : ""}`}>  {/* d-flex shadow  */}
                 <div className="menu-box">
                     {/* <div className="title fw-6">Menu</div> */}
                     <ul className="box-menu-dashboard">
@@ -177,9 +189,9 @@ const PropertyFeatures = () => {
 
             <div className="main-content">
                 <div className="main-content-inner">
-                  <div class="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
-                <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
-          </div>
+                    <div class="button-show-hide show-mb w-100 text-right" onClick={() => setShowSidebar(!showSidebar)}>
+                        <a className="btn-dark p-2">{showSidebar ? "Hide" : "Show"} Sidebar</a>
+                    </div>
                     <div className="widget-box-2 mb-20 shadow">
                         <h5 className="title d-flex justify-content-between align-items-center">
                             <div>
@@ -188,21 +200,21 @@ const PropertyFeatures = () => {
                             <div className='d-flex align-items-center gap-2'>
                                 <div>
                                     <a className="btn-dark d-flex align-items-center gap-1" onClick={() => navigate("/transaction-details", { state: { PID: PID } })}>
-                                       <span class="material-symbols-outlined">
-                        chevron_backward
-                      </span>
+                                        <span class="material-symbols-outlined">
+                                            chevron_backward
+                                        </span>
                                         <div className='text'>Previous</div>
 
                                     </a>
                                 </div>
                                 <div>
                                     {
-                                 Number(checkList.status3) === 3 &&
+                                        Number(checkList.status3) === 3 &&
                                         <a className="btn-secondary d-flex align-items-center gap-1" onClick={() => navigate("/location-highlights", { state: { PID: PID } })}>
                                             <div className='text'>Next</div>
                                             <span class="material-symbols-outlined">
-                        chevron_forward
-                      </span>
+                                                chevron_forward
+                                            </span>
                                         </a>
                                     }
                                 </div>
@@ -212,14 +224,14 @@ const PropertyFeatures = () => {
 
                         <div className="box grid-3 gap-30 mt-30">
                             <fieldset className="box-fieldset">
-                                <label>Building Class</label>
+                                <label>Building Class: <span className='text-danger'>*</span></label>
                                 <div className="nice-select" tabindex="0">
                                     <span className="current">{`${formData.building_class !== "" ? formData.building_class : "Choose"}`}</span>
                                     <ul className="list">
                                         {
                                             BuildingClassOption.map((item, index) => {
                                                 return (
-                                                    <li data-value={index} className="option" key={index} onClick={() => setFormData({ ...formData, building_class: item.title })}>
+                                                    <li data-value={index} className={`option ${formData.building_class === item.title ? "selected focus" : ""}`} key={index} onClick={() => setFormData({ ...formData, building_class: item.title })}>
                                                         {item.title}
                                                     </li>
                                                 )
@@ -230,7 +242,7 @@ const PropertyFeatures = () => {
                                 </div>
                             </fieldset>
                             <fieldset className="box-fieldset">
-                                <label>Ceiling Height<span className='text-danger'>(Industrial)</span>:</label>
+                                <label>Ceiling Height: <span className='text-danger'>*</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -240,7 +252,7 @@ const PropertyFeatures = () => {
                                 />
                             </fieldset>
                             <fieldset className="box-fieldset">
-                                <label>Loading Docks / Drive-ins:</label>
+                                <label>Loading Docks / Drive-ins: <span className='text-danger'>*</span></label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -255,35 +267,122 @@ const PropertyFeatures = () => {
 
                             <fieldset className="box-fieldset">
                                 <label>
-                                    HVAC / Sprinkler System:<span className='text-danger'>*</span>
+                                    HVAC:<span className='text-danger'>*</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name='hvac_sprinkler'
-                                    value={formData.hvac_sprinkler}
-                                    onChange={handleChange}
-                                />
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.hvac}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.hvac === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, hvac: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.hvac === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, hvac: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
                             </fieldset>
+
                             <fieldset className="box-fieldset">
                                 <label>
-                                    Utilities	(Water, Gas, Sewer, Electricity):<span className='text-danger'>*</span>
+                                    Sprinkler System:<span className='text-danger'>*</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name='utility'
-                                    value={formData.utility}
-                                    onChange={handleChange}
-                                />
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.sprinkler}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.sprinkler === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, sprinkler: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.sprinkler === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, sprinkler: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
                             </fieldset>
                             <fieldset className="box-fieldset">
-                                <label>Elevator</label>
+                                <label>Water:<span className='text-danger'>*</span></label>
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.water}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.water === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, water: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.water === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, water: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box-fieldset">
+                                <label>Gas:<span className='text-danger'>*</span></label>
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.gas}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.gas === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, gas: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.gas === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, gas: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box-fieldset">
+                                <label>Sewer:<span className='text-danger'>*</span></label>
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.sewer}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.sewer === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, sewer: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.sewer === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, sewer: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box-fieldset">
+                                <label>Electricity:<span className='text-danger'>*</span></label>
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.electricity}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.electricity === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, electricity: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.electricity === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, electricity: "No" })}>
+                                            No
+                                        </li>
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box-fieldset">
+                                <label>Elevator: <span className='text-danger'>*</span></label>
                                 <div className="nice-select" tabindex="0">
                                     <span className="current">{formData.elevator}</span>
                                     <ul className="list">
-                                        <li data-value="Yes" className="option" onClick={() => setFormData({ ...formData, elevator: "Yes" })}>
+                                        <li data-value="Yes" className={`option ${formData.elevator === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, elevator: "Yes" })}>
                                             Yes
                                         </li>
-                                        <li data-value="No" className="option" onClick={() => setFormData({ ...formData, elevator: "No" })}>
+                                        <li data-value="No" className={`option ${formData.elevator === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, elevator: "No" })}>
+                                            No
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </fieldset>
+                            <fieldset className="box box-fieldset">
+                                <label>Accessibility /ADA Compliant: <span className='text-danger'>*</span></label>
+                                <div className="nice-select" tabindex="0">
+                                    <span className="current">{formData.accessibility_ada}</span>
+                                    <ul className="list">
+                                        <li data-value="Yes" className={`option ${formData.elevator === "Yes" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, accessibility_ada: "Yes" })}>
+                                            Yes
+                                        </li>
+                                        <li data-value="No" className={`option ${formData.elevator === "No" ? "selected focus" : ""}`} onClick={() => setFormData({ ...formData, accessibility_ada: "No" })}>
                                             No
                                         </li>
 
@@ -294,21 +393,7 @@ const PropertyFeatures = () => {
 
                         <div className="box grid-3 gap-30">
 
-                            <fieldset className="box box-fieldset">
-                                <label>Accessibility /ADA Compliant</label>
-                                <div className="nice-select" tabindex="0">
-                                    <span className="current">{formData.accessibility_ada}</span>
-                                    <ul className="list">
-                                        <li data-value="Yes" className="option" onClick={() => setFormData({ ...formData, accessibility_ada: "Yes" })}>
-                                            Yes
-                                        </li>
-                                        <li data-value="No" className="option" onClick={() => setFormData({ ...formData, accessibility_ada: "No" })}>
-                                            No
-                                        </li>
 
-                                    </ul>
-                                </div>
-                            </fieldset>
                         </div>
 
                         <div className="box-btn" style={{ marginTop: "60px" }}>

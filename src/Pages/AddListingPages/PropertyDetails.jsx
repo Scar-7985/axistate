@@ -12,6 +12,9 @@ const PropertyDetails = () => {
   const location = useLocation();
   const { PID } = location.state || {};
 
+  console.log(PID);
+  
+
   const [checkList, setCheckList] = useState({
     status1: 0,
     status2: 0,
@@ -109,7 +112,7 @@ const PropertyDetails = () => {
           setFormData({
             property_name: Value.project_name,
             street_address: Value.address,
-            country: "United States",
+            country: Value.country,
             city: Value.city,
             state: Value.state,
             zip: Value.zip,
@@ -304,7 +307,7 @@ const PropertyDetails = () => {
               </fieldset>
 
               <fieldset className="box box-fieldset">
-                <label>Property Subtype:</label>
+                <label>Property Subtype:<span className='text-danger'>*</span></label>
                 <ChipBox
                   options={showSubProperty}
                   value={selectedSubProperty}
@@ -319,7 +322,7 @@ const PropertyDetails = () => {
                 }
               </fieldset>
               <fieldset className="box box-fieldset">
-                <label>Building / Project Name:</label>
+                <label>Building / Project Name:<span className='text-danger'>*</span></label>
                 <input type="text" name='property_name' placeholder='' value={formData.property_name} onChange={handleChange} />
                 {
                   inlineError && (inlineError.statusType === 3) &&
@@ -451,7 +454,7 @@ const PropertyDetails = () => {
                 </fieldset>
                 <fieldset className="box-fieldset">
                   <label>
-                    Year Built/ Renovated:
+                    Year Built/ Renovated:<span className='text-danger'>*</span>
                   </label>
                   <input
                     type="number"
@@ -472,7 +475,7 @@ const PropertyDetails = () => {
 
                 <fieldset className="box-fieldset">
                   <label>
-                    Lot Size (Acres / Sq Ft.):
+                    Lot Size (Acres / Sq Ft.):<span className='text-danger'>*</span>
                   </label>
                   <input
                     type="number"
@@ -489,7 +492,7 @@ const PropertyDetails = () => {
                 </fieldset>
                 <fieldset className="box-fieldset">
                   <label>
-                    Building Size (Sq Ft.):
+                    Building Size (Sq Ft.):<span className='text-danger'>*</span>
                   </label>
                   <input
                     type="number"
@@ -510,7 +513,7 @@ const PropertyDetails = () => {
 
                 <fieldset className="box-fieldset">
                   <label>
-                    Number of Floors:
+                    Number of Floors:<span className='text-danger'>*</span>
                   </label>
                   <input
                     type="number"
@@ -527,7 +530,7 @@ const PropertyDetails = () => {
                 </fieldset>
                 <fieldset className="box-fieldset">
                   <label>
-                    Parking Spaces / Ratio:
+                    Parking Spaces / Ratio:<span className='text-danger'>*</span>
                   </label>
                   <input
                     type="number"

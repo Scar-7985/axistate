@@ -5931,6 +5931,7 @@ label {
 .axs-box .images-style {
     position: relative;
     overflow: hidden;
+    height: 250px;
 }
 
 .axs-box .images-style img {
@@ -10000,21 +10001,22 @@ label {
 }
 
 .layout-wrap .wrap-table thead tr th:nth-child(1) {
-    width: 55%;
+    width: 25%;
 }
 
 .layout-wrap .wrap-table thead tr th:not(:last-child) {
     position: relative;
 }
 
+
 .layout-wrap .wrap-table thead tr th:not(:last-child)::after {
-    content: "";
+    /* content: "";
     position: absolute;
     right: 0;
     top: 8px;
     bottom: 8px;
     background-color: rgba(255, 255, 255, 0.1);
-    width: 1px;
+    width: 1px; */
 }
 
 .layout-wrap .wrap-table thead tr th:not(:first-child) {
@@ -10033,7 +10035,7 @@ label {
 }
 
 .layout-wrap .wrap-table table tbody td {
-    padding: 16px;
+    padding: 15px;
     align-content: start;
     border-bottom: 1px solid #e4e4e4;
 }
@@ -10050,15 +10052,17 @@ label {
     content: "";
     position: absolute;
     right: 0;
-    top: 16px;
-    bottom: 16px;
+    /* top: 16px;
+    bottom: 16px; */
+    top: 0;
+    bottom: 0;
     background-color: #e4e4e4;
     width: 1px;
 }
 
 .layout-wrap .wrap-table table tbody td:not(:first-child) {
-    padding-left: 30px;
-    padding-right: 30px;
+    /* padding-left: 30px;
+    padding-right: 30px; */
 }
 
 .layout-wrap .wrap-table .listing-box {

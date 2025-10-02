@@ -44,7 +44,6 @@ const Profile = () => {
         profileData.append("cuid", isAuthenticated);
         profileData.append("fname", formData.fname);
         profileData.append("lname", formData.lname);
-        profileData.append("email", formData.email);
         profileData.append("phone", formData.phone);
 
         axios.post(`${POST_API}/update-profile.php`, profileData).then(resp => {
@@ -72,23 +71,23 @@ const Profile = () => {
 
                 <h5 className="title">Profile</h5>
 
+                <div className="box box-fieldset">
+                    <label>Email:</label>
+                    <input type="text" name='email' value={formData.email} onChange={handleChange} disabled className="form-control style-1" />
+                </div>
                 <div className="box grid-2 gap-30 mb-0">
                     <div className="box box-fieldset">
-                        <label>First name:<span>*</span></label>
+                        <label>First name:<span className='text-danger'>*</span></label>
                         <input type="text" name='fname' value={formData.fname} onChange={handleChange} className="form-control style-1" />
                     </div>
                     <div className="box box-fieldset">
-                        <label>Last name:<span>*</span></label>
+                        <label>Last name:<span className='text-danger'>*</span></label>
                         <input type="text" name='lname' value={formData.lname} onChange={handleChange} className="form-control style-1" />
                     </div>
                 </div>
 
                 <div className="box box-fieldset">
-                    <label>Email:<span>*</span></label>
-                    <input type="text" name='email' value={formData.email} onChange={handleChange} className="form-control style-1" />
-                </div>
-                <div className="box box-fieldset">
-                    <label>Phone:<span>*</span></label>
+                    <label>Phone:<span className='text-danger'>*</span></label>
                     <input type="text" name='phone' value={formData.phone} onChange={handleChange} className="form-control style-1" />
                 </div>
 

@@ -237,7 +237,7 @@ const TransactionDetails = () => {
                   {
                     SaleConditionOption.map((item, index) => {
                       return (
-                        <li data-value={index} className="option" key={index} onClick={() => setFormData({ ...formData, sale_condition: item.title })}>
+                        <li data-value={index} className={`option ${formData.sale_condition === item.title ? "selected focus" : "" }`} key={index} onClick={() => setFormData({ ...formData, sale_condition: item.title })}>
                           {item.title}
                         </li>
                       )
@@ -249,7 +249,7 @@ const TransactionDetails = () => {
 
             <div className="box grid-3 gap-30 mt-30">
               <fieldset className="box-fieldset">
-                <label>Asking Price ($):</label>
+                <label>Asking Price ($):<span className='text-danger'>*</span></label>
                 <input
                   type="number"
                   className="form-control"
@@ -259,7 +259,7 @@ const TransactionDetails = () => {
                 />
               </fieldset>
               <fieldset className="box-fieldset">
-                <label>Price per Sq Ft:</label>
+                <label>Price per Sq Ft:<span className='text-danger'>*</span></label>
                 <input
                   type="number"
                   className="form-control"
@@ -269,7 +269,7 @@ const TransactionDetails = () => {
                 />
               </fieldset>
               <fieldset className="box-fieldset">
-                <label>Cap Rate:</label>
+                <label>Cap Rate:<span className='text-danger'>*</span></label>
                 <input
                   type="number"
                   className="form-control"
@@ -283,14 +283,14 @@ const TransactionDetails = () => {
             <div className="box grid-3 gap-30">
 
               <fieldset className="box-fieldset">
-                <label>Lease Rate</label>
+                <label>Lease Rate: <span className="text-danger">*(On Calc)</span></label>
                 <div className="nice-select" tabindex="0">
                   <span className="current">{`${formData.lease_rate !== "" ? formData.lease_rate : "Choose"}`}</span>
                   <ul className="list">
                     {
                       LeaseRateOption.map((item, index) => {
                         return (
-                          <li data-value={index} className="option" key={index} onClick={() => setFormData({ ...formData, lease_rate: item.title })}>
+                          <li data-value={index} className={`option ${formData.lease_rate === item.title ? "selected focus" : "" }`} key={index} onClick={() => setFormData({ ...formData, lease_rate: item.title })}>
                             {item.title}
                           </li>
                         )
@@ -302,14 +302,14 @@ const TransactionDetails = () => {
               </fieldset>
 
               <fieldset className="box-fieldset">
-                <label>Lease Type</label>
+                <label>Lease Type:<span className='text-danger'>*</span></label>
                 <div className="nice-select" tabindex="0">
                   <span className="current">{`${formData.lease_type !== "" ? formData.lease_type : "Choose"}`}</span>
                   <ul className="list">
                     {
                       LeaseTypeOption.map((item, index) => {
                         return (
-                          <li data-value={index} className="option" key={index} onClick={() => setFormData({ ...formData, lease_type: item.title })}>
+                          <li data-value={index} className={`option ${formData.lease_type === item.title ? "selected focus" : "" }`} key={index} onClick={() => setFormData({ ...formData, lease_type: item.title })}>
                             {item.title}
                           </li>
                         )
@@ -321,7 +321,7 @@ const TransactionDetails = () => {
               </fieldset>
 
               <fieldset className="box-fieldset">
-                <label>Available Units / Spaces</label>
+                <label>Available Units / Spaces: <span className='text-danger'>*</span></label>
                 <input
                   type="number"
                   className="form-control"
@@ -333,14 +333,14 @@ const TransactionDetails = () => {
             </div>
 
             <fieldset className="box-fieldset">
-              <label>Ownership Type</label>
+              <label>Ownership Type: <span className='text-danger'>*</span></label>
               <div className="nice-select" tabindex="0">
                 <span className="current">{`${formData.ownership_type !== "" ? formData.ownership_type : "Choose"}`}</span>
                 <ul className="list">
                   {
                     OwnershipTypeOption.map((item, index) => {
                       return (
-                        <li data-value={index} className="option" key={index} onClick={() => setFormData({ ...formData, ownership_type: item.title })}>
+                        <li data-value={index} className={`option ${formData.ownership_type === item.title ? "selected focus" : "" }`} key={index} onClick={() => setFormData({ ...formData, ownership_type: item.title })}>
                           {item.title}
                         </li>
                       )

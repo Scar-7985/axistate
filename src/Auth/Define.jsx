@@ -20,3 +20,7 @@ export const isAuthenticated = stored || null;
 
 
 export const SITE_LOGO = "https://equalengineers.com/wp-content/uploads/2024/04/dummy-logo-5b.png";
+
+export function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

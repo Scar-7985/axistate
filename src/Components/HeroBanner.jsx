@@ -35,8 +35,8 @@ const HeroBanner = () => {
                 <h1 className="title-large text-white animationtext slide">
                   Find Your
                   <span className="tf-text s1 cd-words-wrapper" style={{ marginLeft: "20px" }}>
-                    <span className="item-text is-visible">Dream Home</span>
-                    <span className="item-text is-hidden">Perfect Home</span>
+                    <span className="item-text is-visible">Dream Property</span>
+                    <span className="item-text is-hidden">Perfect Property</span>
                   </span>
                 </h1>
                 <p
@@ -44,7 +44,7 @@ const HeroBanner = () => {
                   data-wow-delay=".2s"
                 >
                   We are a real estate agency that will help you find the best
-                  residence you dream of, let’s discuss for your dream house?
+                  residence you dream of, let’s discuss for your dream property?
                 </p>
               </div>
               <div className="flat-tab flat-tab-form">
