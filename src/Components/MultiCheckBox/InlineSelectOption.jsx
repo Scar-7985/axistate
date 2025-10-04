@@ -1,8 +1,7 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import "./InlineSelectOption.css";
 
-const InlineSelectOption = ({ Options = [], value = [], onChange, onClear }) => {
+const InlineSelectOption = forwardRef(({ Options = [], value = [], onChange }, ref) => {
     const [tempSelected, setTempSelected] = useState([]);
     const [expandedGroups, setExpandedGroups] = useState({});
 
@@ -37,25 +36,28 @@ const InlineSelectOption = ({ Options = [], value = [], onChange, onClear }) => 
         }
     };
 
-    const applySelection = () => {
-        const selectedChildren = new Set();
-        const selectedParents = [];
+    // ✅ Expose applySelection to parent
+    useImperativeHandle(ref, () => ({
+        applySelection: () => {
+            const selectedChildren = new Set();
+            const selectedParents = [];
 
-        Options.forEach((group) => {
-            let groupSelected = false;
-            group.options.forEach((option) => {
-                if (tempSelected.includes(option.value)) {
-                    selectedChildren.add(option.value);
-                    groupSelected = true;
+            Options.forEach((group) => {
+                let groupSelected = false;
+                group.options.forEach((option) => {
+                    if (tempSelected.includes(option.value)) {
+                        selectedChildren.add(option.value);
+                        groupSelected = true;
+                    }
+                });
+                if (groupSelected && !selectedParents.includes(group.label)) {
+                    selectedParents.push(group.label);
                 }
             });
-            if (groupSelected && !selectedParents.includes(group.label)) {
-                selectedParents.push(group.label);
-            }
-        });
 
-        onChange(Array.from(selectedChildren), selectedParents);
-    };
+            onChange(Array.from(selectedChildren), selectedParents);
+        }
+    }));
 
     const isGroupChecked = (groupOptions) =>
         groupOptions.every((opt) => tempSelected.includes(opt.value));
@@ -67,11 +69,10 @@ const InlineSelectOption = ({ Options = [], value = [], onChange, onClear }) => 
 
     return (
         <div id='optionBox'>
-            <h4 style={{ marginBottom: "10px" }}>Property Type(s)</h4>
             {Options.map((group, index) => (
                 <div key={index} className='parentChk'>
                     <div
-                        className='parentLabel'
+                        className='parentLabel gap-0'
                         style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                         onClick={() => toggleGroup(group.label)}
                     >
@@ -84,22 +85,14 @@ const InlineSelectOption = ({ Options = [], value = [], onChange, onClear }) => 
                             onClick={(e) => e.stopPropagation()}
                             onChange={() => handleGroupCheckboxChange(group.options)}
                         />{' '}
-                        <div style={{fontSize: "14px", fontWeight: "800px"}}>{group.label}</div>
-                        <svg
-                            style={{
-                                marginLeft: "auto",
-                                transform: expandedGroups[group.label] ? "rotate(90deg)" : "rotate(0deg)",
-                                transition: "transform 0.2s"
-                            }}
-                            width="12"
-                            height="12"
-                            viewBox="0 0 20 20"
-                        >
-                            <path d="M7 5l6 5-6 5V5z" />
-                        </svg>
-                        <span class="material-symbols-outlined">
-keyboard_arrow_up
-</span>
+                        <div style={{ fontSize: "14px", fontWeight: "800px" }}>{group.label}</div>
+                        <span className="material-symbols-outlined" style={{
+                            marginLeft: "auto",
+                            transform: expandedGroups[group.label] ? "rotate(180deg)" : "rotate(0deg)",
+                            transition: "transform 0.2s"
+                        }}>
+                            keyboard_arrow_up
+                        </span>
                     </div>
 
                     {expandedGroups[group.label] && (
@@ -118,16 +111,8 @@ keyboard_arrow_up
                     )}
                 </div>
             ))}
-
-            <div style={{
-                marginTop: '15px', display: "flex",
-                justifyContent: "space-between"
-            }}>
-                <button type='button' onClick={onClear}>Clear</button>
-                <button type='button' onClick={applySelection}>Apply</button>
-            </div>
         </div>
     );
-};
+});
 
 export default InlineSelectOption;

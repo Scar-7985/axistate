@@ -1,0 +1,146 @@
+.activity-card {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 16px;
+  background: #fff;
+ 
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+
+.time-filter {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.subtitle1 {
+  font-size: 13px;
+  color: #666;
+  margin: 6px 0 16px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+   background-color: white;
+}
+
+.tab {
+  flex: 1;
+  cursor: pointer;
+  padding: 10px 0;
+  transition: 0.2s;
+   background-color: white;
+}
+
+.tab h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+  color: #000;
+   
+}
+
+.tab p {
+  font-size: 13px;
+  color: #444;
+  margin-top: 4px;
+  
+}
+
+.tab.active {
+  border-bottom: 2px solid #007bff;
+  color: #007bff;
+  background-color: white;
+}
+
+.tab-content1 {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 14px;
+  color: #333;
+ 
+}
+
+
+
+
+
+
+/* Recommendation */
+
+   .recommend-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 20px;
+}
+
+.circle-score {
+  width: 100px;
+  height: 100px;
+}
+
+.circular-chart {
+  display: block;
+  max-width: 100%;
+  max-height: 250px;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+.circular-chart.red .circle {
+  stroke: #e74c3c;
+}
+
+.circular-chart.green .circle {
+  stroke: #27ae60;
+}
+
+.percentage {
+  fill: #333;
+  font-size: 0.5em;
+  text-anchor: middle;
+}
+
+.recommend-text h5 {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.recommend-text p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+
+
+/* Recommendation */

@@ -80,11 +80,11 @@ const HeroBanner = () => {
                           <div className="inner-group">
 
                             <div className="form-group-3 form-style border-bottom">
-                              <label>Keyword</label>
+                              <label>Search</label>
                               <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Search Keyword."
+                                placeholder="Your Keyword"
                                 value={searchValue}
                                 onChange={(e) => setSearchValue(e.target.value)}
                               />

@@ -26,7 +26,7 @@ const Search = () => {
     const [tempSaleProperties, setTempSaleProperties] = useState([]);
     const [saleProperties, setSaleProperties] = useState([]);
 
-    console.log(tempSaleProperties);
+    // console.log(tempSaleProperties);
     // console.log(saleProperties);
 
     // Sale Properties
@@ -42,7 +42,7 @@ const Search = () => {
     // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx //
 
 
-    const fetchListings = (searchQuery = null) => {
+    const fetchListings = (searchQuery = null, moreFilter = false) => {
 
         if (isLoading) return;
         const DisplayMap = window.localStorage.getItem("showMap") ? true : false;
@@ -50,7 +50,7 @@ const Search = () => {
         setIsLoading(true);
 
 
-        const REQ_API = searchQuery ? `${GET_API}/search-property.php${searchQuery}` : `${GET_API}/search-property.php`
+        const REQ_API = moreFilter ? `${GET_API}/more-filter.php${searchQuery}` : (searchQuery ? `${GET_API}/search-property.php${searchQuery}` : `${GET_API}/search-property.php`)
 
         axios.post(REQ_API).then(resp => {
             // console.log("REQUESTED API ===>", resp.data.prop_data);
@@ -150,37 +150,54 @@ const Search = () => {
 
     useEffect(() => {
         const closeMoreFilter = document.querySelector("#close-more-filter");
-        closeMoreFilter.click();
+        closeMoreFilter?.click();
+
         const params = new URLSearchParams(location.search);
-        const allowedParams = ["page", "search", "ptype[]", "subtype[]"];
+
+        // Basic Filters
+        const allowedParams = [
+            "page", "search", "ptype[]", "subtype[]",
+            "price_min", "price_max", "cap_min", "cap_max", "search_filter", "sale_condition", 
+            "ownership_type", "occupancy_min", "occupancy_max", "num_tenants", "zoning", "number_floore", "lease_type", "building_class",
+            "hvac", "sprinkler", "water", "gas", "sewer", "electricity", "elevator", "agent_name",
+        ];
+        // Advance Filters
+        const specialParams = [
+            "search_filter", "price_min", "price_max", "cap_min", "cap_max", "sale_condition", 
+            "ownership_type", "occupancy_min", "occupancy_max", "num_tenants", "zoning", "number_floore", "lease_type", "building_class",
+            "hvac", "sprinkler", "water", "gas", "sewer", "electricity", "elevator", "agent_name",
+        ];
+
         const pageQuery = params.get("page");
         const searchQuery = params.get("search");
         const propertyType = params.getAll("ptype[]");
         const subPropertyType = params.getAll("subtype[]");
 
-
+        // Validation: block unknown params
         for (const [key] of params.entries()) {
             if (!allowedParams.includes(key)) {
-                console.warn(" xxxxxxxxxxxxxxxxxxx Invalid query param: xxxxxxxxxxxxxxxxxxx ", key);
+                console.warn("❌ Invalid query param:", key);
                 navigate("/properties");
                 return;
             }
         }
 
+        // Handle search
         if (searchQuery) {
-            params.append("search", searchQuery);
+            params.set("search", searchQuery);
             setSearchValue(searchQuery);
         }
 
+        // Handle page
         if (pageQuery) {
-            params.append("page", pageQuery);
+            params.set("page", pageQuery);
         }
 
+        // Handle property type and subtypes
         if (propertyType.length > 0) {
+            params.delete("ptype[]");
+            propertyType.forEach(pt => params.append("ptype[]", pt));
 
-            params.append("ptype[]", propertyType);
-
-            // Find all subtypes for selected property type
             let aps = groupedOptions.filter((item) => propertyType.includes(item.label));
             let allSubtypes = aps.flatMap((item) => item.options.map((opt) => opt.value));
 
@@ -188,15 +205,23 @@ const Search = () => {
                 setSelectedValues(allSubtypes);
             } else if (subPropertyType.length > 0) {
                 setSelectedValues(subPropertyType);
-                params.append("subtype[]", subPropertyType);
+                params.delete("subtype[]");
+                subPropertyType.forEach(st => params.append("subtype[]", st));
             } else {
                 setSelectedValues(allSubtypes);
             }
         }
 
-        fetchListings(`?${params.toString()}`);
+        // Check if any special params are present
+        const hasSpecial = [...params.keys()].some((key) => specialParams.includes(key));
 
+        if (hasSpecial) {
+            fetchListings(`?${params.toString()}`, true);
+        } else {
+            fetchListings(`?${params.toString()}`);
+        }
     }, [location.search]);
+
 
 
 
@@ -306,14 +331,14 @@ const Search = () => {
                                     </div>
                                 </div>
                                 {/* xxxxxxxxxx Advance Filter xxxxxxxxxx */}
-                                <MoreFilterModal selectedValues={selectedValues} />
+                                <MoreFilterModal selectedValues={selectedValues} setSelectedValues={setSelectedValues} handlePropertyTypes={handlePropertyTypes} />
                                 {/* xxxxxxxxxx Advance Filter xxxxxxxxxx */}
                             </div>
 
 
                             <section className="wrapper-layout layout-2">
                                 <div className="wrap-left pt-2" style={{ width: `${showMap ? "45%" : "100%"}`, height: "calc(100vh - 190px)" }}>
-                                    <div className="box-title-listing">
+                                    {/* <div className="box-title-listing">
                                         <h5 className="fw-8">For Sale</h5>
                                         <div className="box-filter-tab">
                                             <div className="nice-select select-filter list-sort" tabIndex="0"><span className="current">{showSorting}</span>
@@ -328,7 +353,7 @@ const Search = () => {
                                                 </ul>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
 
 
                                     <div className="flat-animate-tab">
@@ -451,7 +476,7 @@ const Search = () => {
                                     showMap &&
 
                                     <div className="wrap-right">
-                                        <GoogleMap />
+                                        {/* <GoogleMap /> */}
                                     </div>
                                 }
 
